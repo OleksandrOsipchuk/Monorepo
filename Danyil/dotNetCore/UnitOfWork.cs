@@ -3,35 +3,52 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DotNetMentorship.TestAPI
 {
-    public class UnitOfWork : IUnitOfWork, IDisposable
+    public class UnitOfWork : IDisposable
     {
-        private readonly UkrainianDbContext _context;
-        private readonly ILogger _logger;
+        private UkrainianDbContext _DbContext;
+        private GenericRepository<Ukrainian> _UkrainianRepository;
 
-        public IUkrainianRepository Ukrainians { get; private set; }
-
-
-        public UnitOfWork(UkrainianDbContext context, ILoggerFactory loggerFactory)
+        public UnitOfWork(UkrainianDbContext context)
         {
-            _context = context;
-            _logger = loggerFactory.CreateLogger("logs");
+            this._DbContext = context;
+        }
+        public GenericRepository<Ukrainian> UkrainianRepository
+        {
+            get
+            {
 
-            Ukrainians = new UkrainianRepository(context);
+                if (this._UkrainianRepository == null)
+                {
+                    this._UkrainianRepository = new GenericRepository<Ukrainian>(_DbContext);
+                }
+                return _UkrainianRepository;
+            }
         }
 
-        public async Task CompleteAsync()
+
+        public void Save()
         {
-            await _context.SaveChangesAsync();
+            _DbContext.SaveChanges();
+        }
+
+        private bool disposed = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    _DbContext.Dispose();
+                }
+            }
+            this.disposed = true;
         }
 
         public void Dispose()
         {
-            _context.Dispose();
-        }
-
-        public void Save()
-        {
-            throw new NotImplementedException();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

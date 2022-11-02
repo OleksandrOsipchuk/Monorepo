@@ -7,6 +7,14 @@ namespace DotNetMentorship.TestAPI
 {
     public class Startup
     {
+        public IConfiguration configRoot
+        {
+            get;
+        }
+        public Startup(IConfiguration configuration)
+        {
+            configRoot = configuration;
+        }
         public void ConfigureServices(IServiceCollection services)
         {
             var Config_Builder = new ConfigurationBuilder();
@@ -16,13 +24,12 @@ namespace DotNetMentorship.TestAPI
             string UkrainiansDbConnection = config.GetConnectionString("UkrainianDbConnection");
             var optionsBuilder = new DbContextOptionsBuilder<UkrainianDbContext>();
 
-            services.AddMvc();
+            services.AddControllers();
 
             services.AddSwaggerGen();
             
             services.AddDbContext<UkrainianDbContext>(options => options.UseNpgsql(UkrainiansDbConnection));
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddRazorPages();
+            services.AddScoped<UnitOfWork>();
             
         }
 
@@ -34,14 +41,11 @@ namespace DotNetMentorship.TestAPI
             {
                 app.UseExceptionHandler("/Error");
                 
-                app.UseHsts();
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
 
             app.UseRouting();
-            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
@@ -52,7 +56,6 @@ namespace DotNetMentorship.TestAPI
 
                 endpoints.MapControllers();
             });
-
 
             app.UseSwagger();
             app.UseSwaggerUI();

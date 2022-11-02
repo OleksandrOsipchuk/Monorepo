@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Net;
 
-namespace DotNetMentorship.TestAPI
+namespace DotNetMentorship.TestAPI.Responses
 {
     public class UkrainianSuccessResponse
     {
@@ -12,33 +12,38 @@ namespace DotNetMentorship.TestAPI
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string? Message { get; private set; }
 
-        public Ukrainian? User { get; private set; }
+        public int UserId { get; private set; }
 
         public UkrainianSuccessResponse(int statusCode, string statusDescription)
         {
-            this.StatusCode = statusCode;
-            this.StatusDescription = statusDescription;
+            StatusCode = statusCode;
+            StatusDescription = statusDescription;
         }
 
         public UkrainianSuccessResponse(int statusCode, string statusDescription, string message)
             : this(statusCode, statusDescription)
         {
-            this.Message = message;
+            Message = message;
         }
 
-        public UkrainianSuccessResponse(int statusCode, string statusDescription, string message, Ukrainian user)
+        public UkrainianSuccessResponse(int statusCode, string statusDescription, string message, int id)
            : this(statusCode, statusDescription)
         {
-            this.Message = message;
-            this.User = user;
+            Message = message;
+            UserId = id;
         }
 
         public class UkrainianObjectCreatedResponse : UkrainianSuccessResponse
         {
-            public UkrainianObjectCreatedResponse(string message, Ukrainian CreatedUser)
-                : base(200, "Object Created", message, CreatedUser)
+            public UkrainianObjectCreatedResponse(string message, int userId)
+                : base(200, "Object Created", message, userId)
             {
             }
+            public UkrainianObjectCreatedResponse(string message)
+                : base(200, "Object Created", message)
+            {
+            }
+
         }
     }
 }

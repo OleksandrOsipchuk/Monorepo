@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using dotNetCore;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore; 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
@@ -12,10 +12,12 @@ using System.Net;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json.Nodes;
 using System.Diagnostics;
-using static DotNetMentorship.TestAPI.UkrainianBadResponse;
-using static DotNetMentorship.TestAPI.UkrainianSuccessResponse;
+using static DotNetMentorship.TestAPI.Responses.UkrainianBadResponse;
+using static DotNetMentorship.TestAPI.Responses.UkrainianSuccessResponse;
 using Npgsql;
 using Microsoft.AspNetCore.Http.Features;
+using DotNetMentorship.TestAPI.Responses;
+using System.ComponentModel;
 
 namespace DotNetMentorship.TestAPI
 {
@@ -24,10 +26,11 @@ namespace DotNetMentorship.TestAPI
     public class UkrainianController : ControllerBase
     {
         private readonly UkrainianDbContext _dbContext;
-        private readonly IUnitOfWork _unitOfWork;
+        private UnitOfWork _unitOfWork;
 
-        public UkrainianController(UkrainianDbContext dbContext, IUnitOfWork unitOfWork) {
-           _unitOfWork = unitOfWork;
+        public UkrainianController(UkrainianDbContext dbContext, UnitOfWork unitOfWork) {
+            _dbContext = dbContext;
+           _unitOfWork = new UnitOfWork(_dbContext);
         }
 
         // GET: api/ukrainians
@@ -35,7 +38,7 @@ namespace DotNetMentorship.TestAPI
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
-            var users = await _unitOfWork.Ukrainians.GetAllAsync();
+            var users = await _unitOfWork.UkrainianRepository.GetAllAsync();
             
             return Ok(users);
         }
@@ -44,7 +47,7 @@ namespace DotNetMentorship.TestAPI
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync(int id)
         {
-            var user = await _unitOfWork.Ukrainians.GetByIdAsync(id);
+            var user = await _unitOfWork.UkrainianRepository.GetByIDAsync(id);
             if (user != null)
             {
                 return Ok(user);
@@ -69,13 +72,10 @@ namespace DotNetMentorship.TestAPI
                         City = UserDTO.City,
                         IsCalm = UserDTO.IsCalm
                     };
-                    Ukrainian CreatedUkrainian = await _unitOfWork.Ukrainians.AddAsync(user);
+                     _unitOfWork.UkrainianRepository.InsertAsync(user);
+                    _unitOfWork.Save();
 
-                    Console.WriteLine($"Creating ukrainian {CreatedUkrainian.Name} with next props:" +
-                        $"\nName: {CreatedUkrainian.Name}," +
-                        $"\nCity: {CreatedUkrainian.City},\nIsCalm: {CreatedUkrainian.IsCalm}");
-
-                    return Ok(new UkrainianObjectCreatedResponse($"User {CreatedUkrainian.Name} was successfully created!", CreatedUkrainian));
+                    return Ok(new UkrainianObjectCreatedResponse($"User was successfully created!"));
                 }
                 else
                 {
@@ -99,17 +99,18 @@ namespace DotNetMentorship.TestAPI
                 {
                     var user = new Ukrainian()
                     {
+                        Id = id,
                         Name = UserDTO.Name,
                         City = UserDTO.City,
                         IsCalm = UserDTO.IsCalm
                     };
-                    Ukrainian CreatedUkrainian = await _unitOfWork.Ukrainians.UpdateAsync(id, user);
 
-                    Console.WriteLine($"Updating ukrainian {CreatedUkrainian.Name} with next props:" +
-                        $"\nId: {CreatedUkrainian.Id},\nName: {CreatedUkrainian.Name}," +
-                        $"\nCity: {CreatedUkrainian.City},\nIsCalm: {CreatedUkrainian.IsCalm}");
+                    Ukrainian userToUpdate = await _unitOfWork.UkrainianRepository.GetByIDAsync(id);
+                    _unitOfWork.UkrainianRepository.Update(id, user);
+                    _unitOfWork.Save();
+                    Ukrainian updatedUser = await _unitOfWork.UkrainianRepository.GetByIDAsync(id);
 
-                    return Ok(new UkrainianObjectCreatedResponse($"User {CreatedUkrainian.Name} was successfully updated!", CreatedUkrainian));
+                    return Ok(new UkrainianObjectCreatedResponse($"User {updatedUser.Name} was successfully updated!", updatedUser.Id));
 
                 }
                 else
