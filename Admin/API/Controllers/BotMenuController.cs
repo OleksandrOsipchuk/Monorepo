@@ -20,7 +20,7 @@ namespace TgModerator.API.Controllers
     public class BotMenuController : ControllerBase
     {
         private static string _TelegramAPIKey = "";
-        public static long GroupId = ;
+        public static long GroupId;
 
         public InlineKeyboardMarkup InlineKeyboardMenu = new(new[]
     {
