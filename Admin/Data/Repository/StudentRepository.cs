@@ -15,7 +15,7 @@ namespace TgModerator.Data.Repository
 
         public async Task<IEnumerable<Student>> GetAsync()
         {
-            var students = await _context.Students.ToListAsync();
+            var students = _context.Students.OrderBy(s => s.Id);
             return students;
         }
 
@@ -29,7 +29,7 @@ namespace TgModerator.Data.Repository
             Student user = null;
             try
             {
-                user = _context.Students.Single(b => b.TelegramId == TelegramIdIn);
+                user = await _context.Students.Where(b => b.TelegramId == TelegramIdIn).FirstOrDefaultAsync<Student>();
             }
             catch (InvalidOperationException ex)
             {

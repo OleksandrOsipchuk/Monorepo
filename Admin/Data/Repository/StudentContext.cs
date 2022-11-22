@@ -20,8 +20,11 @@ namespace TgModerator.Data.Repository
                     .HasColumnName("Id")
                     .ValueGeneratedOnAdd()
                     .IsRequired();
+            modelBuilder.Entity<Student>()
+                    .Property(u => u.SubscriptionUntil)
+                    .HasDefaultValue(DateTime.MinValue);
 
-        }
+    }
 
         public StudentContext(DbContextOptions<StudentContext> options)
             : base(options)

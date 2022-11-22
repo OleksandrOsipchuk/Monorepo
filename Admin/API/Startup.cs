@@ -29,7 +29,6 @@ namespace TgAdmin
             string connectionString = config.GetConnectionString("DefaultConnection");
             var optionsBuilder = new DbContextOptionsBuilder<StudentContext>();
 
-
             services.AddDbContext<StudentContext>(options => options.UseNpgsql(connectionString));
             services.AddSwaggerGen();
             services.AddControllers().AddNewtonsoftJson();
@@ -39,6 +38,8 @@ namespace TgAdmin
 
         public void Configure(WebApplication app, IWebHostEnvironment env)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Error");
