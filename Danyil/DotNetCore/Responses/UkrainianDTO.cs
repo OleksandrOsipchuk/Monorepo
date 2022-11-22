@@ -1,4 +1,4 @@
-﻿namespace DotNetMentorship.TestAPI
+﻿namespace DotNetMentorship.TestAPI.Responses
 {
     public class UkrainianDTO
     {

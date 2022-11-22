@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Net;
 
-namespace DotNetMentorship.TestAPI
+namespace DotNetMentorship.TestAPI.Responses
 {
     public class UkrainianBadResponse
     {
@@ -14,21 +14,21 @@ namespace DotNetMentorship.TestAPI
 
         public UkrainianBadResponse()
         {
-            this.StatusCode = 400;
-            this.StatusDescription = null;
-            this.Message = null;
+            StatusCode = 400;
+            StatusDescription = null;
+            Message = null;
         }
 
         public UkrainianBadResponse(int statusCode, string statusDescription)
         {
-            this.StatusCode = statusCode;
-            this.StatusDescription = statusDescription;
+            StatusCode = statusCode;
+            StatusDescription = statusDescription;
         }
 
         public UkrainianBadResponse(int statusCode, string statusDescription, string message)
             : this(statusCode, statusDescription)
         {
-            this.Message = message;
+            Message = message;
         }
 
         public class UkrainianValidationError : UkrainianBadResponse
