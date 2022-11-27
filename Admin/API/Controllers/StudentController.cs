@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TgModerator.Data.Entity;
-using TgModerator.Data.Repository.IRepository;
+using Admin.Data.Repository.Interfaces;
 
 namespace TgAdmin.Controllers
 {
@@ -17,18 +16,27 @@ namespace TgAdmin.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            
-            /*Student user1 = new Student { Name = "Tom" };
-            await _unitOfWork.Student.InsertAsync(user1);
-            _unitOfWork.Save();*/
-            var students = await _unitOfWork.Student.GetAsync();
+            var students = _unitOfWork.StudentRepository.GetWithInclude(s => s.Subscription);
+            return Ok(students);
+        }
+        [HttpGet]
+        [Route("/short")]
+        public async Task<IActionResult> IndexTest()
+        {
+            var students = await _unitOfWork.StudentRepository.GetAllAsync();
             return Ok(students);
         }
 
-
-       
+        [HttpGet]
+        [Route("/subs")]
+        public async Task<IActionResult> IndexSubs()
+        {
+            var subscriptions = await _unitOfWork.SubscriptionRepository.GetAllAsync();
+            return Ok(subscriptions);
+        }
     }
 }

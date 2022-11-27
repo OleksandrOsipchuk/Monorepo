@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace TgModerator.Migrations
+namespace Admin.Migrations
 {
     /// <inheritdoc />
-    public partial class StudentAddedNewFieldV3 : Migration
+    public partial class AddedDefaultValueSubscriptionV2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

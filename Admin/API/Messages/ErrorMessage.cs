@@ -1,7 +1,7 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace Admin.API.Controllers
+namespace Admin.API.Messages
 {
     public class ErrorMessage
     {

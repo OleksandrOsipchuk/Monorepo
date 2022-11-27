@@ -1,23 +1,42 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-using TgModerator.Data.Repository.IRepository;
+﻿using Admin.Data.Repository.Interfaces;
 
-namespace TgModerator.Data.Repository
+namespace Admin.Data.Repository
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        private readonly StudentContext _context;
-
-        public UnitOfWork(StudentContext context)
+        private readonly AppDbContext _context;
+        public StudentRepository StudentRepository { get; set; }
+        public SubscriptionRepository SubscriptionRepository { get; set; }
+        public UnitOfWork(AppDbContext context)
         {
             _context = context;
-            Student = new StudentRepository(_context);
+            StudentRepository = new StudentRepository(_context);
+            SubscriptionRepository = new SubscriptionRepository(_context);
         }
-
-        public StudentRepository Student { get; set; }
 
         public void Save()
         {
             _context.SaveChanges();
+        }
+
+        private bool disposed = false;
+
+        public virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    _context.Dispose();
+                }
+                this.disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

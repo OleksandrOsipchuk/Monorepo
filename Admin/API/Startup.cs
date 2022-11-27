@@ -1,15 +1,13 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using TgModerator.Data.Repository;
-using TgModerator.Data.Repository.IRepository;
+using Admin.Data.Repository;
+using Admin.Data.Repository.Interfaces;
 
 namespace TgAdmin
 {
     public class Startup
     {
-
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -19,20 +17,23 @@ namespace TgAdmin
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // Takes config from file
             var ConfigBuilder = new ConfigurationBuilder();
             ConfigBuilder.SetBasePath(Directory.GetCurrentDirectory());
-            // получаем конфигурацию из файла appsettings.json
             ConfigBuilder.AddJsonFile("appsettings.json");
-            // создаем конфигурацию
             var config = ConfigBuilder.Build();
-            // получаем строку подключения
-            string connectionString = config.GetConnectionString("DefaultConnection");
-            var optionsBuilder = new DbContextOptionsBuilder<StudentContext>();
+            string ConnectionString = config.GetConnectionString("DefaultConnection");
+            var OptionsBuilder = new DbContextOptionsBuilder<DbContext>();
 
-            services.AddDbContext<StudentContext>(options => options.UseNpgsql(connectionString));
+            string TelegramApiKey = config.GetConnectionString("TelegramApiKey");
+            services.AddDbContext<AppDbContext>(options => options.UseNpgsql(ConnectionString));
             services.AddSwaggerGen();
-            services.AddControllers().AddNewtonsoftJson();
-            
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+            //services.AddScoped<IStudentRepository, StudentRepository>();
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 

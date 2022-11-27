@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using TgAdmin;
-using TgModerator.Data.Repository;
+using Admin.Data.Repository;
 
 public class Program
 {

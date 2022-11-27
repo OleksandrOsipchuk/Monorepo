@@ -1,32 +1,36 @@
 ﻿using System.Collections.Generic;
 using System.Reflection.Metadata;
+using Admin.Data.Entity;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot.Types;
-using TgModerator.Data.Entity;
 
-namespace TgModerator.Data.Repository
+namespace Admin.Data.Repository
 {
-    public class StudentContext : DbContext
+    public class AppDbContext : DbContext
     {
         public DbSet<Student> Students { get; set; }
+        public DbSet<Subscription> Subscriptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //Write Fluent API configurations here
 
             //Property Configurations
             modelBuilder.Entity<Student>()
-                    .Property(u => u.Id)
+                    .Property(s => s.Id)
                     .HasColumnName("Id")
                     .ValueGeneratedOnAdd()
                     .IsRequired();
+            
             modelBuilder.Entity<Student>()
-                    .Property(u => u.SubscriptionUntil)
-                    .HasDefaultValue(DateTime.MinValue);
+                    .HasOne(s => s.Subscription).WithOne(subs => subs.Student)
+                    .HasForeignKey<Subscription>(subs => subs.StudentForeignKey);
 
-    }
+            modelBuilder.Entity<Subscription>()
+                    .Property(s => s.IsExpired)
+                    .HasDefaultValue(true);
+        }
 
-        public StudentContext(DbContextOptions<StudentContext> options)
+        public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
             Database.EnsureCreated();

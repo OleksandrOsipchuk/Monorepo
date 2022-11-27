@@ -1,19 +1,32 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TgModerator.Data.Entity;
-using TgModerator.Data.Repository.IRepository;
+﻿using Admin.Data.Entity;
+using Microsoft.EntityFrameworkCore;
+using Admin.Data.Repository.Interfaces;
 
-namespace TgModerator.Data.Repository
+namespace Admin.Data.Repository
 {
-    public class StudentRepository : IStudentRepository, IDisposable
+    public class StudentRepository : GenericRepository<Student>, IStudentRepository
     {
-        private readonly StudentContext _context;
+        private readonly AppDbContext _context;
 
-        public StudentRepository(StudentContext context)
+        public StudentRepository(AppDbContext dbContext)
+            : base(dbContext)
         {
-            _context = context;
+            _context = dbContext;
         }
 
-        public async Task<IEnumerable<Student>> GetAsync()
+        public async Task<Student> GetByTelegramIdAsync(long TelegramIdIn)
+        {
+            return await _context.Students.Where(b => b.TelegramId == TelegramIdIn).FirstOrDefaultAsync<Student>();
+        }
+
+
+
+        /*public async Task<IEnumerable<Student>> GetAsync()
+        {
+            var students = _context.Students.Include(s => s.Subscription);
+            return students;
+        }
+        public async Task<IEnumerable<Student>> GetAsyncTest()
         {
             var students = _context.Students.OrderBy(s => s.Id);
             return students;
@@ -77,5 +90,6 @@ namespace TgModerator.Data.Repository
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+    } */
     }
 }
