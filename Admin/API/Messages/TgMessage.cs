@@ -35,6 +35,25 @@ namespace Admin.API.Messages
             return false;
         }
 
+        public async Task<bool> SendError()
+        {
+            switch (_update.Type)
+            {
+                case Telegram.Bot.Types.Enums.UpdateType.Message:
+                    await _TgClient.SendTextMessageAsync(
+                    chatId: _update.Message.From.Id,
+                    text: "Something went wrong!");
+                    return true;
+
+                case Telegram.Bot.Types.Enums.UpdateType.CallbackQuery:
+                    await _TgClient.SendTextMessageAsync(
+                   chatId: _update.CallbackQuery.From.Id,
+                   text: "Something went wrong!");
+                    return true;
+            }
+            return false;
+        }
+
         public async Task<bool> SendWithReplyMarkupAsync(string text, InlineKeyboardMarkup InlineKeyboard)
         {
             switch (_update.Type)
