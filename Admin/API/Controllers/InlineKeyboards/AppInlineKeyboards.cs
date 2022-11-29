@@ -33,9 +33,9 @@ namespace Admin.API.Controllers.InlineKeyboards
         },
         new []
         {
-            InlineKeyboardButton.WithCallbackData(text: "MentionStudentsAsync level 1", callbackData: "/mention level_ 1"),
-            InlineKeyboardButton.WithCallbackData(text: "MentionStudentsAsync level 2", callbackData: "/mention level_ 2"),
-            InlineKeyboardButton.WithCallbackData(text: "MentionStudentsAsync all students", callbackData: "/mention all_"),
+            InlineKeyboardButton.WithCallbackData(text: "Mention level 1", callbackData: "/mention level_ 1"),
+            InlineKeyboardButton.WithCallbackData(text: "Mention level 2", callbackData: "/mention level_ 2"),
+            InlineKeyboardButton.WithCallbackData(text: "Mention all students", callbackData: "/mention all_"),
         },
         new []
         {
@@ -44,7 +44,7 @@ namespace Admin.API.Controllers.InlineKeyboards
         },
     });
         }
-        public InlineKeyboardMarkup GenerateStudentsListKeyboard(IEnumerable<Student> Students)
+        public InlineKeyboardMarkup GenerateStudentsListKeyboard(IEnumerable<Student> Students, string CallBackTag)
         {
             List<String> StudentNames = new List<string>();
             List<InlineKeyboardButton> buttons = new List<InlineKeyboardButton>();
@@ -52,7 +52,7 @@ namespace Admin.API.Controllers.InlineKeyboards
             {
                 StudentNames.Add(s.Name);
                 InlineKeyboardButton StudentButton = InlineKeyboardButton
-                    .WithCallbackData(text: $"{s.Name}", callbackData: $"{s.TelegramId} student_");
+                    .WithCallbackData(text: $"{s.Name}", callbackData: $"{s.TelegramId} {CallBackTag}_");
                 buttons.Add(StudentButton);
             }
             InlineKeyboardMarkup InlineKeyboardStudentsList = new InlineKeyboardMarkup(buttons);

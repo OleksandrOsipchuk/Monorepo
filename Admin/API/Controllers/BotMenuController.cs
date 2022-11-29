@@ -33,14 +33,16 @@ namespace TgModerator.API.Controllers
         [HttpPost]
         public async Task <IActionResult> Post([FromBody] Update update)
         {
-            
+            Console.WriteLine($"Stage: {UserStage}");
             Telegram.Bot.Types.Enums.UpdateType UpdateType = update.Type;
             Student User = new Student();
             TgMessage Msg = new TgMessage(_TgClient, update);
 
+
             // Case if update is received as message
             if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message) 
             {
+
                 var Message = update.Message;
                 User = await _unitOfWork.StudentRepository.GetByTelegramIdAsync(Message.From.Id);
 
@@ -48,26 +50,28 @@ namespace TgModerator.API.Controllers
                     user: User,
                     tgMessage: Msg,
                     update: update,
-                    unitOfWork: _unitOfWork
+                    unitOfWork: _unitOfWork,
+                    userStage: UserStage
                     );
+
+                // Starting command
+                if (Message.Text == "/start")
+                {
+                    UserStage = "default";
+                    await TgMethods.Start();
+                }
+
+                if (UserStage != null && UserStage.Contains("SubscriptionRenewal_"))
+                {
+                    string NewStage = await TgMethods.RenewSubAsync();
+                    if (NewStage != UserStage) UserStage = NewStage;
+                }
 
                 // Case if message came from group
                 if (Message.Chat.Type == Telegram.Bot.Types.Enums.ChatType.Group && Message.Text == "/registergroup")
                 {
                     GroupId = await TgMethods.RegisterGroupAsync();
                     return Ok();
-                }
-
-                // Starting command
-                if (Message.Text == "/start")
-                {
-                    await TgMethods.Start();
-                }
-
-                // Subscription renewal (ADMIN ONLY)
-                if (User != null && User.isAdmin && Message.Text.Contains("/renew"))
-                {
-                    await TgMethods.RenewSubscriptionAsync();
                 }
 
                 // User registration
@@ -105,7 +109,8 @@ namespace TgModerator.API.Controllers
                     user: User,
                     tgMessage: Msg,
                     update: update,
-                    unitOfWork: _unitOfWork
+                    unitOfWork: _unitOfWork,
+                    userStage: UserStage
                     );
 
                 // Check if user can take access to callback actions (He does, if he is registered)
@@ -162,11 +167,14 @@ namespace TgModerator.API.Controllers
                     await TgMethods.ListAllSudents();
                 }
                 
-                if (update.CallbackQuery.Data == "/renew_")
+                // Renew user's subscription by admin
+                if (update.CallbackQuery.Data == "/renew_" ^ update.CallbackQuery.Data.Contains("renewal_"))
                 {
-                    TgMethods.HowToRenew();
+                    TgMethods.userStage = await TgMethods.RenewSubAsync();
+                    UserStage = TgMethods.userStage;
                 }
-            }`
+
+            }
             return Ok();
         }
     }

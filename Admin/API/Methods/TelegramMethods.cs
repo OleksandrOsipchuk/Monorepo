@@ -15,17 +15,19 @@ namespace Admin.API.Methods
         private readonly TgMessage _message;
         private readonly Update _update;
         private readonly UnitOfWork _unitOfWork;
+        public string userStage;
 
         public static AppInlineKeyboards InlineKeyboards = new AppInlineKeyboards();
         public InlineKeyboardMarkup InlineKeyboardMenu = InlineKeyboards.InlineKeyboardMenu;
         public InlineKeyboardMarkup InlineKeyboardManageMenu = InlineKeyboards.InlineKeyboardManageMenu;
 
-        public TelegramMethods(Student user, TgMessage tgMessage, Update update, UnitOfWork unitOfWork)
+        public TelegramMethods(Student user, TgMessage tgMessage, Update update, UnitOfWork unitOfWork, string userStage)
         {
             this.user = user;
             _message = tgMessage;
             _update = update;
             _unitOfWork = unitOfWork;
+            this.userStage = userStage;
         }
 
         // TODO: change type to Task<bool> and fix GroupId save to JSON
@@ -50,79 +52,60 @@ namespace Admin.API.Methods
             return true;
         }
 
-        public async Task<bool> RenewSubscriptionAsync()
+        public async Task<string> RenewSubAsync()
         {
-            string[] TextArray = _update.Message.Text.Split(" ");
-            string RenewalType = TextArray[1];
-            long UserTelegramId = Int32.Parse(TextArray[2]);
-            string InputDate = TextArray[3];
-            DateTime DateTimeNow = DateTime.Now;
-            Message sentMessage;
-            Student UserToUpdate = await _unitOfWork.StudentRepository.GetByTelegramIdAsync(UserTelegramId);
-            if (UserToUpdate == null)
+            if (userStage ==  null ^ userStage == "default")
             {
-                await _message.SendError();
-                return true;
+                userStage = "SubscriptionRenewal_1_0";
             }
-            if (RenewalType.Equals("0"))
+            if (userStage.Split("_")[0] == "SubscriptionRenewal")
             {
-                Subscription UserSubscription = await _unitOfWork.SubscriptionRepository.GetByStudentIdAsync(UserToUpdate.Id);
-                if (UserSubscription.ExpirationDate == DateTime.MinValue)
+                int SubscriptionRenewalStage = Int32.Parse(userStage.Split("_")[1]);
+                long UserToUpdateTgId = Int64.Parse(userStage.Split("_")[2]);
+                switch (SubscriptionRenewalStage)
                 {
-                    try
-                    {
-                        UserSubscription.ExpirationDate = DateTimeNow.Date.AddMonths(Int32.Parse(InputDate));
-
-                        if (UserSubscription.ExpirationDate > DateTime.Now)
+                    case 1:
+                        await _message.SendWithReplyMarkupAsync(text: "Choose student to renew subscription",
+                        InlineKeyboard: await GenerateStudentsListKeyboardAsync("renewal"));
+                            return $"SubscriptionRenewal_{SubscriptionRenewalStage + 1}_0";
+                    case 2:
+                        long StudentTgId = Int64.Parse(_update.CallbackQuery.Data.Split(" ")[0]);
+                        await _message.SendAsync(text: "Enter date to set as an expiration date.");
+                        return $"SubscriptionRenewal_{SubscriptionRenewalStage + 1}_{StudentTgId}";
+                    case 3:
+                        if (UserToUpdateTgId == 0)
                         {
-                            UserSubscription.IsExpired = false;
+                            await _message.SendErrorAsync();
+                            return (userStage);
                         }
-                    }
-                    catch { return true; }
-                }
-                else
-                {
-                    try
-                    {
-                        UserSubscription.ExpirationDate = UserSubscription.ExpirationDate.AddMonths(Int32.Parse(InputDate));
-
-                        if (UserSubscription.ExpirationDate > DateTime.Now)
+                        Student UserToUpdate = await _unitOfWork
+                            .StudentRepository.GetByTelegramIdAsync(UserToUpdateTgId);
+                        DateTime InputDate = DateTime.Now;
+                        try { InputDate = DateTime.Parse(_update.Message.Text); } 
+                        catch { 
+                            await _message.SendErrorAsync();
+                            return userStage;
+                        }
+                        if (UserToUpdate == null)
                         {
-                            UserSubscription.IsExpired = false;
+                            await _message.SendErrorAsync();
                         }
-                    }
-                    catch
-                    {
-                        await _message.SendError();
-                        return true;
-                    }
+                        else
+                        {
+                            Subscription UserSubscription = await _unitOfWork
+                                .SubscriptionRepository.GetByStudentIdAsync(UserToUpdate.Id);
+                            UserSubscription.ExpirationDate = InputDate;
+                            if (InputDate >= DateTime.Now) UserSubscription.IsExpired = false;
+                            _unitOfWork.Save();
+
+                            await _message.SendAsync($"You successfully renewed susbcription for " +
+                                $"user {UserToUpdate.Name}\n" + UserToUpdate.GetInfo(UserSubscription));
+                            return "default";
+                        }
+                        break;
                 }
             }
-            else if (RenewalType.Equals("1"))
-            {
-                try
-                {
-                    Subscription UserSubscription = await _unitOfWork.SubscriptionRepository.GetByStudentIdAsync(UserToUpdate.Id);
-                    UserSubscription.ExpirationDate = DateTime.Parse(InputDate);
-                    if (UserSubscription.ExpirationDate > DateTime.Now)
-                    {
-                        UserSubscription.IsExpired = false;
-                    }
-                    _unitOfWork.Save();
-                }
-                catch
-                {
-                    await _message.SendError();
-                    return true;
-                }
-
-            }
-            _unitOfWork.StudentRepository.UpdateAsync(UserToUpdate);
-            _unitOfWork.Save();
-
-            string TextToSend = $"User {UserToUpdate.Name} DateTimeNow has subscription until:\n{UserToUpdate.Subscription.ExpirationDate}";
-            await _message.SendAsync(text: TextToSend);
-            return true;
+            return "default";
         }
 
         public async Task<bool> RegisterUser()
@@ -171,7 +154,7 @@ namespace Admin.API.Methods
                 }
                 catch 
                 {
-                    await _message.SendError();
+                    await _message.SendErrorAsync();
                     return false;
                 }
             }
@@ -186,7 +169,7 @@ namespace Admin.API.Methods
                 int NewLevel = Int32.Parse(TextArray[2]);
                 if (NewLevel != 1 && NewLevel != 2)
                 {
-                    await _message.SendError();
+                    await _message.SendErrorAsync();
                     return true; 
                 }
                 Student UserToUpdate = await _unitOfWork.StudentRepository.GetByTelegramIdAsync(UserTelegramId);
@@ -219,10 +202,10 @@ namespace Admin.API.Methods
             }
             return true;
         }
-        public async Task<InlineKeyboardMarkup> GenerateStudentsListKeyboardAsync()
+        public async Task<InlineKeyboardMarkup> GenerateStudentsListKeyboardAsync(string CallBackTag)
         {
             IEnumerable<Student> Students = await _unitOfWork.StudentRepository.GetAllAsync();
-            InlineKeyboardMarkup StudentsListInlineKeyboard = InlineKeyboards.GenerateStudentsListKeyboard(Students);
+            InlineKeyboardMarkup StudentsListInlineKeyboard = InlineKeyboards.GenerateStudentsListKeyboard(Students, CallBackTag);
             return StudentsListInlineKeyboard;
         }
 
@@ -293,7 +276,7 @@ namespace Admin.API.Methods
             if (user.isAdmin)
             {
                 await _message.SendWithReplyMarkupAsync(text: "Choose student to check",
-                    InlineKeyboard: await GenerateStudentsListKeyboardAsync());
+                    InlineKeyboard: await GenerateStudentsListKeyboardAsync("student"));
                 return true;
             }
             //If user is not admin, print info about him
@@ -367,7 +350,7 @@ namespace Admin.API.Methods
             }
             else
             {
-                await _message.SendError();
+                await _message.SendErrorAsync();
                 return false;
             }
         }

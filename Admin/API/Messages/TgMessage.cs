@@ -35,7 +35,7 @@ namespace Admin.API.Messages
             return false;
         }
 
-        public async Task<bool> SendError()
+        public async Task<bool> SendErrorAsync()
         {
             switch (_update.Type)
             {
