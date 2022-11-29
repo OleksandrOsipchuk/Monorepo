@@ -42,7 +42,6 @@ namespace TgModerator.API.Controllers
             // Case if update is received as message
             if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message) 
             {
-
                 var Message = update.Message;
                 User = await _unitOfWork.StudentRepository.GetByTelegramIdAsync(Message.From.Id);
 
@@ -59,11 +58,20 @@ namespace TgModerator.API.Controllers
                 {
                     UserStage = "default";
                     await TgMethods.Start();
+                    return Ok();
                 }
-
+                
+                // For Subscription renewal
                 if (UserStage != null && UserStage.Contains("SubscriptionRenewal_"))
                 {
                     string NewStage = await TgMethods.RenewSubAsync();
+                    if (NewStage != UserStage) UserStage = NewStage;
+                }
+
+                // For User Registration
+                if (UserStage != null && UserStage.Contains("UserRegistration_"))
+                {
+                    string NewStage = await TgMethods.RegisterUserAsync();
                     if (NewStage != UserStage) UserStage = NewStage;
                 }
 
@@ -72,12 +80,6 @@ namespace TgModerator.API.Controllers
                 {
                     GroupId = await TgMethods.RegisterGroupAsync();
                     return Ok();
-                }
-
-                // User registration
-                if (update.Message.Text.Contains("/reg"))
-                {
-                    await TgMethods.RegisterUser();
                 }
 
                 // Set level for user (ADMIN ONLY)
@@ -113,17 +115,16 @@ namespace TgModerator.API.Controllers
                     userStage: UserStage
                     );
 
-                // Check if user can take access to callback actions (He does, if he is registered)
-                bool IsAccessed = await TgMethods.CheckUsersAccessToCallbackAsync();
-                if (!IsAccessed) return Ok();
 
-                
                 // Register from CallBack
                 if (update.CallbackQuery.Data == "/register_")
                 {
-                    bool isRegistered = await TgMethods.CheckUsersRegistrationAsync();
-                    if (!isRegistered) return Ok();
+                    TgMethods.userStage = await TgMethods.RegisterUserAsync();
+                    UserStage = TgMethods.userStage;
                 }
+                // Check if user can take access to callback actions (He does, if he is registered)
+                bool IsAccessed = await TgMethods.CheckUsersAccessToCallbackAsync();
+                if (!IsAccessed) return Ok();
 
                 // MentionStudentsAsync function (ADMIN ONLY)
                 if (update.CallbackQuery.Data.Contains("/mention"))
@@ -133,6 +134,7 @@ namespace TgModerator.API.Controllers
                 // Back to /start menu
                 if (update.CallbackQuery.Data == "/return_")
                 {
+                    UserStage = "default";
                     TgMethods.ReturnToStartKeyboardAsync();
                 }
 
@@ -140,7 +142,6 @@ namespace TgModerator.API.Controllers
                 if (update.CallbackQuery.Data.Contains("student_"))
                 {
                     await TgMethods.PrintInfoAboutStudentAsync();
-                    
                 }
 
                 // Subscription check 
@@ -173,10 +174,8 @@ namespace TgModerator.API.Controllers
                     TgMethods.userStage = await TgMethods.RenewSubAsync();
                     UserStage = TgMethods.userStage;
                 }
-
             }
             return Ok();
         }
     }
-
 }

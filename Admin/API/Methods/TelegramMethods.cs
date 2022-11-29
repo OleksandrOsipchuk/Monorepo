@@ -108,56 +108,105 @@ namespace Admin.API.Methods
             return "default";
         }
 
-        public async Task<bool> RegisterUser()
+        public async Task<string> RegisterUserAsync()
         {
-            if (user == null)
+            if (userStage == null ^ userStage == "default")
             {
-                user = new Student();
-                Subscription UserSubscription = new Subscription();
-                UserSubscription.StudentForeignKey = user.Id;
-
-                _unitOfWork.StudentRepository.InsertAsync(user);
-                _unitOfWork.Save();
+                userStage = "UserRegistration_1";
                 
-            }
-
-            if (user.isRegistered)
-            {
-                await _message.SendAsync(text: "You are already registered.");
-                return true;
-            }
-            else
-            {
-                try
+                if (_update.Type == Telegram.Bot.Types.Enums.UpdateType.CallbackQuery)
                 {
-                    string[] TextArray = _update.Message.Text.Split(" ");
-
-                    user.Name = TextArray[1];
-                    user.Surname = TextArray[2];
-                    user.Occupation = TextArray[3];
-                    user.GithubLink = TextArray[4];
-                    user.TelegramId = _update.Message.From.Id;
-                    user.TelegramUserName = _update.Message.From.Username;
-                    user.isRegistered = true;
-                    user.StudentLevel = 0;
-
-                    Subscription UserSubscription = new Subscription();
-                    UserSubscription.ExpirationDate = DateTime.MinValue;
-                    UserSubscription.IsExpired = true;
-                    user.Subscription = UserSubscription;
-
-                    _unitOfWork.StudentRepository.UpdateAsync(user);
-                    _unitOfWork.Save();
-
-                    await _message.SendWithReplyMarkupAsync(text: "You have been succesfully registered!", InlineKeyboard: InlineKeyboardMenu);
-                    return true;
+                    if (user == null)
+                    {
+                        user = new Student();
+                        user.TelegramId = _update.CallbackQuery.From.Id;
+                        Subscription UserSubscription = new Subscription();
+                        UserSubscription.StudentForeignKey = user.Id;
+                        _unitOfWork.StudentRepository.InsertAsync(user);
+                        _unitOfWork.Save();
+                    } 
+                    if (user.isRegistered)
+                    {
+                        _message.SendAsync("You are already registered.");
+                        return "default";
+                    }
                 }
-                catch 
+
+            }
+            if (userStage.Split("_")[0] == "UserRegistration")
+            {
+                int UserRegistrationStage = Int32.Parse(userStage.Split("_")[1]);
+                switch (UserRegistrationStage)
                 {
-                    await _message.SendErrorAsync();
-                    return false;
+                    case 1:
+                        await _message.SendAsync(text: $"[STAGE {UserRegistrationStage}]" +
+                            $"\nEnter your name and surname:\n(Ex: Ivan Ivanov)");
+                        return $"UserRegistration_{UserRegistrationStage + 1}";
+                    case 2:
+                        string TextFromMessage = _update.Message.Text;
+                        string UserName = TextFromMessage.Split(" ")[0];
+                        string UserSurname = TextFromMessage.Split(" ")[1];
+                        await _message.SendAsync(text: $"[STAGE {UserRegistrationStage}]" +
+                            $"\nEnter your occupation: Student/Working" +
+                            $"\n(Choose one).");
+                        return $"UserRegistration_{UserRegistrationStage + 1}_" +
+                            $"{UserName}_{UserSurname}";
+                    case 3:
+                        UserName = userStage.Split("_")[2];
+                        UserSurname = userStage.Split("_")[3];
+                        string UserOccupation = _update.Message.Text;
+                        await _message.SendAsync(text: $"[STAGE {UserRegistrationStage}]" +
+                            "\nEnter link on your GitHub account:");
+                        return $"UserRegistration_{UserRegistrationStage + 1}_" +
+                            $"{UserName}_{UserSurname}_{UserOccupation}";
+                    case 4:
+                        UserName = userStage.Split("_")[2];
+                        UserSurname = userStage.Split("_")[3];
+                        UserOccupation = userStage.Split("_")[4];
+                        string UserGHLink = _update.Message.Text;
+                        await _message.SendAsync(text: $"[STAGE {UserRegistrationStage}]");
+                        
+                        Student UserToUpdate = await _unitOfWork
+                            .StudentRepository.GetByTelegramIdAsync(_update.Message.From.Id);
+                        if (UserToUpdate == null)
+                        {
+                            await _message.SendErrorAsync();
+                        }
+                        else
+                        {
+                            try
+                            {
+                                user.Name = UserName;
+                                user.Surname = UserSurname;
+                                user.Occupation = UserOccupation;
+                                user.GithubLink = UserGHLink;
+                                user.TelegramId = _update.Message.From.Id;
+                                user.TelegramUserName = _update.Message.From.Username;
+                                user.isRegistered = true;
+                                user.StudentLevel = 0;
+
+                                Subscription UserSubscription = new Subscription();
+                                UserSubscription.ExpirationDate = DateTime.MinValue;
+                                UserSubscription.IsExpired = true;
+                                user.Subscription = UserSubscription;
+
+                                _unitOfWork.StudentRepository.UpdateAsync(user);
+                                _unitOfWork.Save();
+
+                                await _message.SendWithReplyMarkupAsync(text: "You have been succesfully registered!", InlineKeyboard: InlineKeyboardMenu);
+                                return "default";
+                            }
+                            catch
+                            {
+                                await _message.SendErrorAsync();
+                                return "default";
+                            }
+                            _unitOfWork.Save();
+                        }
+                        break;
                 }
             }
+            return "default";
         }
 
         public async Task<bool> SetUserLevelAsync()
@@ -184,7 +233,14 @@ namespace Admin.API.Methods
         }
         public async Task<bool> CheckUsersAccessToCallbackAsync()
         {
-            if (user == null ^ !user.isRegistered)
+            if (user == null)
+            {
+                await _message.SendAsync(text: "Please, register in this system in such way:" +
+                "\n/reg {Name} {Surname} {Occupation (Student/Working)} {GitHub link}");
+
+                return false;
+            }
+            if (!user.isRegistered)
             {
                 await _message.SendAsync(text: "Please, register in this system in such way:" +
                 "\n/reg {Name} {Surname} {Occupation (Student/Working)} {GitHub link}");
