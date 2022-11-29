@@ -18,15 +18,16 @@ namespace Admin.Data.Entity
 
 
 
-        public string GetInfo()
+        public string GetInfo(Subscription UserSubscription)
         {
+            
             string text = $"\nId: {Id}\nName: {Name} {Surname} - {Occupation} - Level: {StudentLevel}" +
                 $"\nGithub Link: {GithubLink} \nTelegram Username: @{TelegramUserName}" +
                 $"\nTelegram Id: {TelegramId}";
 
-            if (Subscription != null && !(bool)Subscription.IsExpired)
+            if (UserSubscription != null && !(bool)UserSubscription.IsExpired)
             {
-                string SubscriptionExpirationDate = Subscription.ExpirationDate.ToString();
+                string SubscriptionExpirationDate = UserSubscription.ExpirationDate.ToString();
                 text += $"\nSubscription status: Active" +
                 $"\nExpiration Date: {SubscriptionExpirationDate}";
 
@@ -39,17 +40,17 @@ namespace Admin.Data.Entity
             return text;
         }
 
-        public string GetSubscriptionInfo()
+        public string GetSubscriptionInfo(Subscription UserSubscription)
         {
             string text = $"\nName: {Name} {Surname} - {Occupation} - Level: {StudentLevel}";
             
-            if (Subscription != null && !(bool)Subscription.IsExpired)
+            if (UserSubscription != null && !(bool)UserSubscription.IsExpired)
             {
-                string SubscriptionExpirationDate = Subscription.ExpirationDate.ToString();
+                string SubscriptionExpirationDate = UserSubscription.ExpirationDate.ToString();
                 text += $"\nSubscription status: Active" +
                 $"\nExpiration Date: {SubscriptionExpirationDate}";
             }
-            else if (Subscription != null && (bool)Subscription.IsExpired)
+            else if (UserSubscription != null && (bool)UserSubscription.IsExpired)
             {
                 text += $"\nSubscription status: Expired_Null";
             }

@@ -23,7 +23,7 @@ namespace TgModerator.API.Controllers
     [Route("api/bot")]
     public class BotMenuController : ControllerBase
     {
-        private static string _TelegramAPIKey = "5492109358:AAHzQpHb2PRz9KeLedC0Z59OHJehbhkdHeo";
+        private static string _TelegramAPIKey = "";
         public static long GroupId;
         public static AppInlineKeyboards InlineKeyboards = new AppInlineKeyboards();
         public InlineKeyboardMarkup InlineKeyboardMenu = InlineKeyboards.InlineKeyboardMenu;
@@ -43,18 +43,22 @@ namespace TgModerator.API.Controllers
            
             Telegram.Bot.Types.Enums.UpdateType UpdateType = update.Type;
             Student User = new Student();
+            TgMessage Msg = new TgMessage(_TgClient, update);
+            ErrorMessage ErrMsg = new ErrorMessage(_TgClient, update);
+            
 
             // Case if update is received as message
             if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message) 
             {
-                User = await _unitOfWork.StudentRepository.GetByTelegramIdAsync(update.Message.From.Id);
+                var Message = update.Message;
+                User = await _unitOfWork.StudentRepository.GetByTelegramIdAsync(Message.From.Id);
 
                 // Case if message came from chat
-                if (update.Message.Chat.Type == Telegram.Bot.Types.Enums.ChatType.Group && update.Message.Text == "/registergroup")
+                if (Message.Chat.Type == Telegram.Bot.Types.Enums.ChatType.Group && Message.Text == "/registergroup")
                 {
                     if (User.isAdmin)
                     {
-                        GroupId = update.Message.Chat.Id;
+                        GroupId = Message.Chat.Id;
                         JsonData Data = new JsonData("MainGroupId", GroupId);
                         string jsonString = System.Text.Json.JsonSerializer.Serialize(Data);
 
@@ -64,32 +68,33 @@ namespace TgModerator.API.Controllers
                         await System.Text.Json.JsonSerializer.SerializeAsync(createStream, Data);
                         await createStream.DisposeAsync();
 
-                        Message sentMessage = await _TgClient.SendTextMessageAsync(
-                            chatId: update.Message.Chat.Id,
-                            text: "You have registered this group as main group.");
+                        await Msg.SendAsync("You have registered this group as main group.");
+
+                        /*Message sentMessage = await _TgClient.SendTextMessageAsync(
+                            chatId: Message.Chat.Id,
+                            text: "You have registered this group as main group.");*/
                     }
                     else
                     {
-                        Message sentMessage = await _TgClient.SendTextMessageAsync(
-                            chatId: update.Message.Chat.Id,
-                            text: "You must be admin.");
+                        await Msg.SendAsync("You must be admin.");
+
+                        /*Message sentMessage = await _TgClient.SendTextMessageAsync(
+                            chatId: Message.Chat.Id,
+                            text: "You must be admin."); */
                     }
                     return Ok();
                 }
 
                 // Starting command
-                if (update.Message.Text == "/start")
+                if (Message.Text == "/start")
                 {
-                    Message sentMessage = await _TgClient.SendTextMessageAsync(
-                        chatId: update.Message.From.Id,
-                        text: "Welcome to the ItSadok Moderation bot!",
-                        replyMarkup: InlineKeyboardMenu);
+                    await Msg.SendWithReplyMarkupAsync("Welcome to the ItSadok Moderation bot!", InlineKeyboardMenu);
                 }
 
                 // Subscription renewal (ADMIN ONLY)
-                if (User != null && User.isAdmin && update.Message.Text.Contains("/renew"))
+                if (User != null && User.isAdmin && Message.Text.Contains("/renew"))
                 {
-                    string[] TextArray = update.Message.Text.Split(" ");
+                    string[] TextArray = Message.Text.Split(" ");
                     string RenewalType = TextArray[1];
                     long UserTelegramId = Int32.Parse(TextArray[2]);
                     string InputDate = TextArray[3];
@@ -98,7 +103,7 @@ namespace TgModerator.API.Controllers
                     Student UserToUpdate = await _unitOfWork.StudentRepository.GetByTelegramIdAsync(UserTelegramId);
                     if (UserToUpdate == null)
                     {
-                        await ErrorMessage.Send(_TgClient, update);
+                        await ErrMsg.SendError();
                         return Ok();
                     }
                     if (RenewalType.Equals("0"))
@@ -130,7 +135,7 @@ namespace TgModerator.API.Controllers
                             }
                             catch
                             {
-                                await ErrorMessage.Send(_TgClient, update);
+                                await ErrMsg.SendError();
                                 return Ok();
                             }
                         }
@@ -149,16 +154,17 @@ namespace TgModerator.API.Controllers
                         }
                         catch
                         {
-                            await ErrorMessage.Send(_TgClient, update);
+                            await ErrMsg.SendError();
                             return Ok();
                         }
 
                     }
                     _unitOfWork.StudentRepository.UpdateAsync(UserToUpdate);
                     _unitOfWork.Save();
-                    sentMessage = await _TgClient.SendTextMessageAsync(
-                            chatId: update.Message.From.Id,
-                            text: $"User {UserToUpdate.Name} DateTimeNow has subscription until:\n{UserToUpdate.Subscription.ExpirationDate}");
+
+                    string TextToSend = $"User {UserToUpdate.Name} DateTimeNow has subscription until:\n{UserToUpdate.Subscription.ExpirationDate}";
+                    await Msg.SendAsync(text: TextToSend);
+                    
                 }
 
                 // User registration
@@ -176,9 +182,7 @@ namespace TgModerator.API.Controllers
 
                     if (User.isRegistered)
                     {
-                        Message sentMessage = await _TgClient.SendTextMessageAsync(
-                            chatId: update.Message.From.Id,
-                            text: "You are already registered.");
+                        await Msg.SendAsync(text: "You are already registered.");
                     }
                     else
                     {
@@ -190,8 +194,8 @@ namespace TgModerator.API.Controllers
                             User.Surname = TextArray[2];
                             User.Occupation = TextArray[3];
                             User.GithubLink = TextArray[4];
-                            User.TelegramId = update.Message.From.Id;
-                            User.TelegramUserName = update.Message.From.Username;
+                            User.TelegramId = Message.From.Id;
+                            User.TelegramUserName = Message.From.Username;
                             User.isRegistered = true;
                             User.StudentLevel = 0;
 
@@ -203,16 +207,12 @@ namespace TgModerator.API.Controllers
                             _unitOfWork.StudentRepository.UpdateAsync(User);
                             _unitOfWork.Save();
 
-                            Message sentMessage = await _TgClient.SendTextMessageAsync(
-                            chatId: update.Message.From.Id,
-                            text: "You have been succesfully registered!",
-                            replyMarkup: InlineKeyboardMenu);
+                            await Msg.SendWithReplyMarkupAsync(text: "You have been succesfully registered!", InlineKeyboard: InlineKeyboardMenu);
+                            
                         }
                         catch (Exception ex)
                         {
-                            Message sentMessage = await _TgClient.SendTextMessageAsync(
-                                chatId: update.Message.From.Id,
-                                text: ex.Message);
+                            await ErrMsg.SendError();
                             throw;
                         }
                     }
@@ -228,20 +228,19 @@ namespace TgModerator.API.Controllers
                         int NewLevel = Int32.Parse(TextArray[2]);
                         if (NewLevel != 1 && NewLevel != 2)
                         {
-                            await ErrorMessage.Send(_TgClient, update);
+                            await ErrMsg.SendError();
                             return Ok();
                         }
                         Student UserToUpdate = await _unitOfWork.StudentRepository.GetByTelegramIdAsync(UserTelegramId);
                         UserToUpdate.StudentLevel = NewLevel;
                         _unitOfWork.StudentRepository.UpdateAsync(UserToUpdate);
                         _unitOfWork.Save();
-                        Message sentMessage = await _TgClient.SendTextMessageAsync(
-                                chatId: update.Message.From.Id,
-                                text: $"Updated!\nName: {UserToUpdate.Name}\nLevel: {UserToUpdate.StudentLevel}");
+
+                        await Msg.SendAsync(text: $"Updated!\nName: {UserToUpdate.Name}\nLevel: {UserToUpdate.StudentLevel}");
+                        
                     }
                 }
 
-                //
             }
 
             // Case if update is received as callback
@@ -251,10 +250,8 @@ namespace TgModerator.API.Controllers
 
                 // Check if user can take access to callback actions (He does, if he is registered)
                 if (User == null ^ !User.isRegistered)
-                { 
-                    Message sentMessage = await _TgClient.SendTextMessageAsync(
-                    chatId: update.CallbackQuery.From.Id,
-                    text: "Please, register in this system in such way:" +
+                {
+                    await Msg.SendAsync(text: "Please, register in this system in such way:" +
                     "\n/reg {Name} {Surname} {Occupation (Student/Working)} {GitHub link}");
                     
                     return Ok();
@@ -263,12 +260,10 @@ namespace TgModerator.API.Controllers
                 // Register from CallBack
                 if (update.CallbackQuery.Data.ToString() == "/register_")
                 {
-                    Message sentMessage = await _TgClient.SendTextMessageAsync(
-                            chatId: update.CallbackQuery.From.Id,
-                            text: "You are already registered.");
+                    await Msg.SendAsync(text: "You are already registered.");
                 }
 
-                // Transfer to appinlinekeyboards
+                // TODO: Transfer this to appinlinekeyboards
                 var Students = await _unitOfWork.StudentRepository.GetAllAsync();
                 List<String> StudentNames = new List<string>();
                 List<InlineKeyboardButton> buttons = new List<InlineKeyboardButton>();
@@ -295,32 +290,29 @@ namespace TgModerator.API.Controllers
                         foreach (Student s in students) 
                             TelegramTags.Add("@" + s.TelegramUserName);
                         string Tags = string.Join(", ", TelegramTags);
-                        Message sentMessage = await _TgClient.SendTextMessageAsync(
-                                chatId: GroupId,
-                                text: $"Alert!\n" +
+
+                        await Msg.SendAsync($"Alert!\n" +
                                 $"{Tags}");
                     }
 
                     // Mention all
                     else if (update.CallbackQuery.Data.Contains("all_"))
                     {
+                        // TODO: Transfer this to appinlinekeyboards
+
                         List<String> TelegramTags = new List<string>();
                         foreach (Student s in Students)
                             TelegramTags.Add("@" + s.TelegramUserName);
                         string Tags = string.Join(", ", TelegramTags);
-                        Message sentMessage = await _TgClient.SendTextMessageAsync(
-                                chatId: GroupId,
-                                text: $"Alert!\n" +
+
+                        await Msg.SendAsync($"Alert!\n" +
                                 $"{Tags}");
                     }
                 }
                 // Back to /start menu
                 if (update.CallbackQuery.Data == "/return_")
                 {
-                    Message sentMessage = await _TgClient.EditMessageReplyMarkupAsync(
-                        chatId: update.CallbackQuery.From.Id,
-                        messageId: update.CallbackQuery.Message.MessageId,
-                        replyMarkup: InlineKeyboardMenu);
+                    await Msg.EditMessageReplyMarkupAsync(InlineKeyboard: InlineKeyboardMenu);
                 }
 
                 // Get info about chosen student (ADMIN ONLY)
@@ -328,10 +320,11 @@ namespace TgModerator.API.Controllers
                 {
                     long UserTelegramId = Int64.Parse(update.CallbackQuery.Data.Split(" ")[0]);
                     Student UserAbout = await _unitOfWork.StudentRepository.GetByTelegramIdAsync(UserTelegramId);
-                    string UserInfo = UserAbout.GetSubscriptionInfo();
-                    Message sentMessage = await _TgClient.SendTextMessageAsync(
-                            chatId: update.CallbackQuery.From.Id,
-                            text: UserInfo);
+                    Subscription UserSubscription = await _unitOfWork.SubscriptionRepository.GetByStudentIdAsync(UserAbout.Id);
+                    string UserInfo = UserAbout.GetSubscriptionInfo(UserSubscription);
+
+                    await Msg.SendAsync(text: UserInfo);
+                    
                 }
 
                 // Subscription check 
@@ -339,28 +332,26 @@ namespace TgModerator.API.Controllers
                 {
                     if (User == null)
                     {
-                        Message sentMessage = await _TgClient.SendTextMessageAsync(
-                            chatId: update.CallbackQuery.From.Id,
-                            text: "You must register first!");
+                        await Msg.SendAsync(text: "You must register first!");
+                        
                         return Ok();
                     }
+
+                    Subscription UserSubscription = await _unitOfWork.SubscriptionRepository.GetByStudentIdAsync(User.Id);
 
                     // If user is admin, print keyboard with all student to choose by click
                     if (User.isAdmin)
                     {
-                        Message sentMessage = await _TgClient.SendTextMessageAsync(
-                            chatId: update.CallbackQuery.From.Id,
-                            text: "Check",
-                            replyMarkup: InlineKeyboardStudentsList);
+                        await Msg.SendWithReplyMarkupAsync(text: "Choose student to check",
+                            InlineKeyboard: InlineKeyboardStudentsList);
+
                     }
 
                     //If user is not admin, print info about him
                     else
                     {
-                        string Info = User.GetSubscriptionInfo();
-                        Message sentMessage = await _TgClient.SendTextMessageAsync(
-                            chatId: update.CallbackQuery.From.Id,
-                            text: Info);
+                        string Info = User.GetSubscriptionInfo(UserSubscription);
+                        await Msg.SendAsync(text: Info);
                     }
                 }
 
@@ -369,33 +360,24 @@ namespace TgModerator.API.Controllers
                 {
                     if (User == null)
                     {
-                        Message sentMessage = await _TgClient.SendTextMessageAsync(
-                            chatId: update.CallbackQuery.From.Id,
-                            text: "You must register first and obtain admin rules!");
+                        await Msg.SendAsync(text: "You must obtain admin rules!");
                     }
                     else if (User != null && !User.isAdmin)
                     {
-                        Message sentMessage = await _TgClient.SendTextMessageAsync(
-                           chatId: update.CallbackQuery.From.Id,
-                           text: "You must obtain admin rules!");
+                        await Msg.SendAsync(text: "You must register first and obtain admin rules!");
                     }
 
                     // If user is registered and is admin
                     else
                     {
-                        Message sentMessage = await _TgClient.EditMessageReplyMarkupAsync(
-                           chatId: update.CallbackQuery.From.Id,
-                           messageId: update.CallbackQuery.Message.MessageId,
-                           replyMarkup: InlineKeyboardManageMenu);
+                        await Msg.EditMessageReplyMarkupAsync(InlineKeyboard: InlineKeyboardManageMenu);
                     }
                 }
 
                 // How to set level
                 if (update.CallbackQuery.Data == "/setlevel_")
                 {
-                    Message sentMessage = await _TgClient.SendTextMessageAsync(
-                           chatId: update.CallbackQuery.From.Id,
-                           text: "To set student's level, enter command:" +
+                    await Msg.SendAsync(text: "To set student's level, enter command:" +
                            "\n/setlevel {User's telegram id} {Student's level: 1/2}");
                 }
 
@@ -405,31 +387,27 @@ namespace TgModerator.API.Controllers
                     List<string> OutputDataList = new List<string>();
                     foreach (Student s in Students)
                     {
-                        string text = s.GetInfo();
+                        Subscription UserSubscription = await _unitOfWork.SubscriptionRepository.GetByStudentIdAsync(s.Id);
+                        string text = s.GetInfo(UserSubscription);
                         OutputDataList.Add(text);
                     }
                     string OutputData = string.Join(" ", OutputDataList.ToArray());
-                    Message sentMessage = await _TgClient.SendTextMessageAsync(
-                           chatId: update.CallbackQuery.From.Id,
-                           text: OutputData);
+
+                    await Msg.SendAsync(OutputData);
                 }
                 
                 if (update.CallbackQuery.Data == "/renew_")
                 {
-                    Message sentMessage = await _TgClient.SendTextMessageAsync(
-                           chatId: update.CallbackQuery.From.Id,
-                           text: "To renew student's subscription, enter command:" +
+                    string text = "To renew student's subscription, enter command:" +
                            "\nTo add an amount of months(from today if user never had a subscription or from the expiration date)" +
                            "\n/renew 0 {User's telegram id} {Amount of months to add}" +
                            "\nOR to set a specific date:" +
-                           "\n/renew 1 {User's telegram id} {Date in format DD.MM.YYYY}");
+                           "\n/renew 1 {User's telegram id} {Date in format DD.MM.YYYY}";
+
+                    await Msg.SendAsync(text);
                 }
             }
-
-
-            if (update.Type == Telegram.Bot.Types.Enums.UpdateType.CallbackQuery)
-            {
-            }
+            
             //TO DELETE
             //Grant admin access (DELETE IN FUTURE)
             if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message && update.Message.Text == "/adminme")
@@ -444,7 +422,7 @@ namespace TgModerator.API.Controllers
                 }
                 else
                 {
-                    await ErrorMessage.Send(_TgClient, update);
+                    await ErrMsg.SendError();
                 }
             }
             if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message && update.Message.Text == "/delete")

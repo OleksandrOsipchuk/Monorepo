@@ -1,28 +1,35 @@
-﻿using Telegram.Bot;
+﻿using Admin.API.Messages.Interfaces;
+using Telegram.Bot;
 using Telegram.Bot.Types;
 
 namespace Admin.API.Messages
 {
-    public class ErrorMessage
+    public class ErrorMessage : TgMessage
     {
-        public static async Task<bool> Send(TelegramBotClient TgClient, Update update)
+        public readonly TelegramBotClient _TgClient;
+        public readonly Update _update;
+        public ErrorMessage(TelegramBotClient TgClient, Update update) : base(TgClient, update)
         {
-            try
+            this._TgClient = TgClient;
+            this._update = update;
+        }
+
+        internal async Task<bool> SendError()
+        {
+            switch (_update.Type)
             {
-                await TgClient.SendTextMessageAsync(
-                    chatId: update.Message.From.Id,
+                case Telegram.Bot.Types.Enums.UpdateType.Message:
+                    await _TgClient.SendTextMessageAsync(
+                    chatId: _update.Message.From.Id,
                     text: "Something went wrong!");
-                return true;
+                    return true;
+
+                case Telegram.Bot.Types.Enums.UpdateType.CallbackQuery:
+                    await _TgClient.SendTextMessageAsync(
+                   chatId: _update.CallbackQuery.From.Id,
+                   text: "Something went wrong!");
+                    return true;
             }
-            catch { }
-            try
-            {
-                await TgClient.SendTextMessageAsync(
-                    chatId: update.CallbackQuery.From.Id,
-                    text: "Something went wrong!");
-                return true;
-            }
-            catch { }
             return false;
         }
     }

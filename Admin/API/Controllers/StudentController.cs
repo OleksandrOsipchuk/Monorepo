@@ -15,7 +15,6 @@ namespace TgAdmin.Controllers
             _logger = logger;
             _unitOfWork = unitOfWork;
         }
-
         
         [HttpGet]
         public async Task<IActionResult> Index()
