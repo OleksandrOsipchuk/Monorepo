@@ -3,6 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Admin.Data.Repository;
 using Admin.Data.Repository.Interfaces;
+using Admin.Data.Entity.Json;
+using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace TgAdmin
 {
@@ -23,18 +27,20 @@ namespace TgAdmin
             ConfigBuilder.AddJsonFile("appsettings.json");
             var config = ConfigBuilder.Build();
             string ConnectionString = config.GetConnectionString("DefaultConnection");
+            string TelegramApiKey = config.GetConnectionString("TelegramApiKey");
+            Console.WriteLine(TelegramApiKey);
             var OptionsBuilder = new DbContextOptionsBuilder<DbContext>();
 
-            string TelegramApiKey = config.GetConnectionString("TelegramApiKey");
+
             services.AddDbContext<AppDbContext>(options => options.UseNpgsql(ConnectionString));
-            services.AddSwaggerGen();
             services.AddControllers().AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
-            //services.AddScoped<IStudentRepository, StudentRepository>();
-
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddSwaggerGen();
+
         }
 
         public void Configure(WebApplication app, IWebHostEnvironment env)

@@ -2,9 +2,6 @@
 {
     public interface IUnitOfWork
     {
-        StudentRepository StudentRepository { get; }
-        
-        SubscriptionRepository SubscriptionRepository { get; }
         void Save();
     }
 }

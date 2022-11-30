@@ -5,13 +5,9 @@ namespace Admin.Data.Repository
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly AppDbContext _context;
-        public StudentRepository StudentRepository { get; set; }
-        public SubscriptionRepository SubscriptionRepository { get; set; }
         public UnitOfWork(AppDbContext context)
         {
             _context = context;
-            StudentRepository = new StudentRepository(_context);
-            SubscriptionRepository = new SubscriptionRepository(_context);
         }
 
         public void Save()

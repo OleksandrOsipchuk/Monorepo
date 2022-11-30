@@ -1,10 +1,11 @@
 ﻿using Admin.Data.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace Admin.Data.Repository
 {
-    public class GenericRepository<TEntity> : IRepository<TEntity>
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity>
     where TEntity : class
     {
         private readonly AppDbContext _dbContext;
@@ -19,6 +20,12 @@ namespace Admin.Data.Repository
         {
             return Include(includeProperties).ToList();
         }
+
+        public IQueryable<TEntity> Filter(IQueryable<TEntity> entities, Expression<Func<TEntity, bool>> filterProperties)
+        {
+            return entities.Where(filterProperties);
+        }
+            
         private IQueryable<TEntity> Include(params Expression<Func<TEntity, object>>[] includeProperties)
         {
             IQueryable<TEntity> query = _dbSet.AsNoTracking();
@@ -41,11 +48,13 @@ namespace Admin.Data.Repository
         {
             await _dbSet.AddAsync(item);
         }
-        public async void UpdateAsync(TEntity item)
+
+        public void Update(TEntity item)
         {
             _dbContext.Entry(item).State = EntityState.Modified;
         }
-        public async void DeleteAsync(TEntity item)
+
+        public void Delete(TEntity item)
         {
             _dbSet.Remove(item);
         }

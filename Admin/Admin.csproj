@@ -32,6 +32,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="API\Controllers\" />
+    <Folder Include="Data\Entity\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 
