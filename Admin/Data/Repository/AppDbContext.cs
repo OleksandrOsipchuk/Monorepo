@@ -16,6 +16,7 @@ namespace Admin.Data.Repository
         {
             Database.EnsureCreated();
         }
+        
     }
 }
 

@@ -1,5 +1,6 @@
 ﻿using Admin.Data.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -34,8 +35,9 @@ namespace Admin.Data.Repository
         }
 
         public async Task<IEnumerable<TEntity>> GetAllAsync()
-        {
-            return await _dbSet.AsNoTracking().ToListAsync();
+        { 
+            IEnumerable<TEntity>? entities = await _dbSet.AsNoTracking().ToListAsync();
+            return entities;
         }
 
         public async Task<TEntity> GetByIdAsync(int id)
