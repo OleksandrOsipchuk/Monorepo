@@ -1,4 +1,9 @@
-﻿namespace Admin.Data.Repository.Interfaces
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Data.Repository.Interfaces
 {
     public interface IGenericRepository<T> where T : class
     {
@@ -9,3 +14,4 @@
         void Delete(T obj);
     }
 }
+

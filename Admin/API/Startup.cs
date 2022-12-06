@@ -1,74 +1,68 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using Admin.Data.Repository;
-using Admin.Data.Repository.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Admin.Data.Entity;
 using Newtonsoft.Json.Serialization;
+using Data.Repository;
+using Data.Repository.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using API.Services;
 
-namespace TgAdmin
+namespace API;
+
+public class Startup
 {
-    public class Startup
+    public Startup(IConfiguration configuration)
     {
-        public Startup(IConfiguration configuration)
+        Configuration = configuration;
+    }
+
+    public IConfiguration Configuration { get; }
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        // Takes config from file
+        var ConfigBuilder = new ConfigurationBuilder();
+        ConfigBuilder.SetBasePath(Directory.GetCurrentDirectory());
+        ConfigBuilder.AddJsonFile("appsettings.json");
+        var config = ConfigBuilder.Build();
+        string ConnectionString = config.GetConnectionString("DefaultConnection");
+        var OptionsBuilder = new DbContextOptionsBuilder<DbContext>();
+
+        // Gets TelegramApi token from config file
+        var BotSettings = new BotSettings();
+        services.Configure<BotSettings>(Configuration.GetSection(BotSettings.PropertiesSection));
+
+        services.AddDbContext<AppDbContext>(Options => Options.UseNpgsql(ConnectionString));
+
+        DefaultContractResolver contractResolver = new DefaultContractResolver
         {
-            Configuration = configuration;
-        }
+            NamingStrategy = new CamelCaseNamingStrategy()
+        };
 
-        public IConfiguration Configuration { get; }
-
-        public void ConfigureServices(IServiceCollection Services)
+        services.AddControllers().AddNewtonsoftJson(options =>
         {
-            // Takes config from file
-            var ConfigBuilder = new ConfigurationBuilder();
-            ConfigBuilder.SetBasePath(Directory.GetCurrentDirectory());
-            ConfigBuilder.AddJsonFile("appsettings.json");
-            var config = ConfigBuilder.Build();
-            string ConnectionString = config.GetConnectionString("DefaultConnection");
-            var OptionsBuilder = new DbContextOptionsBuilder<DbContext>();
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            options.SerializerSettings.ContractResolver = contractResolver;
+        });
 
-            // Gets TelegramApi token from config file
-            var appOptions = new AppProperties();
-            Configuration.GetSection(AppProperties.PropertiesSection).Bind(appOptions);
-            string TelegramApiKey = appOptions.TelegramApiKey;
+        services.AddScoped<BotService>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddSwaggerGen();
+        services.AddMvc();
+    }
 
-            // Creates instance for TelegramClient and adds it to DI container
-            TelegramBotClient TgClient = new TelegramBotClient(TelegramApiKey);
+    public void Configure(WebApplication app, IWebHostEnvironment env)
+    {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-            Services.AddDbContext<AppDbContext>(Options => Options.UseNpgsql(ConnectionString));
-
-            DefaultContractResolver contractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new CamelCaseNamingStrategy()
-            };
-            Services.AddControllers().AddNewtonsoftJson(Options =>
-            {
-                Options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-                Options.SerializerSettings.ContractResolver = contractResolver;
-            });
-            Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            Services.AddSwaggerGen();
-
-        }
-
-        public void Configure(WebApplication app, IWebHostEnvironment env)
+        if (!app.Environment.IsDevelopment())
         {
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Error");
-                
-            }
-            app.MapControllers();
-            app.UseSwagger();
-            app.UseSwaggerUI();
-            app.UseRouting();
-            app.UseAuthorization();
-            app.Run();
+            app.UseExceptionHandler("/Error");
         }
+        app.MapControllers();
+        app.UseSwagger();
+        app.UseSwaggerUI();
+        app.UseRouting();
+        app.UseAuthorization();
+        app.Run();
     }
 }

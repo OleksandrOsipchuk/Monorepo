@@ -3,8 +3,7 @@ using Microsoft.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-using TgAdmin;
-using Admin.Data.Repository;
+namespace API;
 
 public class Program
 {

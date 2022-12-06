@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Reflection.Metadata;
-using Microsoft.EntityFrameworkCore;
-using Telegram.Bot.Types;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Reflection.Emit;
+using System.Text;
 
-namespace Admin.Data.Repository
+namespace Data.Repository
 {
     public class AppDbContext : DbContext
     {
@@ -16,7 +17,5 @@ namespace Admin.Data.Repository
         {
             Database.EnsureCreated();
         }
-        
     }
 }
-

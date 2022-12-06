@@ -1,6 +1,7 @@
-﻿using Admin.Data.Repository.Interfaces;
+﻿using Data.Repository.Interfaces;
+using System;
 
-namespace Admin.Data.Repository
+namespace Data.Repository
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
@@ -9,7 +10,6 @@ namespace Admin.Data.Repository
         {
             _context = context;
         }
-
         public void Save()
         {
             _context.SaveChanges();

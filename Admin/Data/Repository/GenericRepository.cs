@@ -1,10 +1,12 @@
-﻿using Admin.Data.Repository.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Data.Repository.Interfaces;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
-namespace Admin.Data.Repository
+namespace Data.Repository
 {
     public class GenericRepository<TEntity> : IGenericRepository<TEntity>
     where TEntity : class
@@ -26,7 +28,7 @@ namespace Admin.Data.Repository
         {
             return entities.Where(filterProperties);
         }
-            
+
         private IQueryable<TEntity> Include(params Expression<Func<TEntity, object>>[] includeProperties)
         {
             IQueryable<TEntity> query = _dbSet.AsNoTracking();
@@ -35,7 +37,7 @@ namespace Admin.Data.Repository
         }
 
         public async Task<IEnumerable<TEntity>> GetAllAsync()
-        { 
+        {
             IEnumerable<TEntity>? entities = await _dbSet.AsNoTracking().ToListAsync();
             return entities;
         }
