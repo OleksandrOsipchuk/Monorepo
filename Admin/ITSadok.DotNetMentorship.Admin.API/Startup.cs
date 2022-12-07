@@ -1,37 +1,29 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Newtonsoft.Json.Serialization;
-using Data.Repository;
-using Data.Repository.Interfaces;
+using ITSadok.DotNetMentorship.Admin.Data;
+using ITSadok.DotNetMentorship.Admin.Data;
 using Microsoft.Extensions.DependencyInjection;
-using API.Services;
+using ITSadok.DotNetMentorship.Admin.API.Services;
 
-namespace API;
+namespace ITSadok.DotNetMentorship.Admin.API;
 
 public class Startup
 {
+    private readonly IConfiguration _configuration;
+
     public Startup(IConfiguration configuration)
     {
-        Configuration = configuration;
+        _configuration = configuration;
     }
-
-    public IConfiguration Configuration { get; }
 
     public void ConfigureServices(IServiceCollection services)
     {
-        // Takes config from file
-        var ConfigBuilder = new ConfigurationBuilder();
-        ConfigBuilder.SetBasePath(Directory.GetCurrentDirectory());
-        ConfigBuilder.AddJsonFile("appsettings.json");
-        var config = ConfigBuilder.Build();
-        string ConnectionString = config.GetConnectionString("DefaultConnection");
-        var OptionsBuilder = new DbContextOptionsBuilder<DbContext>();
-
         // Gets TelegramApi token from config file
-        var BotSettings = new BotSettings();
-        services.Configure<BotSettings>(Configuration.GetSection(BotSettings.PropertiesSection));
+        services.AddOptions<BotSettings>()
+            .BindConfiguration(nameof(BotSettings));
 
-        services.AddDbContext<AppDbContext>(Options => Options.UseNpgsql(ConnectionString));
+        services.AddDbContext<AppDbContext>(Options => Options.UseNpgsql(_configuration.GetConnectionString("DefaultConnection")));
 
         DefaultContractResolver contractResolver = new DefaultContractResolver
         {

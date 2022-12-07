@@ -1,4 +1,4 @@
-﻿using Data.Repository.Interfaces;
+﻿using ITSadok.DotNetMentorship.Admin.Data.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace Data.Repository
+namespace ITSadok.DotNetMentorship.Admin.Data.Repository
 {
     public class GenericRepository<TEntity> : IGenericRepository<TEntity>
     where TEntity : class

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Text;
 
-namespace Data.Repository
+namespace ITSadok.DotNetMentorship.Admin.Data
 {
     public class AppDbContext : DbContext
     {

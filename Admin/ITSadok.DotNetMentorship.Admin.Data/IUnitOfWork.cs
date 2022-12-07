@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Data.Repository.Interfaces
+namespace ITSadok.DotNetMentorship.Admin.Data
 {
     public interface IUnitOfWork
     {

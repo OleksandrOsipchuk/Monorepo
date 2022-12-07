@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Options;
 using Telegram.Bot;
 
-namespace API.Services
+namespace ITSadok.DotNetMentorship.Admin.API.Services
 {
     public class BotService
     {

@@ -1,7 +1,6 @@
-﻿using Data.Repository.Interfaces;
-using System;
+﻿using System;
 
-namespace Data.Repository
+namespace ITSadok.DotNetMentorship.Admin.Data
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {

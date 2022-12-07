@@ -3,13 +3,15 @@ using Microsoft.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-namespace API;
+namespace ITSadok.DotNetMentorship.Admin.API;
 
 public class Program
 {
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        builder.Configuration
+            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json");
 
         var startup = new Startup(builder.Configuration);
         startup.ConfigureServices(builder.Services);
