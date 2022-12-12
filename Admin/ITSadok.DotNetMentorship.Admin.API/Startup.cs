@@ -2,9 +2,10 @@
 using Telegram.Bot;
 using Newtonsoft.Json.Serialization;
 using ITSadok.DotNetMentorship.Admin.Data;
-using ITSadok.DotNetMentorship.Admin.Data;
 using Microsoft.Extensions.DependencyInjection;
 using ITSadok.DotNetMentorship.Admin.API.Services;
+using ITSadok.DotNetMentorship.Admin.Data.Repository.Interfaces;
+using ITSadok.DotNetMentorship.Admin.Data.Repository;
 
 namespace ITSadok.DotNetMentorship.Admin.API;
 
@@ -39,7 +40,6 @@ public class Startup
         services.AddScoped<BotService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddSwaggerGen();
-        services.AddMvc();
     }
 
     public void Configure(WebApplication app, IWebHostEnvironment env)
