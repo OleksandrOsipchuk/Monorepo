@@ -5,8 +5,16 @@ namespace ITSadok.DotNetMentorship.Admin.Data
 {
     public class AppDbContext : DbContext
     {
+        public AppDbContext()
+        {
+        }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+            Database.EnsureCreated();
+        }
         public DbSet<Student> Students { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
+        public DbSet<TelegramUser> TelegramUsers { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Student>()
@@ -23,11 +31,6 @@ namespace ITSadok.DotNetMentorship.Admin.Data
                 .HasOne(u => u.Subscription)
                 .WithOne(s => s.Student)
                 .HasForeignKey<Subscription>(s => s.StudentId);
-        }
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options)
-        {
-            Database.EnsureCreated();
         }
     }
 }

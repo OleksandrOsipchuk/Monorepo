@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Telegram.Bot;
 using Newtonsoft.Json.Serialization;
 using ITSadok.DotNetMentorship.Admin.Data;
-using Microsoft.Extensions.DependencyInjection;
 using ITSadok.DotNetMentorship.Admin.API.Services;
 using ITSadok.DotNetMentorship.Admin.Data.Repository.Interfaces;
 using ITSadok.DotNetMentorship.Admin.Data.Repository;
@@ -24,8 +22,6 @@ public class Startup
         services.AddOptions<BotSettings>()
             .BindConfiguration(nameof(BotSettings));
 
-        services.AddDbContext<AppDbContext>(Options => Options.UseNpgsql(_configuration.GetConnectionString("DefaultConnection")));
-
         DefaultContractResolver contractResolver = new DefaultContractResolver
         {
             NamingStrategy = new CamelCaseNamingStrategy()
@@ -40,8 +36,11 @@ public class Startup
         services.AddScoped<BotService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddSwaggerGen();
-    }
+        Console.WriteLine(_configuration.GetConnectionString("DefaultConnection"));
 
+        services.AddDbContext<AppDbContext>(Options => Options.UseNpgsql(_configuration.GetConnectionString("DefaultConnection")));
+
+    }
     public void Configure(WebApplication app, IWebHostEnvironment env)
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);

@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Telegram.Bot.Types;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ITSadok.DotNetMentorship.Admin.Data.Entity
 {
     public class TelegramUser
     {
+        [Key]
         public int Id { get; set; }
         public long TelegramId { get; set; }
-        public string TelegramUsername { get; set; }
+        public long ChatId {get; set;}
+        public string? TelegramUsername { get; set; }
         public int StudentId { get; set; }
-        public Student Student { get; set; }
+        public Student? Student { get; set; }
     }
 }
