@@ -36,7 +36,6 @@ public class Startup
         services.AddScoped<BotService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddSwaggerGen();
-        Console.WriteLine(_configuration.GetConnectionString("DefaultConnection"));
 
         services.AddDbContext<AppDbContext>(Options => Options.UseNpgsql(_configuration.GetConnectionString("DefaultConnection")));
 
