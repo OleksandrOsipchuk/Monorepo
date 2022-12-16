@@ -4,7 +4,7 @@ namespace ITSadok.DotNetMentorship.Admin.Data.Entity
 {
     public class TelegramUser
     {
-        [Key]
+        
         public int Id { get; set; }
         public long TelegramId { get; set; }
         public long ChatId {get; set;}

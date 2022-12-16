@@ -18,8 +18,9 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        // Gets TelegramApi token from config file
-        services.AddOptions<BotSettings>()
+        
+    // Gets TelegramApi token from config file
+    services.AddOptions<BotSettings>()
             .BindConfiguration(nameof(BotSettings));
 
         DefaultContractResolver contractResolver = new DefaultContractResolver
@@ -36,8 +37,7 @@ public class Startup
         services.AddScoped<BotService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddSwaggerGen();
-
-        services.AddDbContext<AppDbContext>(Options => Options.UseNpgsql(_configuration.GetConnectionString("DefaultConnection")));
+        services.AddDbContext<AppDbContext>();
 
     }
     public void Configure(WebApplication app, IWebHostEnvironment env)

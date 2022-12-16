@@ -5,8 +5,8 @@ namespace ITSadok.DotNetMentorship.Admin.Data.Entity
 {
     public class Subscription
     {
-        [Key]
-        int Id { get; set; }
+        
+        public int Id { get; set; }
         public bool IsActive { get; set; }
         DateTime ExpirationDate { get; set; }
         public int StudentId { get; set; }
