@@ -1,13 +1,16 @@
 ﻿using System;
+using ITSadok.DotNetMentorship.Admin.Data.Repository.Interfaces;
 
-namespace ITSadok.DotNetMentorship.Admin.Data
+namespace ITSadok.DotNetMentorship.Admin.Data.Repository
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly AppDbContext _context;
+        public StudentRepository StudentRepository { get; set; }
         public UnitOfWork(AppDbContext context)
         {
             _context = context;
+            StudentRepository = new StudentRepository(_context);
         }
         public void Save()
         {
@@ -18,13 +21,13 @@ namespace ITSadok.DotNetMentorship.Admin.Data
 
         public virtual void Dispose(bool disposing)
         {
-            if (!this.disposed)
+            if (!disposed)
             {
                 if (disposing)
                 {
                     _context.Dispose();
                 }
-                this.disposed = true;
+                disposed = true;
             }
         }
 

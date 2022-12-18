@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "API": {
+    "ITSadok.DotNetMentorship.Admin.API": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
