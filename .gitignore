@@ -352,4 +352,3 @@ MigrationBackup/
 
 # MacOS stuff
 .DS_Store
-/Admin/ITSadok.DotNetMentorship.Admin.API/Controllers

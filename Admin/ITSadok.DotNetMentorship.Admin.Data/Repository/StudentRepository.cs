@@ -21,7 +21,11 @@ namespace ITSadok.DotNetMentorship.Admin.Data.Repository
 
         public async Task<Student> GetByTelegramIdAsync(long TelegramIdIn)
         {
-            return await _context.Students.Where(b => b.TelegramUser.TelegramId == TelegramIdIn).FirstOrDefaultAsync<Student>();
+            var students = GetAllAsync();
+            return await Filter(
+                (IQueryable<Student>)students,
+                b => b.TelegramUser.TelegramId == TelegramIdIn)
+                .FirstOrDefaultAsync<Student>();
         }
 
     }

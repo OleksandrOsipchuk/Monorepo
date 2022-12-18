@@ -11,7 +11,8 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.Configuration
-            .AddJsonFile("appsettings.json");
+            .AddJsonFile("appsettings.json")
+            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json");
 
         var startup = new Startup(builder.Configuration);
         startup.ConfigureServices(builder.Services);

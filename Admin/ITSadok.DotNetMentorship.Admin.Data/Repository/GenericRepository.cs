@@ -26,7 +26,8 @@ namespace ITSadok.DotNetMentorship.Admin.Data.Repository
 
         public IQueryable<TEntity> Filter(IQueryable<TEntity> entities, Expression<Func<TEntity, bool>> filterProperties)
         {
-            return entities.Where(filterProperties);
+            var result = entities.Where(filterProperties);
+            return result;
         }
 
         private IQueryable<TEntity> Include(params Expression<Func<TEntity, object>>[] includeProperties)
