@@ -12,7 +12,7 @@ public class TunnelService : BackgroundService
     private readonly IHostApplicationLifetime _hostApplicationLifetime;
     private readonly IConfiguration _config;
     private readonly ILogger<TunnelService> _logger;
-    private readonly ITelegramBotClient _TelegramBot;
+    private readonly ITelegramBotClient _telegramBot;
 
 
     public TunnelService(IServer server, IHostApplicationLifetime hostApplicationLifetime,
@@ -22,7 +22,7 @@ public class TunnelService : BackgroundService
         this._hostApplicationLifetime = hostApplicationLifetime;
         this._config = config;
         this._logger = logger;
-        this._TelegramBot = botService.Bot;
+        this._telegramBot = botService.Bot;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -39,8 +39,8 @@ public class TunnelService : BackgroundService
         var publicUrl = await GetNgrokPublicUrl();
         _logger.LogInformation("Public ngrok URL: {NgrokPublicUrl}", publicUrl);
 
-        var urlForWebhook = publicUrl + "/api/bot";
-        await _TelegramBot.SetWebhookAsync(urlForWebhook);
+        var urlForWebhook = publicUrl + "/api/webhook";
+        await _telegramBot.SetWebhookAsync(urlForWebhook);
         _logger.LogInformation("Webhook for telegram bot was set: {NgrokPublicUrl}", urlForWebhook);
 
         await ngrokTask;

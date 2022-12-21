@@ -8,16 +8,16 @@ namespace ITSadok.DotNetMentorship.Admin.API.Controllers;
 
 
 [ApiController]
-[Route("api/bot")]
+[Route("api/webhook")]
 public class WebHookController : ControllerBase
 {
     private readonly ILogger<WebHookController> _logger;
-    private readonly ITelegramBotClient _TelegramBot;
+    private readonly ITelegramBotClient _telegramBot;
 
     public WebHookController(ILogger<WebHookController> logger, BotService botService)
     {
         _logger = logger;
-        _TelegramBot = botService.Bot;
+        _telegramBot = botService.Bot;
     }
 
     [HttpPost]
@@ -26,7 +26,7 @@ public class WebHookController : ControllerBase
         Message? ReceivedMessage = update.Message;
         if (ReceivedMessage.Type == MessageType.Text && ReceivedMessage.Text.StartsWith("/start"))
         {
-            await _TelegramBot.SendTextMessageAsync(
+            await _telegramBot.SendTextMessageAsync(
                 chatId: update.Message.Chat,
                 text: "Hello World"
             );

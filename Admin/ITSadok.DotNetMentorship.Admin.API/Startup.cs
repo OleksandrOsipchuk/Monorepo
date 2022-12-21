@@ -13,25 +13,22 @@ namespace ITSadok.DotNetMentorship.Admin.API;
 public class Startup
 {
     private readonly IConfiguration _configuration;
-    private IWebHostEnvironment _CurrentEnvironment { get; set; }
+    private readonly IWebHostEnvironment _environment;
 
 
     public Startup(IConfiguration configuration, IWebHostEnvironment env)
     {
         _configuration = configuration;
-        _CurrentEnvironment = env;
+        _environment = env;
     }
 
     public void ConfigureServices(IServiceCollection services)
     {
-        // Gets Telegram token and passes it to options
         services.AddOptions<BotSettings>()
             .BindConfiguration(nameof(BotSettings));
 
-        // Adds BotService 9for TelegramBotClient) to DI Container
         services.AddSingleton<BotService>();
 
-        // Sers CamelCase naming policy for JSON
         DefaultContractResolver contractResolver = new DefaultContractResolver
         {
             NamingStrategy = new CamelCaseNamingStrategy()
@@ -45,7 +42,7 @@ public class Startup
         });
 
 
-        if (_CurrentEnvironment.IsDevelopment())
+        if (_environment.IsDevelopment())
         {
             services.AddHostedService<Services.TunnelService>();
         }
