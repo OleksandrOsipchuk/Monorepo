@@ -6,7 +6,7 @@ namespace SimpleCalculator
     {
         public OperationExeption(string Message):base(Message){}
     }
-    class Program
+    class Calculator
     {
         static void Main()
         {
