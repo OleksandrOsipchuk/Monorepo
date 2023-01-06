@@ -2,6 +2,10 @@
 
 namespace SimpleCalculator
 {
+    class OperationExeption : Exception
+    {
+        public OperationExeption(string Message):base(Message){}
+    }
     class Program
     {
         static void Main()
@@ -25,32 +29,39 @@ namespace SimpleCalculator
                     }
 
                     int result;
+
+                    switch (operation)
                     {
-                        switch (operation)
-                        {
-                            case "+":
-                                result = firstNumber + secondNumber;
-                                break;
-                            case "-":
-                                result = firstNumber - secondNumber;
-                                break;
-                            case "/":
-                                result = firstNumber / secondNumber;
-                                break;
-                            case "*":
-                                result = firstNumber * secondNumber;
-                                break;
-                            default:
-                                throw new Exception("You wrote wrong operation! Try again.");
-                        }
-                        Console.WriteLine($"Result: {result}");
+                        case "+":
+                            result = firstNumber + secondNumber;
+                            break;
+                        case "-":
+                            result = firstNumber - secondNumber;
+                            break;
+                        case "/":
+                            result = firstNumber / secondNumber;
+                            break;
+                        case "*":
+                            result = firstNumber * secondNumber;
+                            break;
+                        default:
+                            throw new OperationExeption("You wrote wrong operation! Try again.");
                     }
-
+                    Console.WriteLine($"Result: {result}");
                 }
-
-                catch (Exception ex)
+                catch (OverflowException)
                 {
-                    Console.WriteLine($"Exeption: {ex.Message}.");
+                    Console.WriteLine("Your number is too big. Please try another!");
+                    continue;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("You wrote not number. Please try again!");
+                    continue;
+                }
+                catch (OperationExeption ex)
+                {
+                    Console.WriteLine(ex.Message);
                     continue;
                 }
 
