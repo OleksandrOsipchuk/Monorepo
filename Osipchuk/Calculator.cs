@@ -2,10 +2,6 @@
 
 namespace SimpleCalculator
 {
-    class OperationExeption : Exception
-    {
-        public OperationExeption(string Message):base(Message){}
-    }
     class Calculator
     {
         static void Main()
@@ -65,16 +61,15 @@ namespace SimpleCalculator
                     continue;
                 }
 
-                //exit the program
+
+                Console.WriteLine("Press <Enter> if you want to continue the program.");
+                ConsoleKey entr = Console.ReadKey().Key;
+                if (entr == ConsoleKey.Enter)
                 {
-                    Console.WriteLine("Press <Enter> if you want to continue the program.");
-                    ConsoleKey entr = Console.ReadKey().Key;
-                    if (entr == ConsoleKey.Enter)
-                    {
-                        condition = true;
-                    }
-                    else condition = false;
+                    condition = true;
                 }
+                else condition = false;
+
 
             }
         }
