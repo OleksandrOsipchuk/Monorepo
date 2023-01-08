@@ -9,7 +9,7 @@ namespace SimpleCalculator
     interface IAdditionalOperations
     {
         int UsingNumber { get; set; }
-        int Operation();
-        int PrintResult();
+        double Operation();
+        void PrintResult();
     }
 }
