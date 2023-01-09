@@ -90,7 +90,7 @@ public class TunnelService : BackgroundService
                 // ignored
             }
 
-            await Task.Delay(200);
+            await Task.Delay(TimeSpan.FromMilliseconds(200));
         }
 
         throw new Exception("Ngrok dashboard did not start in 10 tries");

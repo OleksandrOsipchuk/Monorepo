@@ -5,6 +5,8 @@ using System.Linq.Expressions;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace ITSadok.DotNetMentorship.Admin.Data.Repository
 {
@@ -57,6 +59,15 @@ namespace ITSadok.DotNetMentorship.Admin.Data.Repository
         public void Update(TEntity item)
         {
             _dbContext.Entry(item).State = EntityState.Modified;
+        }
+
+        public async Task PatchAsync(int Id, JsonPatchDocument JSONobj)
+        {
+            var entity = await this.GetByIdAsync(Id);
+            if (entity != null)
+            {
+                JSONobj.ApplyTo(entity);
+            } 
         }
 
         public void Delete(TEntity item)

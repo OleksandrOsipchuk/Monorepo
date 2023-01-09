@@ -12,7 +12,6 @@ namespace ITSadok.DotNetMentorship.Admin.Data
          public AppDbContext() : base()
         {
             Database.EnsureCreated();
-
         }
         public DbSet<Student> Students { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }

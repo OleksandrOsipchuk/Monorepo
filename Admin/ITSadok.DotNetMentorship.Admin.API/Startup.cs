@@ -47,7 +47,7 @@ public class Startup
             services.AddHostedService<Services.TunnelService>();
         }
 
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<UnitOfWork, UnitOfWork>();
         services.AddSwaggerGen();
         services.AddDbContext<AppDbContext>();
 
