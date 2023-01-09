@@ -27,7 +27,18 @@ namespace ITSadok.DotNetMentorship.Admin.API.Controllers
             _logger = logger;
         }
 
-        // GET: api/student
+
+        /// <summary>
+        /// Gets list of students
+        /// </summary>
+        /// <returns>List of all students</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /api/Students
+        ///
+        /// </remarks>
+        /// <response code="200">Returns list of all students</response>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<StudentDTO>>> GetStudents()
         {
@@ -36,6 +47,17 @@ namespace ITSadok.DotNetMentorship.Admin.API.Controllers
             return Ok(command.Result);
         }
 
+        /// <summary>
+        /// Gets one students by its ID
+        /// </summary>
+        /// <returns>Student object</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /api/Students/8
+        ///
+        /// </remarks>
+        /// <response code="200">Returns one student</response>
         // GET: api/Student/{studentId}
         [HttpGet("{id}")]
         public async Task<ActionResult<StudentDTO>> GetStudent(int id)
@@ -45,6 +67,24 @@ namespace ITSadok.DotNetMentorship.Admin.API.Controllers
             return Ok(command.Result);
         }
 
+        /// <summary>
+        /// Changes Student field
+        /// </summary>
+        /// <returns>Status code</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     PATCH /api/Students/8
+        ///     [
+        ///         {
+        ///             "op":"replace",
+        ///             "path":"name",
+        ///             "value": "Alexey"
+        ///         }
+        ///     ]
+        ///
+        /// </remarks>
+        /// <response code="200">The changes were successful</response>
         // PATCH: api/Student/5
         [HttpPatch("{id}")]
         public async Task<ActionResult> PatchStudent(int id, JsonPatchDocument StudentJSON)
@@ -54,6 +94,26 @@ namespace ITSadok.DotNetMentorship.Admin.API.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Creates new student
+        /// </summary>
+        /// <returns>Created student</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /api/Students
+        ///     {
+        ///         "name":"string",
+        ///         "studentLevel":1,
+        ///         "githublink":"string",
+        ///         "isAdmin":false,
+        ///         "isRegistered":true,
+        ///         "subscription": null,
+        ///         "telegramuser": null
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="200">User creation was successful</response>
         // POST: api/Student
         [HttpPost]
         public async Task<ActionResult<Student>> PostStudent([FromBody]Student student)

@@ -7,6 +7,8 @@ using ITSadok.DotNetMentorship.Admin.Data.Repository;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace ITSadok.DotNetMentorship.Admin.API;
 
@@ -48,9 +50,19 @@ public class Startup
         }
 
         services.AddScoped<UnitOfWork, UnitOfWork>();
-        services.AddSwaggerGen();
         services.AddDbContext<AppDbContext>();
+        services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Version = "v1",
+                Title = "ITSadok.DotNetMentorship.Admin API",
+            });
 
+            // using System.Reflection;
+            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+        });
 
     }
     public void Configure(WebApplication app, IWebHostEnvironment env)
