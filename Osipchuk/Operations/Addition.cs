@@ -1,5 +1,4 @@
-﻿using Operation;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,15 +6,18 @@ using System.Threading.Tasks;
 
 namespace Osipchuk.Operations
 {
-    class Addition : ArithmeticOperation
+    class Addition : IOperation
     {
-        public Addition(int firstNumber, int secondNumber) : base(firstNumber, secondNumber)
+        public Addition(double firstNumber, double secondNumber)
         {
-            Calculate();
+            FirstNumber = firstNumber;
+            SecondNumber = secondNumber;
         }
-        protected override void Calculate()
+        private double FirstNumber { get; set; } = 20;
+        private double SecondNumber { get; set; } = 20;
+        public double Calculate()
         {
-            Console.WriteLine($"  Result:  {FirstNumber}  +  {SecondNumber}  =  {FirstNumber + SecondNumber} \n");
+            return FirstNumber+ SecondNumber;
         }
     }
 }

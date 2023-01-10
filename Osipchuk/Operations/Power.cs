@@ -1,5 +1,4 @@
-﻿using Operation;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,15 +6,18 @@ using System.Threading.Tasks;
 
 namespace Osipchuk.Operations
 {
-    class Power : ArithmeticOperation
+    class Power : IOperation
     {
-        public Power(int firstNumber, int secondNumber) : base(firstNumber, secondNumber)
+        public Power(double number, double powerOfNum)
         {
-            Calculate();
+            Number = number;
+            PowerOfNum = powerOfNum;
         }
-        protected override void Calculate()
+        private double Number { get; set; }
+        private double PowerOfNum { get; set; }
+        public double Calculate()
         {
-            Console.WriteLine($"  Result:  {FirstNumber}  in power  {SecondNumber}  =  {Math.Pow(FirstNumber, SecondNumber)} \n");
+            return Math.Pow(Number, PowerOfNum);
         }
     }
 }

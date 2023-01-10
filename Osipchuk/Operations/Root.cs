@@ -1,5 +1,4 @@
-﻿using Operation;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,15 +6,16 @@ using System.Threading.Tasks;
 
 namespace Osipchuk.Operations
 {
-    class Root : ArithmeticOperation
+    class Root : IOperation
     {
-        public Root(int firstNumber) : base(firstNumber)
+        public Root(double number)
         {
-            Calculate();
+            Number = number;
         }
-        protected override void Calculate()
+        private double Number { get; set; }
+        public double Calculate()
         {
-            Console.WriteLine($"  Result: sqeare root of {FirstNumber} = {Math.Sqrt(FirstNumber)}\n");
+            return  Math.Sqrt(Number);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Operation;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,15 +7,20 @@ using System.Threading.Tasks;
 
 namespace Osipchuk.Operations
 {
-    class Division : ArithmeticOperation
+    class Division : IOperation
     {
-        public Division(int firstNumber, int secondNumber) : base(firstNumber, secondNumber)
+        public Division(double firstNumber, double secondNumber)
         {
-            Calculate();
+            FirstNumber = firstNumber;
+            SecondNumber = secondNumber;
         }
-        protected override void Calculate()
+        private double FirstNumber { get; set; }
+        private double SecondNumber { get; set; }
+
+        public double Calculate()
         {
-            Console.WriteLine($"  Result:  {FirstNumber}  /  {SecondNumber}  =  {FirstNumber / SecondNumber} \n");
+            return FirstNumber / SecondNumber;
         }
     }
 }
+
