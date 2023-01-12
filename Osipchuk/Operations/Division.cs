@@ -10,7 +10,7 @@ namespace Osipchuk.Operations
 {
     public class Division : IOperation
     {
-        (double first, double second) numbers = new NumbersReader().Read(Calculator.operation);
+        private (double first, double second) numbers = new NumbersReader().Read(Calculator.operation);
         public double Calculate()
         {
             return numbers.first / numbers.second;
