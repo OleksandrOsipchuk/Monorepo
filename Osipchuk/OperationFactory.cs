@@ -13,32 +13,26 @@ namespace Osipchuk
 
         public IOperation GetOperation(string operation)
         {
-            var taker = new TakerOfNumbers();
+            var taker = new NumbersReader();
             switch (operation)
             {
                 case "1":
-                    taker.Taker(operation);
-                    rez = new Addition(taker.Number1, taker.Number2);
+                    rez = new Addition();
                     break;
                 case "2":
-                    taker.Taker(operation);
-                    rez = new Subtraction(taker.Number1, taker.Number2);
+                    rez = new Subtraction();
                     break;
                 case "3":
-                    taker.Taker(operation);
-                    rez = new Multiplication(taker.Number1, taker.Number2);
+                    rez = new Multiplication();
                     break;
                 case "4":
-                    taker.Taker(operation);
-                    rez = new Division(taker.Number1, taker.Number2);
+                    rez = new Division();
                     break;
                 case "5":
-                    taker.Taker(operation);
-                    rez = new Power(taker.Number1, taker.Number2);
+                    rez = new Power();
                     break;
                 case "6":
-                    taker.Taker(operation);
-                    rez = new Root(taker.Number1);
+                    rez = new Root();
                     break;
                     
             }

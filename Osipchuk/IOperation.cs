@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Osipchuk
 {
-    interface IOperation
+    internal interface IOperation
     {
         public double Calculate();
     }

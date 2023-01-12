@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleCalculator;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,19 +7,12 @@ using System.Threading.Tasks;
 
 namespace Osipchuk.Operations
 {
-    class Multiplication : IOperation
+    public class Multiplication : IOperation
     {
-        public Multiplication(double firstNumber, double secondNumber)
-        {
-            FirstNumber = firstNumber;
-            SecondNumber = secondNumber;
-        }
-        private double FirstNumber { get; set; }
-        private double SecondNumber { get; set; }
-
+        (double first, double second) numbers = new NumbersReader().Read(Calculator.operation);
         public double Calculate()
         {
-            return FirstNumber * SecondNumber;
+            return numbers.first * numbers.second;
         }
     }
 }
