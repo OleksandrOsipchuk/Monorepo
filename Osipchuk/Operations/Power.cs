@@ -9,10 +9,9 @@ namespace Osipchuk.Operations
 {
     public class Power : IOperation
     {
-        private (double first, double second) numbers = new NumbersReader().Read(Calculator.operation);
-        public double Calculate()
+        public double Calculate(double number1, double number2)
         {
-            return Math.Pow(numbers.first , numbers.second);
+            return Math.Pow(number1,number2);
         }
     }
 }

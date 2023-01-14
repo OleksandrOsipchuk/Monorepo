@@ -8,6 +8,6 @@ namespace Osipchuk
 {
     internal interface IOperation
     {
-        public double Calculate();
+        public double Calculate(double number1, double number2);
     }
 }
