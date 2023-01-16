@@ -43,10 +43,12 @@ namespace SimpleCalculator
                 catch (OverflowException)
                 {
                     Console.WriteLine("Your number is too big. Please try another!");
+                    continue;
                 }
                 catch (FormatException)
                 {
                     Console.WriteLine("You wrote not number. Please try again!");
+                    continue;
                 }
 
                 Console.WriteLine("Press <Enter> if you want to continue the program.\n");
