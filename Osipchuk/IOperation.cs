@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SimpleCalculator
+namespace Osipchuk
 {
-    class OperationExeption : Exception
+    internal interface IOperation
     {
-        public OperationExeption(string Message) : base(Message) { }
+        public double Calculate(double number1, double number2);
     }
 }
