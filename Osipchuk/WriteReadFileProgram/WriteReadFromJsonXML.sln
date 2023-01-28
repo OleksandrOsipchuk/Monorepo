@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Program", "Program.csproj", "{30A18C54-93D4-45E1-A99F-A9F1787E4F2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonAndXml", "JsonAndXml.csproj", "{30A18C54-93D4-45E1-A99F-A9F1787E4F2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

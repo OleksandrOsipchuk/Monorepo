@@ -1,4 +1,4 @@
-﻿using jsonAndXml;
+﻿using JsonAndXml;
 using Newtonsoft.Json;
 using System.Xml.Serialization;
 using System;
@@ -7,51 +7,68 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Security;
+using System.IO;
+using System.Runtime.Serialization;
 
-namespace jsonAndXml
+namespace JsonAndXml
 {
-    static class XmlHandler
+    public class XmlHandler : IHandler
     {
-        
+
         static private XmlSerializer formatter = new XmlSerializer(typeof(List<Data>));
-        public static void WriteToXmlDb(string path2, string name, NestedData info)
-        {            
-            List<Data> allData = ReadAllFromXmlDb(path2);
+        private string pathForXml = @"D:\NewFolder\db.xml";
+        public void WriteToDb(string name, NestedData info)
+        {
+            CreateFile(pathForXml);
+            List<Data> allData = ReadAllFromDb();
             int currentId;
             if (allData.Count == 0) currentId = -1;
             else currentId = allData.Last().Id;
             allData.Add(new Data(++currentId, name, info));
             Console.WriteLine($"Id: {currentId}");
-            using (FileStream fStream = new FileStream(path2, FileMode.OpenOrCreate))
-            {        
-                 formatter.Serialize(fStream,allData);               
+            using (FileStream fStream = new FileStream(pathForXml, FileMode.OpenOrCreate))
+            {
+                formatter.Serialize(fStream, allData);
             }
             Console.WriteLine("Saccess!!");
         }
-        private static List<Data> ReadAllFromXmlDb(string path2)
-        {
-            //{костиль
-            using (FileStream fStream = new FileStream(path2, FileMode.OpenOrCreate))
+        public List<Data> ReadAllFromDb()
+        { 
+            ///
+            using (FileStream fileStream = new FileStream(pathForXml, FileMode.OpenOrCreate))
             {
-                formatter.Serialize(fStream, new List<Data>());
+
+                formatter.Serialize(fileStream, new List<Data>());
             }
-            //}
-            using (FileStream fstream = new FileStream(path2, FileMode.OpenOrCreate))
-            {
-                
+            ///
+            using (FileStream fstream = new FileStream(pathForXml, FileMode.OpenOrCreate))
+            {               
                 List<Data>? dataArray = formatter.Deserialize(fstream) as List<Data>;
                 return dataArray ?? new List<Data>();
-            }           
+            }
         }
-        public static void ReadFromXmlDb(string path1, int id)
+        public void ReadFromDb( int id)
         {
-            List<Data> dataArray = ReadAllFromXmlDb(path1);
+            if (File.Exists(pathForXml) == false) { Console.WriteLine("There are no any data yet."); return; }
+            List<Data> dataArray = ReadAllFromDb();
             if (dataArray.Any(data => data.Id == id))
             {
                 Data data = dataArray.FirstOrDefault(d => d.Id == id);
                 Console.WriteLine($"Name: {data.Name}, Info: {data.Nested.Info}");
             }
             else Console.WriteLine("There is no this Id.");
+        }
+        private static void CreateFile(string path)
+        {
+            if (!Directory.Exists(@"D:\NewFolder"))
+            {
+                Directory.CreateDirectory(@"D:\NewFolder");
+            }
+            if (File.Exists(path) == false)
+            {
+                var file = File.Create(path);
+                file.Close();
+            }
         }
     }
 }

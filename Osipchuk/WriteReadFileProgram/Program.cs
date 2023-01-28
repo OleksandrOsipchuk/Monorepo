@@ -1,100 +1,103 @@
 ﻿using Newtonsoft.Json;
 using System.IO;
 
-namespace jsonAndXml
+namespace JsonAndXml
 {
     class Program
     {
         static void Main(string[] args)
         {
-            string pathForJson = @"D:\NewFolder\db.json";
-            string pathForXml = @"D:\NewFolder\db.xml";
-
-            if (!Directory.Exists(@"D:\NewFolder"))
-            {
-                Directory.CreateDirectory(@"D:\NewFolder");
-            }
-            if (File.Exists(pathForJson) == false)
-            {
-                var file = File.Create(pathForJson);
-                file.Close();
-            }
-            if (File.Exists(pathForXml) == false)
-            {
-                var file = File.Create(pathForXml);
-                file.Close();
-            }
-
             bool isWork = true;
             while (isWork)
             {
                 Console.WriteLine("-----------------------------");
+                string format = GetFormat();
+                if (format != "json" && format != "xml")
+                {
+                    Console.WriteLine(format);
+                    continue;
+                }
                 Console.WriteLine("Choose needed operation:" +
                 " \nWrite <save> to add new object to DB." +
-                "\nWrite <read> to read object from DB." +
-                "\nWrite <leave> to leave the program");
+                "\nWrite <read> to read object from DB.");
+                string operation = GetOperation();
+                HandlerFactory factory = new HandlerFactory();
+                IHandler handler = factory.GetHandler(format);
 
-                string operation = Console.ReadLine();
-                switch (operation)
+                if (operation == "save")
                 {
-                    case "save":
-                        Console.Write("Write Name: ");
-                        string Name = Console.ReadLine();
-                        Console.Write("Write Info: ");
-                        var info = new NestedData(Console.ReadLine());
-                        Console.Write("Write which format you would like to use(json,xml): ");
-                        string format = GetFormat();
-                        if (format == "json") JsonHandler.WriteToJsonDb(pathForJson, Name, info);
-                        else if (format == "xml") XmlHandler.WriteToXmlDb(pathForXml, Name, info);
-                        else Console.WriteLine(format);
-                        break;
-
-                    case "read":
-                        Console.Write("Write id:");
-                        int id = GetId();
-                        if (id == -1) Console.WriteLine("There is no object with this Id.");
-                        else
-                        {
-                            Console.Write("Write which format you would like to use(json,xml): ");
-                            format = GetFormat();
-                            if (format == "json") JsonHandler.ReadFromJsonDb(pathForJson,id);
-                            else if (format == "xml") XmlHandler.ReadFromXmlDb(pathForXml,id);
-                            else Console.WriteLine(format);
-                        }
-                        break;
-
-                    case "leave":
-                        isWork = false;
-                        break;
-                    default:
-                        Console.WriteLine("This operation don't exist.");
-                        break;
+                    (string name, NestedData info) parametrs = GetParamsForWriter();
+                    handler.WriteToDb(parametrs.name, parametrs.info);
                 }
+                else if (operation == "read")
+                {
+                    handler.ReadFromDb(GetId());
+                }
+                else
+                {
+                    Console.WriteLine(operation);
+                    continue;
+                }
+                isWork = Enttrance();
+                
             }
-            static int GetId()
+        }
+
+        private static string GetOperation()
+        {
+            string operation = Console.ReadLine();
+            switch (operation)
             {
-                string strId = Console.ReadLine();
-                int id = -1;
-                try
-                {
-                    id = int.Parse(strId);
-                }
-                catch (FormatException) { }
-                catch (OverflowException) { }
-                return id;
+                case "save":
+                    return "save";
+                case "read":
+                    return "read";
+                default: return "There is no this operation. Try again..";
             }
-            static string GetFormat()
+        }
+        private static string GetFormat()
+        {
+            Console.Write("Write format you want to use(json,xml): ");
+            string format = Console.ReadLine();
+            switch (format)
             {
-                string format = Console.ReadLine();
-                switch (format)
-                {
-                    case "json":
-                        return "json";
-                    case "xml":
-                        return "xml";
-                    default: return "There is no this formar";
-                }
+                case "json":
+                    return "json";
+                case "xml":
+                    return "xml";
+                default: return "There is no this format. Try again..";
             }
+        }
+        private static (string, NestedData) GetParamsForWriter()
+        {
+            Console.Write("Write Name: ");
+            string name = Console.ReadLine();
+            Console.Write("Write Info: ");
+            NestedData info = new NestedData(Console.ReadLine());
+            return (name, info);
+        }
+        private static int GetId()
+        {
+            Console.Write("Write Id: ");
+            string strId = Console.ReadLine();
+            int id = -1;
+            try
+            {
+                id = int.Parse(strId);
+            }
+            catch (FormatException) { }
+            catch (OverflowException) { }
+            return id;
+        }
+        private static bool Enttrance()
+        {
+            Console.WriteLine("Press <Enter> if you want to continue the program.\n");
+            ConsoleKey entr = Console.ReadKey().Key;
+            if (entr == ConsoleKey.Enter)
+            {
+                return true;
+            }
+            else return false;
         }
     }
 }
