@@ -1,4 +1,4 @@
-﻿using JsonAndXml;
+﻿using Program;
 using Newtonsoft.Json;
 using System.Xml.Serialization;
 using System;
@@ -10,7 +10,7 @@ using System.Net.Security;
 using System.IO;
 using System.Runtime.Serialization;
 
-namespace JsonAndXml
+namespace Program
 {
     public class XmlHandler : IHandler
     {

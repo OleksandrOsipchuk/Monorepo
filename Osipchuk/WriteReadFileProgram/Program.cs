@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.IO;
 
-namespace JsonAndXml
+namespace Program
 {
     class Program
     {

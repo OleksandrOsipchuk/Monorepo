@@ -1,4 +1,4 @@
-﻿using JsonAndXml;
+﻿using Program;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace JsonAndXml
+namespace Program
 {
     public class JsonHandler : IHandler
     {
