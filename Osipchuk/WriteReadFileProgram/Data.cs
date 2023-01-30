@@ -19,5 +19,4 @@ namespace JsonAndXml
         }
         public Data() { }       
     }
-
 }

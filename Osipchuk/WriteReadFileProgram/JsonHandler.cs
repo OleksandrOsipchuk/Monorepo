@@ -13,37 +13,35 @@ namespace JsonAndXml
     public class JsonHandler : IHandler
     {
         private string pathForJson = @"D:\NewFolder\db.json";
-        public void WriteToDb( string name, NestedData info)
+        public void Write(string name, NestedData info)
         {
             CreateFile(pathForJson);
-            List<Data> allData = ReadAllFromDb();
+            Data[] allData = ReadAll();
             int currentId;
-            if (allData.Count == 0) currentId = -1;
+            if (allData.Length == 0) currentId = -1;
             else currentId = allData.Last().Id;
-            allData.Add(new Data(++currentId, name, info));
+            Array.Resize(ref allData, currentId+2);
+            allData[allData.Length-1] = (new Data(++currentId, name, info));
             Console.WriteLine($"Id: {currentId}");
             string serealizedJson = JsonConvert.SerializeObject(allData);
             File.WriteAllText(pathForJson, serealizedJson);
             Console.WriteLine("Saccess!!");
         }
-        public List<Data> ReadAllFromDb()
+        public Data[] ReadAll()
         {
+            if (File.Exists(pathForJson) == false) throw new ReadFromDBException("There is no any data yet.");
             string json = File.ReadAllText(pathForJson);
-            List<Data> dataArray = JsonConvert.DeserializeObject<List<Data>>(json);
-            return dataArray ?? new List<Data>();
+            Data[] dataArray = JsonConvert.DeserializeObject<Data[]>(json);
+            return dataArray ?? new Data[]{};
         }
-        public void ReadFromDb( int id)
+        public Data Read(int id)
         {
-            if (File.Exists(pathForJson) == false) { Console.WriteLine("There are no any data yet."); return; }
-            List<Data> dataArray = ReadAllFromDb();
-            if (dataArray.Any(data => data.Id == id))
-            {
-                Data data = dataArray.FirstOrDefault(d => d.Id == id);
-                Console.WriteLine($"Name: {data.Name}, Info: {data.Nested.Info}");
-            }
-            else Console.WriteLine("There is no this Id.");
+            Data[] dataArray = ReadAll();
+            Data data = dataArray.FirstOrDefault(d => d.Id == id);
+            if (data != null) return data;
+            else throw new ReadFromDBException("There is no data with whis id.");
         }
-        private  void CreateFile(string path)
+        private void CreateFile(string path)
         {
             if (!Directory.Exists(@"D:\NewFolder"))
             {
@@ -57,13 +55,3 @@ namespace JsonAndXml
         }
     }
 }
-//CreateFile(pathForJson);
-//List<Data> allData = ReadAllFromDb();
-//int currentId;
-//if (allData.Count == 0) currentId = -1;
-//else currentId = allData.Last().Id;
-//allData.Add(new Data(++currentId, name, info));
-//Console.WriteLine($"Id: {currentId}");
-//string serealizedJson = JsonConvert.SerializeObject(allData);
-//File.WriteAllText(pathForJson, serealizedJson);
-//Console.WriteLine("Saccess!!");

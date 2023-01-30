@@ -19,27 +19,41 @@ namespace JsonAndXml
                 }
                 Console.WriteLine("Choose needed operation:" +
                 " \nWrite <save> to add new object to DB." +
-                "\nWrite <read> to read object from DB.");
+                "\nWrite <read> to read object by Id from DB." +
+                "\nWrite <readAll> to read all objects from DB.");
                 string operation = GetOperation();
                 HandlerFactory factory = new HandlerFactory();
                 IHandler handler = factory.GetHandler(format);
-
-                if (operation == "save")
+                try
                 {
-                    (string name, NestedData info) parametrs = GetParamsForWriter();
-                    handler.WriteToDb(parametrs.name, parametrs.info);
+                    switch (operation)
+                    {
+                        case "save":
+                            (string name, NestedData info) parametrs = GetParamsForWriter();
+                            handler.Write(parametrs.name, parametrs.info);
+                            break;
+                        case "read":
+                            Data data = handler.Read(GetId());
+                            Console.WriteLine($"Name: {data.Name}, Info: {data.Nested.Info}");
+                            break;
+                        case "readAll":
+                            Data[] allData = handler.ReadAll();
+                            foreach (Data _data in allData)
+                            {
+                                Console.WriteLine($"Name: {_data.Name}, Info: {_data.Nested.Info}, Id: {_data.Id}");
+                            }
+                            break;
+                        default:
+                            Console.WriteLine(operation);
+                            continue;
+                    }
                 }
-                else if (operation == "read")
+                catch (ReadFromDBException ex)
                 {
-                    handler.ReadFromDb(GetId());
-                }
-                else
-                {
-                    Console.WriteLine(operation);
-                    continue;
+                    Console.WriteLine(ex.Message);
                 }
                 isWork = Enttrance();
-                
+
             }
         }
 
@@ -52,6 +66,8 @@ namespace JsonAndXml
                     return "save";
                 case "read":
                     return "read";
+                case "readAll":
+                    return "readAll";
                 default: return "There is no this operation. Try again..";
             }
         }

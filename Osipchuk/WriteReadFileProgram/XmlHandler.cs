@@ -15,16 +15,17 @@ namespace JsonAndXml
     public class XmlHandler : IHandler
     {
 
-        static private XmlSerializer formatter = new XmlSerializer(typeof(List<Data>));
+        static private XmlSerializer formatter = new XmlSerializer(typeof(Data[]));
         private string pathForXml = @"D:\NewFolder\db.xml";
-        public void WriteToDb(string name, NestedData info)
+        public void Write(string name, NestedData info)
         {
             CreateFile(pathForXml);
-            List<Data> allData = ReadAllFromDb();
+            Data[] allData = ReadAll();
             int currentId;
-            if (allData.Count == 0) currentId = -1;
+            if (allData.Length == 0) currentId = -1;
             else currentId = allData.Last().Id;
-            allData.Add(new Data(++currentId, name, info));
+            Array.Resize(ref allData, currentId + 2);
+            allData[allData.Length - 1] = (new Data(++currentId, name, info));
             Console.WriteLine($"Id: {currentId}");
             using (FileStream fStream = new FileStream(pathForXml, FileMode.OpenOrCreate))
             {
@@ -32,31 +33,22 @@ namespace JsonAndXml
             }
             Console.WriteLine("Saccess!!");
         }
-        public List<Data> ReadAllFromDb()
-        { 
-            ///
-            using (FileStream fileStream = new FileStream(pathForXml, FileMode.OpenOrCreate))
-            {
-
-                formatter.Serialize(fileStream, new List<Data>());
-            }
-            ///
+        public Data[] ReadAll()
+        {
+            if (File.Exists(pathForXml) == false) throw new ReadFromDBException("There is no any data yet.");
             using (FileStream fstream = new FileStream(pathForXml, FileMode.OpenOrCreate))
-            {               
-                List<Data>? dataArray = formatter.Deserialize(fstream) as List<Data>;
-                return dataArray ?? new List<Data>();
+            {
+                Data[] dataArray = formatter.Deserialize(fstream) as Data[];
+                return dataArray;
             }
         }
-        public void ReadFromDb( int id)
+        public Data Read(int id)
         {
-            if (File.Exists(pathForXml) == false) { Console.WriteLine("There are no any data yet."); return; }
-            List<Data> dataArray = ReadAllFromDb();
-            if (dataArray.Any(data => data.Id == id))
-            {
-                Data data = dataArray.FirstOrDefault(d => d.Id == id);
-                Console.WriteLine($"Name: {data.Name}, Info: {data.Nested.Info}");
-            }
-            else Console.WriteLine("There is no this Id.");
+            if (File.Exists(pathForXml) == false) throw new ReadFromDBException("There is no any data yet.");
+            Data[] dataArray = ReadAll();
+            Data data = dataArray.FirstOrDefault(d => d.Id == id);
+            if (data != null) return data;
+            else throw new ReadFromDBException("There is no data with whis id.");
         }
         private static void CreateFile(string path)
         {
@@ -68,6 +60,10 @@ namespace JsonAndXml
             {
                 var file = File.Create(path);
                 file.Close();
+                using (FileStream fStream = new FileStream(path, FileMode.OpenOrCreate))
+                {
+                    formatter.Serialize(fStream, new Data[] {});
+                }
             }
         }
     }
