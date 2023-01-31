@@ -1,4 +1,5 @@
-﻿using FileWorker.FileWriters;
+﻿using FileValidator;
+using FileWorker.FileWriters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,7 @@ namespace FileWorker
     }
     public interface IFileWritable
     {
-        event Action<string> Notify;
-        void Write(string request);
+        Task<OperationResult> Write(string request);
     }
     public class FileManagerFactory : IFileWriteableFactory
     { 
