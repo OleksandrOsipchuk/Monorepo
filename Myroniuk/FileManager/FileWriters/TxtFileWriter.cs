@@ -19,7 +19,7 @@ namespace FileWorker.FileWriters
             try
             {
                 using (StreamWriter sw = new StreamWriter(parameters.FilePath))
-                    await sw.WriteAsync(parameters.FilePath.TrimStart('{').TrimEnd('}'));
+                    await sw.WriteAsync(parameters.Data.TrimStart('{').TrimEnd('}'));
                 if (parameters.Zip)
                 {
                     using (FileStream fileToCompress = File.OpenRead(parameters.FilePath))
