@@ -1,4 +1,5 @@
-﻿using FileValidator;
+﻿using FileManager.OperationParameters;
+using FileValidator.OperationParameters;
 using FileWorker.FileWriters;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FileWorker
+namespace FileManager.FileWriters
 {
     public interface IFileWriteFactory
     {
@@ -14,10 +15,10 @@ namespace FileWorker
     }
     public interface IFileWriter
     {
-        Task<OperationResult> Write(string request);
+        Task<OperationResult> Write(WriteParameters parameters);
     }
-    public class FileManagerFactory : IFileWriteFactory
-    { 
+    public class FileWriteFactory : IFileWriteFactory
+    {
         public IFileWriter Create(string extension)
         {
             switch (extension)
@@ -29,7 +30,7 @@ namespace FileWorker
                 case ".xml":
                     return new XmlFileWriter();
                 default:
-                    throw new ArgumentException("Invalid file extension."); 
+                    throw new ArgumentException("Invalid file extension.");
             }
         }
     }

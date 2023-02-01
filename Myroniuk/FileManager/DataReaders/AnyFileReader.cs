@@ -1,4 +1,5 @@
-﻿using FileValidator;
+﻿using FileManager.OperationParameters;
+using FileValidator.OperationParameters;
 using System;
 using System.Collections.Generic;
 using System.IO.Compression;
@@ -8,16 +9,15 @@ using System.Threading.Tasks;
 
 namespace FileWorker.DataReaders
 {
-    public class AnyFileReader : DataHelper
+    public class AnyFileReader
     {
-        public async Task<OperationResult> Read(string request)
+        public async Task<OperationResult> Read(ReadParameters parameters)
         {
-            string path = GetFilename(request);
             try
             {
-                if (GetZip(request))
+                if (parameters.Zip)
                 {
-                    using (ZipArchive archive = ZipFile.OpenRead(path))
+                    using (ZipArchive archive = ZipFile.OpenRead(parameters.FilePath))
                         foreach (ZipArchiveEntry entry in archive.Entries)
                         {
                             using (StreamReader sr = new StreamReader(entry.Open()))
@@ -26,7 +26,7 @@ namespace FileWorker.DataReaders
                 }
                 else
                 {
-                    using (StreamReader sr = new StreamReader(path))
+                    using (StreamReader sr = new StreamReader(parameters.FilePath))
                         return new OperationResult(true, sr.ReadToEnd());
                 }
             }

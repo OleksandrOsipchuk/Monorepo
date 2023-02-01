@@ -7,35 +7,35 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using FileWorker.DataReaders;
-using FileValidator;
 using Newtonsoft.Json;
 using System.Xml;
+using FileValidator.OperationParameters;
+using FileManager.FileWriters;
+using FileManager.OperationParameters;
 
 namespace FileWorker.FileWriters
 {
-    public class XmlFileWriter : DataHelper, IFileWriter
+    public class XmlFileWriter : IFileWriter
     {
-        public async Task<OperationResult> Write(string request)
+        public async Task<OperationResult> Write(WriteParameters parameters)
         {
-            string data = GetData(request);
-            string path = GetFilename(request);
             XmlSerializer serializer = new XmlSerializer(typeof(string));
             try
             {
-                using (StreamWriter sw = new StreamWriter(path))
-                    await sw.WriteAsync(data);
-                if (GetZip(request))
+                using (StreamWriter sw = new StreamWriter(parameters.FilePath))
+                    await sw.WriteAsync(parameters.Data);
+                if (parameters.Zip)
                 {
-                    using (FileStream fileToCompress = File.OpenRead(path))
-                        using (FileStream compressedFile = File.Create(path.Substring(0, path.Length - ".xml".Length) + ".zip"))
+                    using (FileStream fileToCompress = File.OpenRead(parameters.FilePath))
+                        using (FileStream compressedFile = File.Create(parameters.FilePath.Replace(".xml", ".zip")))
                             using (ZipArchive archive = await Task.Run(() => new ZipArchive(compressedFile, ZipArchiveMode.Create)))
                             {
-                                ZipArchiveEntry archiveEntry = archive.CreateEntryFromFile(path, Path.GetFileName(path));
+                                ZipArchiveEntry archiveEntry = archive.CreateEntryFromFile(parameters.FilePath, Path.GetFileName(parameters.FilePath));
                             }
-                    File.Delete(path);
-                    return new OperationResult(true, $"XML file \\{path} was archived successfully to \\{path.Substring(0, path.Length - ".xml".Length) + ".zip"}.");
+                    File.Delete(parameters.FilePath);
+                    return new OperationResult(true, $"\\{parameters.FilePath} archived to \\{parameters.FilePath.Replace(".xml", ".zip")}");
                 }
-                return new OperationResult(true, $"Data was written to the \\{path} file successfully.");
+                return new OperationResult(true, $"Data was written to the \\{parameters.FilePath} file successfully.");
             }
             catch (ArgumentException ex)
             {

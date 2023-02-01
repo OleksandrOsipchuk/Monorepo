@@ -10,7 +10,7 @@ namespace FileWorker.DataReaders
 {
     public abstract class DataHelper
     {
-        public bool GetZip(string request)
+        public bool isZip(string request)
         {
             return request.Contains(" [--zip=true]") || request.Contains(".zip}");
         }
