@@ -37,10 +37,10 @@ namespace Program
                             Console.WriteLine($"Name: {data.Name}, Info: {data.Nested.Info}");
                             break;
                         case "readAll":
-                            Data[] allData = handler.ReadAll();
+                            IList<Data> allData = handler.ReadAll();
                             foreach (Data _data in allData)
                             {
-                                Console.WriteLine($"Name: {_data.Name}, Info: {_data.Nested.Info}, Id: {_data.Id}");
+                                Console.WriteLine($"Name: {_data.Name}, Info: {_data.Nested.Info}, Id: {_data.Id}\n");
                             }
                             break;
                         default:

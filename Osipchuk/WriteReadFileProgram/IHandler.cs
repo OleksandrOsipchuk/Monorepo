@@ -9,7 +9,7 @@ namespace Program
     public interface IHandler
     {
         public void Write(string name, NestedData info);
-        public Data[] ReadAll();
+        public IList<Data> ReadAll();
         public  Data Read( int id);
     }
 }
