@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Net.Security;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Xml;
 
 namespace Program
 {
@@ -44,12 +45,25 @@ namespace Program
         public Data Read(int id)
         {
             if (File.Exists(pathForXml) == false) throw new ReadFromDBException("There is no any data yet.");
-            IList<Data> dataArray = ReadAll();
-            Data data = dataArray.FirstOrDefault(d => d.Id == id);
-            if (data != null) return data;
-            else throw new ReadFromDBException("There is no data with whis id.");
+            XmlReader reader = XmlReader.Create(pathForXml);
+            reader.ReadToDescendant("Data");
+            do
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(reader.ReadOuterXml());
+                XmlNode item = doc.DocumentElement;
+                XmlSerializer serial = new XmlSerializer(typeof(Data));
+                using (XmlNodeReader dataReader = new XmlNodeReader(item))
+                {
+                    Data data = (Data)serial.Deserialize(dataReader);
+                    if (data.Id == id) return data;
+                }
+            }
+            while (reader.ReadToNextSibling("Data"));
+            reader.Close();
+            throw new ReadFromDBException("There is no data with whis id.");
         }
-       override protected  void CreateFileIfNotExists(string path)
+        override protected  void CreateFileIfNotExists(string path)
         {
             if (!Directory.Exists(@"D:\NewFolder"))
             {

@@ -36,12 +36,24 @@ namespace Program
            
         }
         public Data Read(int id)
-        {          
-            IList<Data> dataArray = ReadAll();
-            
-            Data data = dataArray.FirstOrDefault(d => d.Id == id);
-            if (data != null) return data;
-            else throw new ReadFromDBException("There is no data with whis id.");
-        }      
+        {
+            using (StreamReader sr = new StreamReader(pathForJson))
+            {
+                using (JsonTextReader reader = new JsonTextReader(sr))
+                {
+                    reader.SupportMultipleContent = true;
+                    var serializer = new JsonSerializer();
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonToken.StartObject)
+                        {
+                            Data data = serializer.Deserialize<Data>(reader);
+                            if (data.Id == id) return data;
+                        }
+                    }
+                }
+            }
+            throw new ReadFromDBException("There is no data with whis id.");
+        }
     }
 }
