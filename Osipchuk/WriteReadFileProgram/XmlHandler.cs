@@ -13,10 +13,10 @@ using System.Xml;
 
 namespace Program
 {
-    public class XmlHandler :Handler, IHandler
+    public class XmlHandler : Handler, IHandler
     {
 
-        static private XmlSerializer formatter = new XmlSerializer(typeof(List<Data>));
+        private static XmlSerializer formatter = new XmlSerializer(typeof(List<Data>));
         private string pathForXml = @"D:\NewFolder\db.xml";
         public void Write(string name, NestedData info)
         {
@@ -25,7 +25,7 @@ namespace Program
             int currentId;
             if (allData.Count == 0) currentId = -1;
             else currentId = allData.Last().Id;
-            allData.Add( new Data(++currentId, name, info));
+            allData.Add(new Data(++currentId, name, info));
             Console.WriteLine($"Id: {currentId}");
             using (FileStream fStream = new FileStream(pathForXml, FileMode.OpenOrCreate))
             {
@@ -63,7 +63,7 @@ namespace Program
             reader.Close();
             throw new ReadFromDBException("There is no data with whis id.");
         }
-        override protected  void CreateFileIfNotExists(string path)
+        protected override void CreateFileIfNotExists(string path)
         {
             if (!Directory.Exists(@"D:\NewFolder"))
             {

@@ -38,9 +38,9 @@ namespace Program
                             break;
                         case "readAll":
                             IList<Data> allData = handler.ReadAll();
-                            foreach (Data _data in allData)
+                            foreach (Data dat in allData)
                             {
-                                Console.WriteLine($"Name: {_data.Name}, Info: {_data.Nested.Info}, Id: {_data.Id}\n");
+                                Console.WriteLine($"Name: {dat.Name}, Info: {dat.Nested.Info}, Id: {dat.Id}\n");
                             }
                             break;
                         default:
@@ -52,7 +52,7 @@ namespace Program
                 {
                     Console.WriteLine(ex.Message);
                 }
-                isWork = Enttrance();
+                isWork = CheckIfExit();
 
             }
         }
@@ -105,7 +105,7 @@ namespace Program
             catch (OverflowException) { }
             return id;
         }
-        private static bool Enttrance()
+        private static bool CheckIfExit()
         {
             Console.WriteLine("Press <Enter> if you want to continue the program.\n");
             ConsoleKey entr = Console.ReadKey().Key;
