@@ -11,18 +11,16 @@ namespace FileWorker
     {
         static async Task Main(string[] args)
         {
-            IParametersFactory parameterFactory = new ParametersFactory();
-            var parameters = parameterFactory.ParseParameters(args);
+            var parameters = args.ParseParameters();
             if (parameters is ReadParameters)
             {
                 var readParameters = parameters as ReadParameters;
-                AnyFileReader anyFileReader = new AnyFileReader();
-                var resultTask = anyFileReader.Read(readParameters);
+                var resultTask = AnyFileReader.Read(readParameters);
                 var result = await resultTask;
                 Console.WriteLine(result.Message);
             }
             else if (parameters is WriteParameters)
-            {   
+            {
                 var writeParameters = parameters as WriteParameters;
                 IFileWriteFactory fileWriteFactory = new FileWriteFactory();
                 var fileWriter = fileWriteFactory.Create(writeParameters.Extension);
@@ -33,7 +31,7 @@ namespace FileWorker
             else
                 Console.WriteLine("Please use: read --filename={example.*} [--zip=true]\n" +
                 "where * - json, xml, txt OR:\n" +
-                "write --data={\"id\":\"example\"} --filename={example.*} [--zip=true]");
+                "write --data=\"data data2 data3\" --filename={example.*} [--zip=true]");
         }
     }
 }

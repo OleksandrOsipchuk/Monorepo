@@ -1,19 +1,12 @@
 ﻿using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FileWorker.DataReaders;
 using FileValidator.OperationParameters;
 using FileManager.FileWriters;
 using FileManager.OperationParameters;
 
 namespace FileWorker.FileWriters
 {
-    public class JsonFileWriter : IFileWriter
+    public class JsonFileWriter : FileWriterBase, IFileWriter
     {
         async public Task<OperationResult> Write(WriteParameters parameters)
         {
@@ -22,17 +15,7 @@ namespace FileWorker.FileWriters
                 JToken.Parse(parameters.Data);
                     using (StreamWriter sw = new StreamWriter(parameters.FilePath))
                         await sw.WriteAsync(JsonConvert.SerializeObject(parameters.Data));
-                if(parameters.Zip)
-                {
-                    using (FileStream fileToCompress = File.OpenRead(parameters.FilePath))
-                    using (FileStream compressedFile = File.Create(parameters.FilePath.Replace(".json", ".zip")))
-                    using (ZipArchive archive = new ZipArchive(compressedFile, ZipArchiveMode.Create))
-                    {
-                        ZipArchiveEntry archiveEntry = archive.CreateEntryFromFile(parameters.FilePath, Path.GetFileName(parameters.FilePath));
-                    }
-                    File.Delete(parameters.FilePath);
-                    return new OperationResult(true, $"\\{parameters.FilePath} archived to \\{parameters.FilePath.Replace(".json", ".zip")}");
-                }
+                if (parameters.Zip) return WriteArchive(parameters.FilePath, parameters.Extension);
                 return new OperationResult(true, $"Data was written to the \\{parameters.FilePath} file successfully.");
             }
             catch (ArgumentException ex)

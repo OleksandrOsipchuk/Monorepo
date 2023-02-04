@@ -7,24 +7,28 @@ using System.Threading.Tasks;
 
 namespace FileValidator.OperationParameters
 {
-    public interface IParametersFactory
-    {
-        public IParameters ParseParameters(string[] args);
+    public interface IParameters {
+        string FilePath { get; }
+        bool Zip { get; }
     }
-    public interface IParameters { }
-    public class ParametersFactory : IParametersFactory {
-        public IParameters ParseParameters(string[] args)
+    public static class ParametersParserExtension
+    {
+        public static IParameters ParseParameters(this string[] args)
         {
+            if(args.Length == 0) { args = Console.ReadLine().Split(' '); }
             string fileName = string.Empty;
             string data = string.Empty;
             bool zip = false;
             foreach (var arg in args)
             {
                 if (arg.StartsWith("--filename="))
-                    fileName = Regex.Match(arg, @"(?<=filename=\{)[^}]+").Value;
+                {
+                    fileName = arg.Split("=")[1].TrimStart('{').TrimEnd('}');
+                    if (fileName.Contains(".zip")) zip = true;
+                }
                 else if (arg.StartsWith("--data="))
-                    data = Regex.Match(arg, @"data=\{([^}]+)\}").Groups[1].Value;
-                else if (arg == "[--zip=true]")
+                    data = arg.Split("=")[1];
+                else if (arg.StartsWith("--zip=true"))
                     zip = true;
             }
             if (!string.IsNullOrEmpty(fileName))

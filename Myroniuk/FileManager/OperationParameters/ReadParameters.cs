@@ -1,9 +1,4 @@
-﻿using FileWorker.DataReaders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace FileValidator.OperationParameters
 {
@@ -11,12 +6,10 @@ namespace FileValidator.OperationParameters
     {
         public ReadParameters(string filePath, bool zip)
         {
-            FilePath = filePath;
+            FilePath = filePath; // .Substring(1, filePath.Length - 2); on question
             Zip = zip;
-            Extension = Path.GetExtension(filePath);
         }
         public string FilePath { get; private set; }
-        public string Extension { get; private set; }
         public bool Zip { get; private set; }
     }
 }

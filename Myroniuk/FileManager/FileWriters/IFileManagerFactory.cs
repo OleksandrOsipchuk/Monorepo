@@ -1,11 +1,6 @@
 ﻿using FileManager.OperationParameters;
 using FileValidator.OperationParameters;
 using FileWorker.FileWriters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileManager.FileWriters
 {

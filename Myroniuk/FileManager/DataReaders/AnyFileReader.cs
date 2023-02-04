@@ -1,17 +1,12 @@
 ﻿using FileManager.OperationParameters;
 using FileValidator.OperationParameters;
-using System;
-using System.Collections.Generic;
 using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileWorker.DataReaders
 {
-    public class AnyFileReader
+    public static class AnyFileReader
     {
-        public async Task<OperationResult> Read(ReadParameters parameters)
+        public static async Task<OperationResult> Read(ReadParameters parameters)
         {
             try
             {
@@ -21,7 +16,7 @@ namespace FileWorker.DataReaders
                         foreach (ZipArchiveEntry entry in archive.Entries)
                         {
                             using (StreamReader sr = new StreamReader(entry.Open()))
-                                return await Task.Run(() => new OperationResult(true, sr.ReadToEnd()));
+                                return new OperationResult(true, await sr.ReadToEndAsync());
                         }
                 }
                 else
