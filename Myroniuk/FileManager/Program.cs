@@ -15,7 +15,7 @@ namespace FileWorker
             if (parameters is ReadParameters)
             {
                 var readParameters = parameters as ReadParameters;
-                var resultTask = AnyFileReader.Read(readParameters);
+                var resultTask = AnyFileReader.ReadAsync(readParameters);
                 var result = await resultTask;
                 Console.WriteLine(result.Message);
             }
@@ -24,14 +24,14 @@ namespace FileWorker
                 var writeParameters = parameters as WriteParameters;
                 IFileWriteFactory fileWriteFactory = new FileWriteFactory();
                 var fileWriter = fileWriteFactory.Create(writeParameters.Extension);
-                var resultTask = fileWriter.Write(writeParameters);
+                var resultTask = fileWriter.WriteAsync(writeParameters);
                 var result = await resultTask;
                 Console.WriteLine(result.Message);
             }
             else
-                Console.WriteLine("Please use: read --filename={example.*} [--zip=true]\n" +
+                Console.WriteLine("Please use: read --filename={example.*} --zip=true\n" +
                 "where * - json, xml, txt OR:\n" +
-                "write --data=\"data data2 data3\" --filename={example.*} [--zip=true]");
+                "write --data={data123} --filename={example.*} --zip=true");
         }
     }
 }

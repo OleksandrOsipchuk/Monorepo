@@ -8,14 +8,14 @@ namespace FileWorker.FileWriters
 {
     public class XmlFileWriter : FileWriterBase, IFileWriter
     {
-        public async Task<OperationResult> Write(WriteParameters parameters)
+        public async Task<OperationResult> WriteAsync(WriteParameters parameters)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(string));
             try
             {
                 using (StreamWriter sw = new StreamWriter(parameters.FilePath))
                     await sw.WriteAsync(parameters.Data);
-                if (parameters.Zip) return WriteArchive(parameters.FilePath, parameters.Extension);
+                if (parameters.isZip) return WriteArchive(parameters.FilePath, parameters.Extension);
                 return new OperationResult(true, $"Data was written to the \\{parameters.FilePath} file successfully.");
             }
             catch (ArgumentException ex)

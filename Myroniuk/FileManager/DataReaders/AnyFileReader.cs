@@ -6,11 +6,11 @@ namespace FileWorker.DataReaders
 {
     public static class AnyFileReader
     {
-        public static async Task<OperationResult> Read(ReadParameters parameters)
+        public static async Task<OperationResult> ReadAsync(ReadParameters parameters)
         {
             try
             {
-                if (parameters.Zip)
+                if (parameters.isZip)
                 {
                     using (ZipArchive archive = ZipFile.OpenRead(parameters.FilePath))
                         foreach (ZipArchiveEntry entry in archive.Entries)
@@ -22,7 +22,7 @@ namespace FileWorker.DataReaders
                 else
                 {
                     using (StreamReader sr = new StreamReader(parameters.FilePath))
-                        return new OperationResult(true, sr.ReadToEnd());
+                        return new OperationResult(true, await sr.ReadToEndAsync());
                 }
             }
             catch (FileNotFoundException ex)

@@ -8,12 +8,12 @@ namespace FileValidator.OperationParameters
         {
             Data = data;
             FilePath = filePath;
-            Zip = zip;
+            isZip = zip;
             Extension = Path.GetExtension(FilePath);
         }
         public string Data { get; private set; }
         public string FilePath { get; private set; }
         public string Extension { get; private set; }
-        public bool Zip { get; private set; }
+        public bool isZip { get; private set; }
     }
 }

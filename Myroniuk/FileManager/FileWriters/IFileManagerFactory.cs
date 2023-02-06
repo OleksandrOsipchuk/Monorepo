@@ -10,7 +10,7 @@ namespace FileManager.FileWriters
     }
     public interface IFileWriter
     {
-        Task<OperationResult> Write(WriteParameters parameters);
+        Task<OperationResult> WriteAsync(WriteParameters parameters);
     }
     public class FileWriteFactory : IFileWriteFactory
     {

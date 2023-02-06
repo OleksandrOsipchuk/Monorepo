@@ -6,10 +6,10 @@ namespace FileValidator.OperationParameters
     {
         public ReadParameters(string filePath, bool zip)
         {
-            FilePath = filePath; // .Substring(1, filePath.Length - 2); on question
-            Zip = zip;
+            FilePath = filePath;
+            isZip = zip;
         }
         public string FilePath { get; private set; }
-        public bool Zip { get; private set; }
+        public bool isZip { get; private set; }
     }
 }

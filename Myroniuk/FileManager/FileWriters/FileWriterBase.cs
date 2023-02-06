@@ -3,7 +3,7 @@ using System.IO.Compression;
 
 namespace FileManager.FileWriters
 {
-    abstract public class FileWriterBase
+    public abstract class FileWriterBase
     {
         public OperationResult WriteArchive (string filepath, string extension)
         {

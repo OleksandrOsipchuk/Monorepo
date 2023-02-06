@@ -9,7 +9,7 @@ namespace FileValidator.OperationParameters
 {
     public interface IParameters {
         string FilePath { get; }
-        bool Zip { get; }
+        bool isZip { get; }
     }
     public static class ParametersParserExtension
     {
