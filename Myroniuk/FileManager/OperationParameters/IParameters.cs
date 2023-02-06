@@ -11,9 +11,9 @@ namespace FileValidator.OperationParameters
         string FilePath { get; }
         bool isZip { get; }
     }
-    public static class ParametersParserExtension
+    public static class ParametersParser
     {
-        public static IParameters ParseParameters(this string[] args)
+        public static IParameters ParseParameters(string[] args)
         {
             if(args.Length == 0) { args = Console.ReadLine().Split(' '); }
             string fileName = string.Empty;

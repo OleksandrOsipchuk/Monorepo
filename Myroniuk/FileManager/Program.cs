@@ -11,7 +11,7 @@ namespace FileWorker
     {
         static async Task Main(string[] args)
         {
-            var parameters = args.ParseParameters();
+            var parameters = ParametersParser.ParseParameters(args);
             if (parameters is ReadParameters)
             {
                 var readParameters = parameters as ReadParameters;
