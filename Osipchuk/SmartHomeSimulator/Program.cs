@@ -1,2 +1,11 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Test");
+﻿using System;
+namespace SmartHomeSimulator // rename (?)
+{
+    class Program
+    {
+        static void Main(string[] args)
+        { 
+
+        }
+    }
+}
