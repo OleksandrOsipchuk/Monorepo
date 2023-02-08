@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SmartHomeSimulator
 {
-    internal class Kitchen
+    public class Kitchen : RoomBase
     {
     }
 }

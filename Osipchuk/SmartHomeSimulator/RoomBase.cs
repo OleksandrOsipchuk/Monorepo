@@ -6,7 +6,17 @@ using System.Threading.Tasks;
 
 namespace SmartHomeSimulator
 {
-    internal class RoomBase
+    public abstract class RoomBase
     {
+        protected bool TurnOfLite(bool isLiteOn)
+        {
+            if (!isLiteOn)
+            {
+                Console.WriteLine("The light was off!!");
+                return false;
+            }
+            Console.WriteLine("The light is already off!!");
+            return false;
+        }
     }
 }
