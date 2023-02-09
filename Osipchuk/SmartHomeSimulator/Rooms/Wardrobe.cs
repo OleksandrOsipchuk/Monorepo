@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartHomeSimulator.Room;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,19 @@ using System.Threading.Tasks;
 
 namespace SmartHomeSimulator
 {
-    public class Wardrobe : RoomBase
+    public class Wardrobe : RoomBase, IRoomManager
     {
+        public float Temperature => throw new NotImplementedException();
+
+        public bool IsLighted => throw new NotImplementedException();
+
+        public void DoSomething()
+        {
+            throw new NotImplementedException();
+        }
+        public void PrintOpportunities()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

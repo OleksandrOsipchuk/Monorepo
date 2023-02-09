@@ -14,12 +14,7 @@ namespace SmartHomeSimulator.Room
     {
         float Temperature { get; }
         bool IsLighted { get; }
-    }
-    public class RoomManagerFactory
-    {
-        public IRoomManager CreateRoom(byte typeChoice)
-        {
-            //logic
-        }
-    }
+        void PrintOpportunities();
+        void DoSomething();
+    }   
 }
