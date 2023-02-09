@@ -10,15 +10,31 @@ namespace SmartHomeSimulator
 {
     public abstract class RoomBase
     {
-        public ActionResult ChangeTemperature (IRoomManager room, float temperature)
+        protected float Temperature { get; set; } = 20;
+        protected bool IsLighted { get; set; } = false;
+        protected virtual void GetAllInfo()
         {
-            //logic
-            return new ActionResult($"Temperature is now at: {temperature} degrees Celsium.", true);
+            Console.WriteLine($"Temperature is {Temperature} degrees Celsius." +
+                $"\nIs lighted in room: {IsLighted}.");
         }
-        public ActionResult ChangeLightState(IRoomManager room, bool isLighted)
+        public void ChangeTemperature() 
         {
-            //logic
-            return new ActionResult($"Lights are : {(isLighted ? "ON" : "OFF")}.", true);
+            Temperature = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine($"Temperature is {Temperature}.");
         }
+        public void ChangeLightState() 
+        {
+            if (IsLighted == false)
+            {
+                IsLighted = true;
+                Console.WriteLine("Ligth was turned on");
+            }
+            else
+            {
+                IsLighted = false;
+                Console.WriteLine("Ligth was turned off");
+            }
+        }     
     }
 }
+

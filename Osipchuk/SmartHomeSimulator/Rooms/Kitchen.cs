@@ -9,18 +9,29 @@ namespace SmartHomeSimulator
 {
     public class Kitchen : RoomBase, IRoomManager
     {
-        public float Temperature => throw new NotImplementedException();
-
-        public bool IsLighted => throw new NotImplementedException();
-
-        public void DoSomething()
-        {
-            throw new NotImplementedException();
-        }
 
         public void PrintOpportunities()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("\nYou can turn on/off the light (command: <switchLight>)." +
+                "\nYou can turn on/off the TV (command: <temperature>)."+
+                "\nYou can get all info about the room (command: <info>)");
+        }
+        public void DoSomething()
+        {
+            Console.Write("Write command: ");
+            string command = Console.ReadLine();
+            switch (command)
+            {
+                case "switchLight":
+                    ChangeLightState();
+                    break;
+                case "temperature":
+                    ChangeTemperature();
+                    break;
+                case "info":
+                    GetAllInfo();
+                    break;
+            }
         }
     }
 }

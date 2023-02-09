@@ -8,12 +8,10 @@ namespace SmartHomeSimulator.Room
 {
     public interface IRoomManagerFactory
     {
-        public IRoomManager CreateRoom(byte typeChoice);
+        public IRoomManager CreateRoom(string typeOfRoom);
     }
     public interface IRoomManager
     {
-        float Temperature { get; }
-        bool IsLighted { get; }
         void PrintOpportunities();
         void DoSomething();
     }   
