@@ -8,15 +8,14 @@ namespace SmartHomeSimulator
 {
     public class ActionResult
     {
-        public ActionResult(string msg)
-        {
+        public ActionResult(string msg, bool actionSuccess) {
+            isSuccess= actionSuccess;
             Message = msg;
         }
-        public string Message
-        {
-            get
+        public string Message {
+            get 
             {
-                return "Success! " + message;
+                return isSuccess ? "Success! " + message : "Failed! " + message;
             }
             set
             {
@@ -24,5 +23,6 @@ namespace SmartHomeSimulator
             }
         }
         private string message;
+        private bool isSuccess;
     }
 }

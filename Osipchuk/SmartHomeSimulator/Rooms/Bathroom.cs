@@ -1,37 +1,16 @@
-﻿using SmartHomeSimulator.Room;
+﻿using SmartHomeSimulator.Interfaces.IProperties;
+using SmartHomeSimulator.Room;
+using SmartHomeSimulator.Rooms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 namespace SmartHomeSimulator
 {
-    public class Bathroom : RoomBase, IRoomManager
+    public class BathRoom : RoomBase, IHumidity
     {
-        public void PrintOpportunities()
-        {
-            Console.WriteLine("\nYou can turn on/off the light (command: <switchLight>)." +
-                "\nYou can turn on/off the TV (command: <temperature>)." +
-                "\nYou can get all info about the room (command: <info>).");
-        }
-
-        public void DoSomething()
-        {
-            Console.Write("Write command: ");
-            string command = Console.ReadLine();
-            switch (command)
-            {
-                case "switchLight":
-                    ChangeLightState();
-                    break;
-                case "temperature":
-                    ChangeTemperature();
-                    break;
-                case "info":
-                    GetAllInfo();
-                    break;
-
-            }
-        }
+        public float Humidity { get; set; } = 35;
     }
 }
