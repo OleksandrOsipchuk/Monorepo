@@ -13,11 +13,11 @@ namespace SmartHomeSimulator // rename (?)
         {
 
             var builder = new RoomBuilder();
-
-            var director = new BathroomDirector(builder);
+            RoomDirectorFactory factory = new RoomDirectorFactory();
+            IRoomDirector director = factory.GetRoomDirector("bedroom", builder);
             director.Build();
             Room room = builder.GetRoom();
-            Console.WriteLine($"{room.Temperature}  {room.IsLighted}  {room.Humidity}");
+            Console.WriteLine($"{room.Temperature}  {room.IsLighted}  {room.Humidity} {room.IsTVWorking}");
 
 
             //            //Console.WriteLine("Hello! Welcome to Smart home.");

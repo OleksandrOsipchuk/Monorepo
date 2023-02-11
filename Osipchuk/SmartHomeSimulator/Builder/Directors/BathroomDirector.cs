@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace SmartHomeSimulator.Builder.Directors
 {
-    public class BathroomDirector
+    public class BathroomDirector : IRoomDirector
     {
         private readonly IRoomBuilder _builder;
         public BathroomDirector(IRoomBuilder builder)
         {
-            _builder= builder;
+            _builder = builder;
         }
         public void Build()
         {
