@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SmartHomeSimulator.Interfaces.IProperties
+namespace SmartHomeSimulator.Builder.Directors
 {
-    public interface ITVState
+    public class KitchenDIrector
     {
-        public bool IsTVWorking { get; set; }
     }
 }

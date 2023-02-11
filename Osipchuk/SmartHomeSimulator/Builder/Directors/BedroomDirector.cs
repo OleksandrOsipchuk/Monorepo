@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SmartHomeSimulator.Interfaces.IProperties
+namespace SmartHomeSimulator.Builder.Directors
 {
-    public interface IHumidity
+    public class BedroomDirector
     {
-        public float Humidity { get; set; }
     }
 }

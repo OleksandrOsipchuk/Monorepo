@@ -22,7 +22,7 @@ namespace SmartHomeSimulator
                 message += value;
             }
         }
-        private string message;
+        private string? message;
         private bool isSuccess;
     }
 }
