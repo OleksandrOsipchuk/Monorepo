@@ -1,12 +1,11 @@
 ﻿using SmartHomeSimulator.Builder;
-using SmartHomeSimulator.Builder.Directors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SmartHomeSimulator
+namespace SmartHomeSimulator.Builder.Directors
 {
     public class RoomDirectorFactory
     {
@@ -18,8 +17,8 @@ namespace SmartHomeSimulator
                 "bedroom" => new BedroomDirector(builder),
                 "kitchen" => new KitchenDIrector(builder),
                 _ => throw new RoomExсeption("There is no this type of room."),
-            }; 
-           
+            };
+
         }
     }
 }

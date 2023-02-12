@@ -4,6 +4,7 @@
 //using System;
 using SmartHomeSimulator.Builder;
 using SmartHomeSimulator.Builder.Directors;
+using Newtonsoft.Json;
 
 namespace SmartHomeSimulator // rename (?)
 {
@@ -11,14 +12,13 @@ namespace SmartHomeSimulator // rename (?)
     {
         static void Main(string[] args)
         {
-
             var builder = new RoomBuilder();
             RoomDirectorFactory factory = new RoomDirectorFactory();
-            IRoomDirector director = factory.GetRoomDirector("bedroom", builder);
+            IRoomDirector director = factory.GetRoomDirector("bathroom", builder);
             director.Build();
             Room room = builder.GetRoom();
-            RoomPrinter printer= new RoomPrinter();
-            printer.PrintRoom(room);
+            Console.WriteLine(room);
+            Console.WriteLine(JsonConvert.SerializeObject(room)); // temporary testing, delete later
 
             //            //Console.WriteLine("Hello! Welcome to Smart home.");
             //            //bool isWork = true;

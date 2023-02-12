@@ -12,7 +12,7 @@ namespace SmartHomeSimulator.Builder
         public IRoomBuilder ChangeHumidity()
         {
             Console.Write("Write needed humidity: ");
-            float humidity = (float)Convert.ToDouble(Console.ReadLine());
+            float humidity = float.Parse(Console.ReadLine());
             _room.Humidity = humidity; 
             return this;
         }
@@ -20,8 +20,8 @@ namespace SmartHomeSimulator.Builder
         public IRoomBuilder ChangeLightState()
         {
             Console.Write("Write needed ligh state: ");
-            string isLighted = Console.ReadLine();
-           _room.IsLighted = isLighted;
+            bool isLighted = bool.Parse(Console.ReadLine());
+            _room.IsLighted = isLighted;
             return this;
         }
 
@@ -35,7 +35,7 @@ namespace SmartHomeSimulator.Builder
         public IRoomBuilder ChangeTVState()
         {
             Console.Write("Write needed TV state: ");
-            string isTVOn = Console.ReadLine();
+            bool isTVOn = bool.Parse(Console.ReadLine());
             _room.IsTVWorking = isTVOn;
             return this;
         }
