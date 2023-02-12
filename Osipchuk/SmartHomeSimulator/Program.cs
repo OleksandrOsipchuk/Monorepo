@@ -17,8 +17,8 @@ namespace SmartHomeSimulator // rename (?)
             IRoomDirector director = factory.GetRoomDirector("bedroom", builder);
             director.Build();
             Room room = builder.GetRoom();
-            Console.WriteLine($"{room.Temperature}  {room.IsLighted}  {room.Humidity} {room.IsTVWorking}");
-
+            RoomPrinter printer= new RoomPrinter();
+            printer.PrintRoom(room);
 
             //            //Console.WriteLine("Hello! Welcome to Smart home.");
             //            //bool isWork = true;

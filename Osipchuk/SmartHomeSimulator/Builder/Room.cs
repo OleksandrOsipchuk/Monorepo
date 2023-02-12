@@ -10,8 +10,8 @@ namespace SmartHomeSimulator.Builder
     {
         public float Temperature { get; set; }
         public float Humidity { get; set; }
-        public bool IsTVWorking { get; set; }
-        public bool IsLighted { get; set; }
+        public string IsTVWorking { get; set; }
+        public string IsLighted { get; set; }
 
     }
 }

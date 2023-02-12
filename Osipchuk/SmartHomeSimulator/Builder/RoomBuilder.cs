@@ -20,7 +20,7 @@ namespace SmartHomeSimulator.Builder
         public IRoomBuilder ChangeLightState()
         {
             Console.Write("Write needed ligh state: ");
-            bool isLighted = Convert.ToBoolean(Console.ReadLine());
+            string isLighted = Console.ReadLine();
            _room.IsLighted = isLighted;
             return this;
         }
@@ -35,8 +35,8 @@ namespace SmartHomeSimulator.Builder
         public IRoomBuilder ChangeTVState()
         {
             Console.Write("Write needed TV state: ");
-            bool isLighted = Convert.ToBoolean(Console.ReadLine());
-            _room.IsTVWorking = isLighted;
+            string isTVOn = Console.ReadLine();
+            _room.IsTVWorking = isTVOn;
             return this;
         }
         public Room GetRoom()
