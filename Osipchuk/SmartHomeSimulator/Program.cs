@@ -11,11 +11,11 @@ namespace SmartHomeSimulator // rename (?)
     class Program
     {
         static void Main(string[] args)
-        {
+        {       
             Console.WriteLine("Hello! Welcome to Smart home.");
-            bool isWork = true;
-            while (isWork)
-            {
+            //bool isWork = true;
+            //while (isWork)
+            //{
                 try
                 {
                     string directorType = GetType();
@@ -32,20 +32,21 @@ namespace SmartHomeSimulator // rename (?)
                     var newBuilder = new RoomBuilder(room);
                     ChangeRoom(newBuilder, room);
                     Room newRoom = newBuilder.GetRoom();
+                    house1.RemoveRoom(room); house1.AddRoom(newRoom);
                     Console.WriteLine(newRoom);
-
-                    //Console.WriteLine(JsonConvert.SerializeObject(room)); // temporary testing, delete later
-                }
+                    house1.HouseSerialize();
+            }
                 catch (RoomExсeption ex)
                 {
                     Console.WriteLine(ex.Message);
-                    continue;
+                    //continue;
                 }
                 catch (FormatException)
                 {
                     Console.WriteLine("Wrong value. Try write in correct format.");
                 }
-            }
+                catch (IOException ex) { Console.WriteLine(ex.Message); }
+            //}
         }       
         private static void ChangeRoom(RoomBuilder builder,Room room)
         {

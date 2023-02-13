@@ -23,8 +23,8 @@ namespace SmartHomeSimulator.Builder
             {
                 if (property.GetValue(this) != null)
                     results += ($"\n{property.Name}: {property.GetValue(this)}");
-                if (property.Name == "Temperature") results += " degrees Celsius.";
-                if (property.Name == "Humidity") results += " %.";
+                if (property.Name == "Temperature") results += "°C";
+                if (property.Name == "Humidity") results += "%";
             }
             return results;
         }
