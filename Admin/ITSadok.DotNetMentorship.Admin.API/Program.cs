@@ -14,7 +14,7 @@ public class Program
             .AddJsonFile("appsettings.json")
             .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json");
 
-        var startup = new Startup(builder.Configuration);
+        var startup = new Startup(builder.Configuration, builder.Environment);
         startup.ConfigureServices(builder.Services);
 
         var app = builder.Build();

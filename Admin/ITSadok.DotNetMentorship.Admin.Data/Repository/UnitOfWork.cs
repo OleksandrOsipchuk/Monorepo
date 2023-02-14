@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using ITSadok.DotNetMentorship.Admin.Data.Repository.Interfaces;
 
 namespace ITSadok.DotNetMentorship.Admin.Data.Repository
@@ -12,9 +13,20 @@ namespace ITSadok.DotNetMentorship.Admin.Data.Repository
             _context = context;
             StudentRepository = new StudentRepository(_context);
         }
-        public void Save()
+        public async Task<bool> SaveAsync()
         {
-            _context.SaveChanges();
+            try
+            {
+                _context.SaveChangesAsync();
+                return true;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return false;
+            
         }
 
         private bool disposed = false;

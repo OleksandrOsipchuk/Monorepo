@@ -9,7 +9,7 @@ namespace ITSadok.DotNetMentorship.Admin.Data.Entity
     {
         [Key]
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public StudentLevel StudentLevel { get; set;}
         public string? GithubLink { get; set; }
         public bool IsAdmin { get; set; }
