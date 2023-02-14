@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace SmartHomeSimulator
 {
-    public static class HouseListExtension
+    public static class HouseJSONExtension
     {
-        public static void HouseSerialize (this IEnumerable<House> houses)
+        public static void HouseSerialize (this IEnumerable<House> houses, string path)
         {
-            using (StreamWriter sw = new StreamWriter(@".\houses.json"))
+            using (StreamWriter sw = new StreamWriter(path))
                 sw.Write(JsonConvert.SerializeObject(houses));
         }
-        public static IEnumerable<House>? HouseDeserialize (string path)
+        public static List<House> HouseDeserialize (string path)
         {
             using (StreamReader sr = new StreamReader(path))
-                return JsonConvert.DeserializeObject<List<House>>(sr.ReadToEnd());
+                return JsonConvert.DeserializeObject<List<House>>(sr.ReadToEnd()) ?? new List<House>();
         }
     }
 }

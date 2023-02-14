@@ -11,14 +11,15 @@ namespace SmartHomeSimulator // rename (?)
     class Program
     {
         static void Main(string[] args)
-        {       
+        {
             Console.WriteLine("Hello! Welcome to Smart home.");
-            //bool isWork = true;
-            //while (isWork)
-            //{
+            bool isWork = true;
+            while (isWork)
+            {
                 try
                 {
-                    string directorType = GetType();
+                    List<House> houses = HouseJSONExtension.HouseDeserialize(@".\houses.json");
+                    string directorType = GetType();  // <-- starting here refactor 
                     var builder = new RoomBuilder();
                     RoomDirectorFactory factory = new RoomDirectorFactory();
                     IRoomDirector director = factory.GetRoomDirector(directorType, builder);
@@ -26,27 +27,26 @@ namespace SmartHomeSimulator // rename (?)
                     director.Build();
                     Room room = builder.GetRoom();
                     Console.WriteLine(room);
-
                     Console.WriteLine($"\nFilds you can change: ");
                     Console.WriteLine(room);
                     var newBuilder = new RoomBuilder(room);
                     ChangeRoom(newBuilder, room);
                     Room newRoom = newBuilder.GetRoom();
-                    house1.RemoveRoom(room); house1.AddRoom(newRoom);
-                    Console.WriteLine(newRoom);
-                    house1.HouseSerialize();
-            }
+                    Console.WriteLine(room); // <-- 
+                    houses.HouseSerialize(@".\houses.json");
+                }
                 catch (RoomExсeption ex)
                 {
                     Console.WriteLine(ex.Message);
-                    //continue;
+                    continue;
                 }
                 catch (FormatException)
                 {
                     Console.WriteLine("Wrong value. Try write in correct format.");
                 }
                 catch (IOException ex) { Console.WriteLine(ex.Message); }
-            //}
+            }
+            
         }       
         private static void ChangeRoom(RoomBuilder builder,Room room)
         {
@@ -67,7 +67,7 @@ namespace SmartHomeSimulator // rename (?)
                         builder.ChangeTVState();
                         break;
                 }
-            else throw new RoomExсeption("There if no this fild");
+            else throw new RoomExсeption("There is no such field");
         }
         private static string GetType()
         {

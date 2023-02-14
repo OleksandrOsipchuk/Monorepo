@@ -30,14 +30,9 @@ namespace SmartHomeSimulator.Builder
         }
         public bool CheckIfContain(string neededProperty)
         {
-            List<string> changebleProperties = new List<string>();
-            Type type = typeof(Room);
-            PropertyInfo[] properties = GetType().GetProperties();
-            foreach (PropertyInfo property in properties)
-            {
-                if (property.GetValue(this) != null) changebleProperties.Add(property.Name);
-            }
-            return changebleProperties.Contains(neededProperty);
+            return GetType().GetProperties()
+                .Where(property => property.GetValue(this) != null)
+                .Select(property => property.Name).Contains(neededProperty);
         }
     }
 }
