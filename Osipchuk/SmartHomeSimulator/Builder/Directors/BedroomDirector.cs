@@ -16,6 +16,7 @@ namespace SmartHomeSimulator.Builder.Directors
         public void Build()
         {
             _builder
+                .ChangeName()
                 .ChangeTemperature()
                 .ChangeLightState()
                 .ChangeHumidity()

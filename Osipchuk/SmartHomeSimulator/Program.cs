@@ -19,20 +19,23 @@ namespace SmartHomeSimulator // rename (?)
                 try
                 {
                     List<House> houses = HouseJSONExtension.HouseDeserialize(@".\houses.json");
-                    string directorType = GetType();  // <-- starting here refactor 
-                    var builder = new RoomBuilder();
-                    RoomDirectorFactory factory = new RoomDirectorFactory();
-                    IRoomDirector director = factory.GetRoomDirector(directorType, builder);
+                    foreach (Room room in houses[0].GetRooms()) {
+                        Console.WriteLine(room);
+                    }
+                    houses[0].AddRoom();
+                    houses[0].AddRoom();
+                    houses[0].AddRoom();
+                    //string directorType = GetType(); //get rid of this and just pass GetType() as argiment in House  // <-- starting here refactor 
+                    //var builder = new RoomBuilder();
+                    //RoomDirectorFactory factory = new RoomDirectorFactory();
+                    //IRoomDirector director = factory.GetRoomDirector(directorType, builder);
 
-                    director.Build();
-                    Room room = builder.GetRoom();
-                    Console.WriteLine(room);
-                    Console.WriteLine($"\nFilds you can change: ");
-                    Console.WriteLine(room);
-                    var newBuilder = new RoomBuilder(room);
-                    ChangeRoom(newBuilder, room);
-                    Room newRoom = newBuilder.GetRoom();
-                    Console.WriteLine(room); // <-- 
+                    //director.Build();
+                    //Room room = builder.GetRoom();
+                    //var newBuilder = new RoomBuilder(room);
+                    //ChangeRoom(newBuilder, room);
+                    //Room newRoom = newBuilder.GetRoom();
+                    //Console.WriteLine(room); // <-- 
                     houses.HouseSerialize(@".\houses.json");
                 }
                 catch (RoomExсeption ex)
@@ -68,20 +71,6 @@ namespace SmartHomeSimulator // rename (?)
                         break;
                 }
             else throw new RoomExсeption("There is no such field");
-        }
-        private static string GetType()
-        {
-            Console.WriteLine("<><><><><><><><><><><><><><><><><><><><><><><><><><>");
-            Console.WriteLine("Choose needed room!" +
-                "\nWrite < bathroom > to work with Bathroom. " +
-                "\nWrite < bedroom > to work with Bedroom. " +
-                "\nWrite < kitchen > to work with Kitchen. " +
-                "\nWrite < living > to work with Living room. " +
-                "\nWrite < wardrobe > to work with Wardrobe. " +
-                "\nWrite < corridor > to work with Сorridor. ");
-            string[] rooms = { "bathroom", "bedroom", "kitchen", "living", "wardrobe", "corridor" };
-            string room = Console.ReadLine();
-            return rooms.Contains(room) ? room : throw new RoomExсeption("There is no this commad!! Try another...");
         }
     }
 }

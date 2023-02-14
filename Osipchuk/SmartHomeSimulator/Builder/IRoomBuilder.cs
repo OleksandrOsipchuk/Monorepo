@@ -8,6 +8,7 @@ namespace SmartHomeSimulator.Builder
 {
     public interface IRoomBuilder
     {
+        IRoomBuilder ChangeName();
         IRoomBuilder ChangeHumidity();
         IRoomBuilder ChangeLightState();
         IRoomBuilder ChangeTemperature();
