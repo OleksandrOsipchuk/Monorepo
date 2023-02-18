@@ -6,14 +6,16 @@ using SmartHomeSimulator.Builder;
 using SmartHomeSimulator.Builder.Directors;
 using Newtonsoft.Json;
 using SmartHomeSimulator.HousesFiles;
-//test
+
 namespace SmartHomeSimulator // rename (?)
 {
     class Program
     {
         static async Task Main(string[] args)
         {
-            var worker = new FileJsonWorker(@".\houses.json");
+            string path = @".\houses.json";
+            CreateFileIfNotExists(path);
+            var worker = new FileJsonWorker(path);
             var exec = new MenuExecuter(worker);
             await exec.RunAsync();
             //var exec = new MenuExecuter(new FileJsonWorker(@".\house.json")); //wrong path for testing
@@ -50,6 +52,14 @@ namespace SmartHomeSimulator // rename (?)
             //    catch (IOException ex) { Console.WriteLine(ex.Message); }
             //}
 
+        }
+        private static void CreateFileIfNotExists(string path)
+        {
+            if (File.Exists(path) == false)
+            {
+                var file = File.Create(path);
+                file.Close();
+            }
         }
     }
 }

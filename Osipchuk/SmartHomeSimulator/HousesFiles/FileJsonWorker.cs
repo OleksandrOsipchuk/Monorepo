@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SmartHomeSimulator.HousesFiles //Rename later
 {
-    public class FileJsonWorker : IJsonWorker
+    public class FileJsonWorker : IDataBaseWorker
     {
         private readonly string _path;
         internal static List<House> _houses;
@@ -22,7 +22,7 @@ namespace SmartHomeSimulator.HousesFiles //Rename later
         public async Task<List<T>> ReadAsync<T>()
         {
             using (StreamReader sr = new StreamReader(_path))
-                return JsonConvert.DeserializeObject<List<T>>(await sr.ReadToEndAsync()) ?? default;
+                return JsonConvert.DeserializeObject<List<T>>(await sr.ReadToEndAsync()) ?? new List<T> ();
         }
     }
 }

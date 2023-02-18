@@ -12,10 +12,10 @@ namespace SmartHomeSimulator
     public class MenuExecuter
     {
         private List<House> _houses;
-        private IJsonWorker _jsonWorker;
+        private IDataBaseWorker _jsonWorker;
         //private House _currentHouse;
         //private Room _currentRoom;
-        public MenuExecuter(IJsonWorker jsonWorker)
+        public MenuExecuter(IDataBaseWorker jsonWorker)
         {
             _jsonWorker = jsonWorker;
         }
@@ -26,14 +26,15 @@ namespace SmartHomeSimulator
             while (true)
             {
                 int option = GetOption<House>(_houses);
-                if (option < _houses.Count+ 1) EnterHouse(_houses[option-1]);
+                if (option < _houses.Count + 1) EnterHouse(_houses[option - 1]);
                 else if (option == _houses.Count + 1) ManageHouses();
                 else break;
             }
         }
-        private void EnterHouse(House house) {
+        private void EnterHouse(House house)
+        {
             List<Room> rooms = house.GetRooms();
-            while(true)
+            while (true)
             {
                 int option = GetOption<Room>(rooms);
                 if (option < rooms.Count + 1) break; // EnterRoom(rooms[option - 1]);
@@ -41,16 +42,18 @@ namespace SmartHomeSimulator
             }
 
         }
-        private void ManageHouses() { // idk yet
+        private async void ManageHouses()
+        { // idk yet
             Console.WriteLine("ManageHouses working");
+          
         }
         private int GetOption<T>(List<T> values) where T : INameable
         {
             Console.WriteLine("Select an option: ");
             int i = 1;
-            while(i <= values.Count)
+            while (i <= values.Count)
             {
-                Console.WriteLine($"{i}. {values[i-1].Name}.");
+                Console.WriteLine($"{i}. {values[i - 1].Name}.");
                 i++;
             }
             Console.WriteLine($"{i++}. Manage.");
