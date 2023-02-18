@@ -24,14 +24,14 @@ namespace SmartHomeSimulator // rename (?)
             //{
             //    try
             //    {
-                    
+
             //        //string directorType = GetType(); //get rid of this and just pass GetType() as argiment in House  // <-- starting here refactor 
             //        //var builder = new RoomBuilder();
             //        //RoomDirectorFactory factory = new RoomDirectorFactory();
             //        //IRoomDirector director = factory.GetRoomDirector(directorType, builder);
             //        //director.Build();
             //        //Room room = builder.GetRoom();
-                    
+
             //        //var newBuilder = new RoomBuilder(room);
             //        //ChangeRoom(newBuilder, room);
             //        //Room newRoom = newBuilder.GetRoom();
@@ -49,7 +49,7 @@ namespace SmartHomeSimulator // rename (?)
             //    }
             //    catch (IOException ex) { Console.WriteLine(ex.Message); }
             //}
-            
-        }       
+
+        }
     }
 }
