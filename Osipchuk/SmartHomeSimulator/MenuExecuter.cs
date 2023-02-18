@@ -12,10 +12,10 @@ namespace SmartHomeSimulator
     public class MenuExecuter
     {
         private List<House> _houses;
-        private IDataBaseWorker _jsonWorker;
+        private IDataWorker _jsonWorker;
         //private House _currentHouse;
         //private Room _currentRoom;
-        public MenuExecuter(IDataBaseWorker jsonWorker)
+        public MenuExecuter(IDataWorker jsonWorker)
         {
             _jsonWorker = jsonWorker;
         }

@@ -8,10 +8,7 @@ namespace SmartHomeSimulator.Builder
 {
     public interface IRoomHandler
     {
-        string GetRoomType();
-        int GetIndex();
-        void RoomsListOutput(List<Room> rooms);
-        string GetProperty();
-        Room GetRoom(List<Room> rooms);
+        void Write<T>(T message);
+        string Read();        
     }
 }
