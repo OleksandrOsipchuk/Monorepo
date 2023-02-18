@@ -8,12 +8,12 @@ using System.Xml.Linq;
 
 namespace SmartHomeSimulator.Builder
 {
-    public class Room
+    public class Room : INameable
     {
         public string Name { get; set; }
-        public float Temperature { get; set; }
+        public float? Temperature { get; set; }
         public float? Humidity { get; set; }
-        public bool IsLighted { get; set; }
+        public bool? IsLighted { get; set; }
         public bool? IsTVWorking { get; set; }
         public override string ToString()
         {
