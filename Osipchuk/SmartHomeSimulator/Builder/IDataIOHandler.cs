@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SmartHomeSimulator.Builder
 {
-    public interface IOHandler
+    public interface IDataIOHandler
     {
         void Write<T>(T message);
         string Read();        
