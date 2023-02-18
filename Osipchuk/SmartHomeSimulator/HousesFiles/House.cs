@@ -34,6 +34,7 @@ namespace SmartHomeSimulator.HousesFiles
         }
         public void ChangeRoom() 
         {
+            RoomsListOutput(_rooms);
             currentRoom = GetRoom(_rooms);
             var builder = new RoomBuilder(currentRoom);
             string property = GetProperty();
