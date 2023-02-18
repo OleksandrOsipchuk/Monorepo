@@ -6,7 +6,7 @@ using SmartHomeSimulator.Builder;
 using SmartHomeSimulator.Builder.Directors;
 using Newtonsoft.Json;
 
-namespace SmartHomeSimulator /// rename (?)
+namespace SmartHomeSimulator // rename (?)
 {
     class Program
     {
