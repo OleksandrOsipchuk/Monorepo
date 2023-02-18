@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SmartHomeSimulator
+namespace SmartHomeSimulator.Builder
 {
-    public class RoomExсeption:Exception
+    public class RoomExсeption : Exception
     {
         public RoomExсeption(string Message) : base(Message) { }
     }

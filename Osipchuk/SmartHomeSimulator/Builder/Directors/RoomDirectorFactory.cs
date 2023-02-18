@@ -18,7 +18,6 @@ namespace SmartHomeSimulator.Builder.Directors
                 "kitchen" => new KitchenDIrector(builder),
                 _ => throw new RoomExсeption("There is no this type of room."),
             };
-
         }
     }
 }
