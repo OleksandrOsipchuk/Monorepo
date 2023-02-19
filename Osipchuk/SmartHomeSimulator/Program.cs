@@ -6,13 +6,13 @@ using SmartHomeSimulator.Builder;
 using SmartHomeSimulator.Builder.Directors;
 using Newtonsoft.Json;
 using SmartHomeSimulator.HousesFiles;
-/
+
 namespace SmartHomeSimulator // rename (?)
 {
     class Program
     {
         static async Task Main(string[] args)
-        {
+        {         
             var worker = new FileJsonWorker(@".\houses.json");
             var exec = new MenuExecuter(worker);
             await exec.RunAsync();
