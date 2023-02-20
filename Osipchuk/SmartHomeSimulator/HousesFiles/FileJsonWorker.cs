@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SmartHomeSimulator.HousesFiles //Rename later
 {
-    public class FileJsonWorker : IJsonWorker
+    public class FileJsonWorker : IDataWorker
     {
         private readonly string _path;
         public FileJsonWorker(string path) { _path = path; }

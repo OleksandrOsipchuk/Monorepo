@@ -12,6 +12,7 @@ namespace SmartHomeSimulator.HousesFiles
 {
     public class House : INameable
     {
+        ConsoleHandler handler = new ConsoleHandler();
         public string Name { get; set; }
         public House(string name) { Name = name; }
         [JsonProperty]
