@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SmartHomeSimulator.AdditionalFiles.Handlers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SmartHomeSimulator.HousesFiles //Rename later
 {
-    public class FileJsonWorker : IDataWorker
+    public class FileJsonWorker : IJsonWorker
     {
         private readonly string _path;
         public FileJsonWorker(string path) { _path = path; }
