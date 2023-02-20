@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SmartHomeSimulator.Builder
+namespace SmartHomeSimulator.AdditionalFiles.Handlers
 {
-    public class ConsoleHandler : IRoomHandler
-    {       
+    public class ConsoleHandler : IIOHandler
+    {
         public void Write<T>(T message)
         {
             Console.WriteLine(message);

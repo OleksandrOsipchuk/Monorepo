@@ -5,8 +5,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using SmartHomeSimulator.AdditionalFiles;
 
-namespace SmartHomeSimulator.Builder
+namespace SmartHomeSimulator.Builder.RoomFiles
 {
     public class Room : INameable
     {
@@ -22,13 +23,13 @@ namespace SmartHomeSimulator.Builder
             foreach (PropertyInfo property in properties)
             {
                 if (property.GetValue(this) != null)
-                    results += ($"\n{property.Name}: {property.GetValue(this)}");
-                if (property.Name == nameof(Temperature)) results += "°C";
-                if (property.Name == nameof(Humidity)) results += "%";
+                    results += $"\n{property.Name}: {property.GetValue(this)}";
+                if (property.Name == nameof(Temperature)) results += RoomConstants.CelsiusDegreeSymbol;
+                if (property.Name == nameof(Humidity)) results += RoomConstants.PercentSymbol;
             }
             return results;
         }
-        public bool CheckIfContain(string neededProperty)
+        private bool CheckIfContain(string neededProperty)
         {
             return GetType().GetProperties()
                 .Where(property => property.GetValue(this) != null)

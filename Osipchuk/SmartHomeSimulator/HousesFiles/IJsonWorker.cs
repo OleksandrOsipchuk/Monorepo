@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SmartHomeSimulator.HousesFiles
 {
-    public interface IDataWorker
+    public interface IJsonWorker
     {
         Task<List<T>> ReadAsync<T>();
         Task WriteAsync<T>(T obj);

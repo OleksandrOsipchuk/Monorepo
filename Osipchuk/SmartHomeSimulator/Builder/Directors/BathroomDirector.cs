@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SmartHomeSimulator.AdditionalFiles.Handlers;
+using SmartHomeSimulator.Builder.RoomFiles;
 
 namespace SmartHomeSimulator.Builder.Directors
 {
@@ -13,13 +15,13 @@ namespace SmartHomeSimulator.Builder.Directors
         {
             _builder = builder;
         }
-        public void Build()
+        public void Build(IIOHandler handler)
         {
             _builder
-                .ChangeName()
-                .ChangeTemperature()
-                .ChangeLightState()
-                .ChangeHumidity();
+                .SetName(handler)
+                .AddTemperature(handler)
+                .AddLightState(handler)
+                .AddHumidity(handler);
         }
     }
 }

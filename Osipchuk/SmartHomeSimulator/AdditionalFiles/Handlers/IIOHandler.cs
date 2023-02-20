@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SmartHomeSimulator.Builder
+namespace SmartHomeSimulator.AdditionalFiles.Handlers
 {
-    public interface IDataIOHandler
+    public interface IIOHandler
     {
         void Write<T>(T message);
-        string Read();        
+        string Read();
     }
 }
