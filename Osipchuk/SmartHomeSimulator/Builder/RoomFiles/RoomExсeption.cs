@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SmartHomeSimulator.Builder
+namespace SmartHomeSimulator.Builder.RoomFiles
 {
     public class RoomExсeption : Exception
     {

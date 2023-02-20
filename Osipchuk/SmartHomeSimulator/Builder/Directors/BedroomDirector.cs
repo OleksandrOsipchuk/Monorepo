@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SmartHomeSimulator.Builder.RoomFiles;
 
 namespace SmartHomeSimulator.Builder.Directors
 {
@@ -16,11 +17,11 @@ namespace SmartHomeSimulator.Builder.Directors
         public void Build()
         {
             _builder
-                .ChangeName()
-                .ChangeTemperature()
-                .ChangeLightState()
-                .ChangeHumidity()
-                .ChangeTVState();
+                .SetName()
+                .AddTemperature()
+                .AddLightState()
+                .AddHumidity()
+                .AddTVState();
         }
     }
 }
