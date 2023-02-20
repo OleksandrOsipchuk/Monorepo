@@ -23,7 +23,7 @@ namespace SmartHomeSimulator.Executer
                     var builder = new RoomBuilder();
                     RoomDirectorFactory factory = new RoomDirectorFactory();
                     IRoomDirector director = factory.GetRoomDirector(GetRoomType(), builder);
-                    director.Build();
+                    director.Build(handler);
                     Room room = builder.GetRoom();
                     rooms.Add(room);
                 }

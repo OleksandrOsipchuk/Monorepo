@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using SmartHomeSimulator.AdditionalFiles.Handlers;
 namespace SmartHomeSimulator.Builder.RoomFiles
 {
     public interface IRoomBuilder
     {
-        IRoomBuilder SetName();
-        IRoomBuilder AddHumidity();
-        IRoomBuilder AddLightState();
-        IRoomBuilder AddTemperature();
-        IRoomBuilder AddTVState();
+        IRoomBuilder SetName(IIOHandler handler);
+        IRoomBuilder AddHumidity(IIOHandler handler);
+        IRoomBuilder AddLightState(IIOHandler handler);
+        IRoomBuilder AddTemperature(IIOHandler handler);
+        IRoomBuilder AddTVState(IIOHandler handler);
         Room GetRoom();
     }
 }
