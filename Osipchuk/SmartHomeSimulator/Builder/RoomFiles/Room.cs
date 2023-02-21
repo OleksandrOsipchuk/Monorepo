@@ -29,11 +29,5 @@ namespace SmartHomeSimulator.Builder.RoomFiles
             }
             return results;
         }
-        private bool CheckIfContain(string neededProperty)
-        {
-            return GetType().GetProperties()
-                .Where(property => property.GetValue(this) != null)
-                .Select(property => property.Name).Contains(neededProperty);
-        }
     }
 }

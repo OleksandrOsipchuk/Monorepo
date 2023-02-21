@@ -21,21 +21,18 @@ namespace SmartHomeSimulator.Executer
         public MenuExecuter(IJsonWorker jsonWorker, IIOHandler handler)
         {
             _jsonWorker = jsonWorker;
-            _handler= handler;
+            _handler = handler;
         }
 
-        public async Task RunMenuAsync() // maybe try different console colors
+        public async Task RunMenuAsync()
         {
             _houses = await _jsonWorker.ReadAsync<House>();
-            while (true)
-            {
-                Console.Clear();
-                int option = RoomLogic.GetOption(_houses, _handler,"Manage houses.");
-                if (option < _houses.Count + 1) EnterHouse(_houses[option - 1]);
-                else if (option == _houses.Count + 1) ManageHouses();
-                else break;
-            }
-            _jsonWorker.WriteAsync(_houses);
+            Console.Clear();
+            int option = RoomLogic.GetOption(_houses, _handler, "Manage houses.");
+            if (option < _houses.Count + 1) EnterHouse(_houses[option - 1]);
+            else if (option == _houses.Count + 1) ManageHouses();
+            else if (option == _houses.Count + 2) _jsonWorker.WriteAsync(_houses);
+            else throw new MenuExecuterException("there is no this number");
         }
         private void ManageHouses()
         {
@@ -46,13 +43,19 @@ namespace SmartHomeSimulator.Executer
                 _handler.Write("MANAGING.\nIf you want to remove house, write its number.");
                 Console.ResetColor();
                 var option = RoomLogic.GetOption(_houses, _handler, "Add new house.");
-                if (option < _houses.Count + 1) _houses.Remove(_houses[option - 1]);
+                if (option < _houses.Count + 1)
+                {
+                    _houses.Remove(_houses[option - 1]);
+                    _jsonWorker.WriteAsync(_houses);
+                }
                 else if (option == _houses.Count + 1)
                 {
                     _handler.Write("Enter new house name: ");
                     _houses.Add(new House(_handler.Read()));
+                    _jsonWorker.WriteAsync(_houses);
                 }
-                else break;
+                else if (option == _houses.Count + 2) break;
+                else throw new MenuExecuterException("there is no this number");
             }
         }
         private void EnterHouse(House house)
