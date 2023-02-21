@@ -6,7 +6,7 @@ using SmartHomeSimulator.Builder.RoomFiles;
 
 namespace SmartHomeSimulator.Executer
 {
-    public static class RoomLogic
+    public static class RoomMenuLogic
     {
         public static void ManageRooms(List<Room> rooms, IIOHandler handler)
         {
@@ -36,7 +36,7 @@ namespace SmartHomeSimulator.Executer
                     handler.Write(type);
                 if (Enum.TryParse<RoomType>(Console.ReadLine(), true, out var result))
                     return result;
-                throw new RoomExсeption("Room types didn't match with your input");
+                else throw new RoomExсeption("Room types didn't match with your input");
             }
         }
         public static void EnterRoom(Room room, IIOHandler handler)
@@ -64,13 +64,11 @@ namespace SmartHomeSimulator.Executer
                 {
                     bool currentValue = (bool)property.GetValue(room);
                     property.SetValue(room, !currentValue);
-                    return;
                 }
                 else if (property.PropertyType == typeof(string))
                 {
                     var newValue = handler.Read();
                     property.SetValue(room, newValue);
-                    return;
                 }
                 else if (Nullable.GetUnderlyingType(property.PropertyType) == typeof(float))
                 {
@@ -78,16 +76,15 @@ namespace SmartHomeSimulator.Executer
                     var newValue = float.Parse(handler.Read());
                     float minValue = 30;
                     float maxValue = 70;
-                    if(propertyName == nameof(room.Temperature)) { minValue = 0; maxValue = 40; }
+                    if (propertyName == nameof(room.Temperature)) { minValue = 0; maxValue = 40; }
                     if (newValue >= minValue && newValue <= maxValue)
                     {
                         property.SetValue(room, newValue);
                     }
                     else handler.Write($"Invalid value. {propertyName} must be between {minValue} and {maxValue}.");
-                    return;
                 }
             }
-            else throw new RoomExсeption($"Cannot change {propertyName} property");
+            else handler.Write($"Couldn't change {propertyName} value.");
         }
         public static int GetOption<T>(List<T> values, IIOHandler handler, params string[] args) where T : INameable //maybe do other than list - new params 
         {
