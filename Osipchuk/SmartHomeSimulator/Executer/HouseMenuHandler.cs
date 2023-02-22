@@ -13,12 +13,12 @@ using System.Threading.Tasks;
 
 namespace SmartHomeSimulator.Executer
 {
-    public class MenuExecuter
+    public class HouseMenuHandler : BaseMenuHandler
     {
         private List<House> _houses;
         private readonly IJsonWorker _jsonWorker;
         private readonly IIOHandler _handler;
-        public MenuExecuter(IJsonWorker jsonWorker, IIOHandler handler)
+        public HouseMenuHandler(IJsonWorker jsonWorker, IIOHandler handler)
         {
             _jsonWorker = jsonWorker;
             _handler = handler;
@@ -26,48 +26,48 @@ namespace SmartHomeSimulator.Executer
 
         public async Task RunMenuAsync()
         {
+            _houses = await _jsonWorker.ReadAsync<House>();
             while (true) {
-                _houses = await _jsonWorker.ReadAsync<House>();
                 Console.Clear();
-                int option = RoomMenuLogic.GetOption(_houses, _handler, "Manage houses.");
-                if (option < _houses.Count + 1) EnterHouse(_houses[option - 1]);
-                else if (option == _houses.Count + 1) ManageHouses();
+                int option = await GetOption(_houses, _handler, "Manage houses.");
+                if (option < _houses.Count + 1) await EnterHouse(_houses[option - 1]);
+                else if (option == _houses.Count + 1) await ManageHouses();
                 else break;
             }
-            _jsonWorker.WriteAsync(_houses);
+            await _jsonWorker.WriteAsync(_houses);
         }
-        private void ManageHouses()
+        private async Task ManageHouses()
         {
             while (true)
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
-                _handler.Write("MANAGING.\nIf you want to remove house, write its number.");
+                await _handler.WriteAsync("MANAGING.\nIf you want to remove house, write its number.");
                 Console.ResetColor();
-                var option = RoomMenuLogic.GetOption(_houses, _handler, "Add new house.");
+                var option = await GetOption(_houses, _handler, "Add new house.");
                 if (option < _houses.Count + 1)
                 {
                     _houses.Remove(_houses[option - 1]);
-                    _jsonWorker.WriteAsync(_houses);
+                    await _jsonWorker.WriteAsync(_houses);
                 }
                 else if (option == _houses.Count + 1)
                 {
-                    _handler.Write("Enter new house name: ");
-                    _houses.Add(new House(_handler.Read()));
-                    _jsonWorker.WriteAsync(_houses);
+                    await _handler.WriteAsync("Enter new house name: ");
+                    _houses.Add(new House(await _handler.ReadAsync()));
+                    await _jsonWorker.WriteAsync(_houses);
                 }
                 else break;
             }
         }
-        private void EnterHouse(House house)
+        private async Task EnterHouse(House house)
         {
             List<Room> rooms = house.GetRooms();
             while (true)
             {
                 Console.Clear();
-                int option = RoomMenuLogic.GetOption(house.GetRooms(), _handler, "Manage rooms.");
-                if (option < rooms.Count + 1) RoomMenuLogic.EnterRoom(house.GetRooms()[option - 1], _handler);
-                else if (option == rooms.Count + 1) RoomMenuLogic.ManageRooms(house.GetRooms(), _handler);
+                int option = await GetOption(house.GetRooms(), _handler, "Manage rooms.");
+                if (option < rooms.Count + 1) await RoomMenuHandler.EnterRoom(house.GetRooms()[option - 1], _handler);
+                else if (option == rooms.Count + 1) await RoomMenuHandler.ManageRooms(house.GetRooms(), _handler);
                 else break;
             }
         }

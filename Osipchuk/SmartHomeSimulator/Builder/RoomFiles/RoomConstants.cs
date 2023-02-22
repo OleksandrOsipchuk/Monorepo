@@ -8,7 +8,7 @@ namespace SmartHomeSimulator.AdditionalFiles
 {
     public static class RoomConstants
     {
-        public const string CelsiusDegreeSymbol = "°C";
+        public const string CelsiusDegreeSymbol = " Celsium";
         public const string PercentSymbol = "%";
     }
 }

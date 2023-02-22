@@ -15,13 +15,12 @@ namespace SmartHomeSimulator.Builder.Directors
         {
             _builder = builder;
         }
-        public void Build(IIOHandler handler)
+        public async Task Build(IIOHandler handler)
         {
-            _builder
-                .SetName(handler)
-                .AddTemperature(handler)
-                .AddLightState(handler)
-                .AddHumidity(handler);
+            await _builder.SetNameAsync(handler);
+            await _builder.AddHumidityAsync(handler);
+            await _builder.AddTemperatureAsync(handler);
+            await _builder.AddLightStateAsync(handler);
         }
     }
 }

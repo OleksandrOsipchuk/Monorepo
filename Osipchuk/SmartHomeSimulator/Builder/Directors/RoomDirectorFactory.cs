@@ -16,7 +16,7 @@ namespace SmartHomeSimulator.Builder.Directors
                 RoomType.Bathroom => new BathroomDirector(builder),
                 RoomType.Bedroom => new BedroomDirector(builder),
                 RoomType.Kitchen => new KitchenDIrector(builder),
-                _ => throw new RoomExсeption("There is no this type of room."),
+                _ => throw new InvalidRoomTypeException("There is no this type of room."),
             };
         }
     }

@@ -12,28 +12,32 @@ namespace SmartHomeSimulator // rename (?)
             var jsonpath = @".\houses.json";
             var worker = new FileJsonWorker(jsonpath);
             var handler = new ConsoleHandler();
-            var exec = new MenuExecuter(worker, handler);
+            var exec = new HouseMenuHandler(worker, handler);
             try
             {
                 await exec.RunMenuAsync();
             }
             catch (FileNotFoundException)
             {
-                handler.Write("No json file fould on path you specified." +
+                await handler.WriteAsync("No json file fould on path you specified." +
                     "Program сreated new file on that path.");
-                worker.WriteAsync(new List<House>());
+                await worker.WriteAsync(new List<House>());
             }
-            catch (RoomExсeption ex)
+            catch (InvalidRoomTypeException ex)
             {
-                handler.Write($"Room exception occured: {ex.Message}");
+                await handler.WriteAsync($"Invalid room type: {ex.Message}");
+            }
+            catch (InvalidRoomValueException ex)
+            {
+                await handler.WriteAsync($"Invalid room value: {ex.Message}");
             }
             catch (FormatException)
             {
-                handler.Write("Wrong input format!");
+                await handler.WriteAsync("Wrong input format!");
             }
             catch (OverflowException)
             {
-                handler.Write("Number is too long. Try again!");
+                await handler.WriteAsync("Number is too long. Try again!");
             }
         }
     }

@@ -8,14 +8,19 @@ namespace SmartHomeSimulator.AdditionalFiles.Handlers
 {
     public class ConsoleHandler : IIOHandler
     {
-        public void Write<T>(T message)
+        public async Task WriteAsync(string message)
         {
-            Console.WriteLine(message);
+            using (var writer = new StreamWriter(Console.OpenStandardOutput()))
+            {
+                await writer.WriteLineAsync(message);
+            }
         }
-
-        public string Read()
+        public async Task<string> ReadAsync()
         {
-            return Console.ReadLine();
+            using (var reader = new StreamReader(Console.OpenStandardInput()))
+            {
+                return await reader.ReadLineAsync();
+            }
         }
     }
 }

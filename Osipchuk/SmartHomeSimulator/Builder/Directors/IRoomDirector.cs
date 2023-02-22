@@ -9,6 +9,6 @@ namespace SmartHomeSimulator.Builder.Directors
 {
     public interface IRoomDirector
     {
-        void Build(IIOHandler handler);
+        Task Build(IIOHandler handler);
     }
 }

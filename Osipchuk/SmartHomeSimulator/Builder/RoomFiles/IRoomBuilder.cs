@@ -3,11 +3,11 @@ namespace SmartHomeSimulator.Builder.RoomFiles
 {
     public interface IRoomBuilder
     {
-        IRoomBuilder SetName(IIOHandler handler);
-        IRoomBuilder AddHumidity(IIOHandler handler);
-        IRoomBuilder AddLightState(IIOHandler handler);
-        IRoomBuilder AddTemperature(IIOHandler handler);
-        IRoomBuilder AddTVState(IIOHandler handler);
+        Task<IRoomBuilder> SetNameAsync(IIOHandler handler);
+        Task<IRoomBuilder> AddHumidityAsync(IIOHandler handler);
+        Task<IRoomBuilder> AddLightStateAsync(IIOHandler handler);
+        Task<IRoomBuilder> AddTemperatureAsync(IIOHandler handler);
+        Task<IRoomBuilder> AddTVStateAsync(IIOHandler handler);
         Room GetRoom();
     }
 }

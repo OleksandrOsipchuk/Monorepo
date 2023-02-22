@@ -8,7 +8,7 @@ namespace SmartHomeSimulator.AdditionalFiles.Handlers
 {
     public interface IIOHandler
     {
-        void Write<T>(T message);
-        string Read();
+        Task WriteAsync(string message);
+        Task<string> ReadAsync();
     }
 }
