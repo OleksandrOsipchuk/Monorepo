@@ -15,7 +15,7 @@ namespace SmartHomeSimulator.Executer
 {
     public class HouseMenuHandler : BaseMenuHandler
     {
-        private List<House> _houses;
+        private IList<House> _houses;
         private readonly IJsonWorker _jsonWorker;
         private readonly IIOHandler _handler;
         public HouseMenuHandler(IJsonWorker jsonWorker, IIOHandler handler)
@@ -27,8 +27,9 @@ namespace SmartHomeSimulator.Executer
         public async Task RunMenuAsync()
         {
             _houses = await _jsonWorker.ReadAsync<House>();
-            while (true) {
-                Console.Clear();
+            while (true)
+            {
+                _handler.Clear();
                 int option = await GetOption(_houses, _handler, "Manage houses.");
                 if (option < _houses.Count + 1) await EnterHouse(_houses[option - 1]);
                 else if (option == _houses.Count + 1) await ManageHouses();
@@ -40,10 +41,10 @@ namespace SmartHomeSimulator.Executer
         {
             while (true)
             {
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Red;
-                await _handler.WriteAsync("MANAGING.\nIf you want to remove house, write its number.");
-                Console.ResetColor();
+                _handler.Clear();
+                _handler.ChangeForegroundColor(ConsoleColor.Red);
+                _handler.WriteAsync("MANAGING.\nIf you want to remove house, write its number.");
+                _handler.ResetColor();
                 var option = await GetOption(_houses, _handler, "Add new house.");
                 if (option < _houses.Count + 1)
                 {
@@ -64,7 +65,7 @@ namespace SmartHomeSimulator.Executer
             List<Room> rooms = house.GetRooms();
             while (true)
             {
-                Console.Clear();
+                _handler.Clear();
                 int option = await GetOption(house.GetRooms(), _handler, "Manage rooms.");
                 if (option < rooms.Count + 1) await RoomMenuHandler.EnterRoom(house.GetRooms()[option - 1], _handler);
                 else if (option == rooms.Count + 1) await RoomMenuHandler.ManageRooms(house.GetRooms(), _handler);

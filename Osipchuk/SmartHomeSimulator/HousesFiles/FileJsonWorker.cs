@@ -18,7 +18,7 @@ namespace SmartHomeSimulator.HousesFiles //Rename later
             using (StreamWriter sw = new StreamWriter(_path))
                 await sw.WriteAsync(JsonConvert.SerializeObject(obj));
         }
-        public async Task<List<T>> ReadAsync<T>()
+        public async Task<IList<T>> ReadAsync<T>()
         {
             using (StreamReader sr = new StreamReader(_path))
                 return JsonConvert.DeserializeObject<List<T>>(await sr.ReadToEndAsync()) ?? new List<T>();

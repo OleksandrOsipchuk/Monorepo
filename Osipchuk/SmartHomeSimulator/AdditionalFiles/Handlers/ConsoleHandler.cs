@@ -21,6 +21,20 @@ namespace SmartHomeSimulator.AdditionalFiles.Handlers
             {
                 return await reader.ReadLineAsync();
             }
+        }            
+
+        public void Clear()
+        {
+            Console.Clear();
+        }
+        public void ResetColor()
+        {
+            Console.ResetColor();
+        }
+
+        public void ChangeForegroundColor(ConsoleColor color) 
+        {
+            Console.ForegroundColor = color;
         }
     }
 }

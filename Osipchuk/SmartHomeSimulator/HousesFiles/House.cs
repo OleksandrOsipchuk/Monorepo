@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SmartHomeSimulator.HousesFiles
 {
-    public class House : INameable
+    public class House : NameBase
     {
         public string Name { get; set; }
         public House(string name) { Name = name; }

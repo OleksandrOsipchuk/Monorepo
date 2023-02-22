@@ -10,5 +10,8 @@ namespace SmartHomeSimulator.AdditionalFiles.Handlers
     {
         Task WriteAsync(string message);
         Task<string> ReadAsync();
+        void Clear();
+        void ChangeForegroundColor(ConsoleColor color);
+        void ResetColor();
     }
 }

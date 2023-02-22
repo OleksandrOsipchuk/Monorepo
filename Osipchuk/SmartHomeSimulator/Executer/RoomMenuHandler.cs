@@ -12,10 +12,10 @@ namespace SmartHomeSimulator.Executer
         {
             while (true)
             {
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Red;
+                handler.Clear();
+                handler.ChangeForegroundColor(ConsoleColor.Red);
                 await handler.WriteAsync("MANAGING.\nIf you want to remove room, write its number.");
-                Console.ResetColor();
+                handler.ResetColor();
                 var option = await GetOption<Room>(rooms, handler, "Add new room.");
                 if (option < rooms.Count + 1) rooms.Remove(rooms[option - 1]);
                 else if (option == rooms.Count + 1)
@@ -34,7 +34,7 @@ namespace SmartHomeSimulator.Executer
                 await handler.WriteAsync("Choose room type: ");
                 foreach (var type in Enum.GetNames(typeof(RoomType)))
                     await handler.WriteAsync(type);
-                if (Enum.TryParse<RoomType>(Console.ReadLine(), true, out var result))
+                if (Enum.TryParse<RoomType>(await handler.ReadAsync(), true, out var result))
                     return result;
                 else throw new InvalidRoomTypeException("Room types didn't match with your input");
             }
@@ -43,10 +43,10 @@ namespace SmartHomeSimulator.Executer
         {
             while (true)
             {
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                handler.Clear();
+                handler.ChangeForegroundColor(ConsoleColor.DarkGreen);
                 await handler.WriteAsync("1. Change room states.");
-                Console.ResetColor();
+                handler.ResetColor();
                 await handler.WriteAsync("2. Return.");
                 await handler.WriteAsync(room.ToString());
                 if (int.Parse(await handler.ReadAsync()) == 1) await ChangeRoom(room, handler);
