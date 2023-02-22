@@ -9,7 +9,7 @@ using SmartHomeSimulator.AdditionalFiles;
 
 namespace SmartHomeSimulator.Builder.RoomFiles
 {
-    public class Room : INameable
+    public class Room : NameBase
     {
         public string Name { get; set; }
         public float? Temperature { get; set; }
@@ -18,16 +18,16 @@ namespace SmartHomeSimulator.Builder.RoomFiles
         public bool? IsTVWorking { get; set; }
         public override string ToString()
         {
-            string results = "";
+            var stringBuilder = new StringBuilder();
             PropertyInfo[] properties = GetType().GetProperties();
             foreach (PropertyInfo property in properties)
             {
-                if (property.GetValue(this) != null)
-                    results += $"\n{property.Name}: {property.GetValue(this)}";
-                if (property.Name == nameof(Temperature)) results += RoomConstants.CelsiusDegreeSymbol;
-                if (property.Name == nameof(Humidity)) results += RoomConstants.PercentSymbol;
+                if (property.GetValue(this) != null) stringBuilder.AppendFormat($"\n{property.Name}: {property.GetValue(this)}");
+                if (property.Name == nameof(Temperature)) stringBuilder.Append(RoomConstants.CelsiusDegreeSymbol);
+                if (property.Name == nameof(Humidity)) stringBuilder.Append(RoomConstants.PercentSymbol);
             }
-            return results;
+            string result = stringBuilder.ToString();
+            return result;
         }
     }
 }
