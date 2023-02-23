@@ -1,8 +1,10 @@
 ﻿using SmartHomeSimulator.AdditionalFiles;
 using SmartHomeSimulator.Builder.Directors;
 using SmartHomeSimulator.Builder;
-using SmartHomeSimulator.AdditionalFiles.Handlers;
 using SmartHomeSimulator.Builder.RoomFiles;
+using SmartHomeSimulator.AdditionalFiles.Handlers.IO;
+using SmartHomeSimulator.AdditionalFiles.Handlers.Color;
+using System.Drawing;
 
 namespace SmartHomeSimulator.Executer
 {
@@ -13,7 +15,7 @@ namespace SmartHomeSimulator.Executer
             while (true)
             {
                 handler.Clear();
-                handler.ChangeForegroundColor(ConsoleColor.Red);
+                handler.ChangeForegroundColor(new HandlerColor(255, 0, 0));
                 await handler.WriteAsync("MANAGING.\nIf you want to remove room, write its number.");
                 handler.ResetColor();
                 var option = await GetOption<Room>(rooms, handler, "Add new room.");
@@ -44,7 +46,7 @@ namespace SmartHomeSimulator.Executer
             while (true)
             {
                 handler.Clear();
-                handler.ChangeForegroundColor(ConsoleColor.DarkGreen);
+                handler.ChangeForegroundColor(new HandlerColor(0,255,255));
                 await handler.WriteAsync("1. Change room states.");
                 handler.ResetColor();
                 await handler.WriteAsync("2. Return.");

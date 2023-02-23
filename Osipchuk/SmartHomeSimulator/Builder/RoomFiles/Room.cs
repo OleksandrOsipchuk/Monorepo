@@ -11,7 +11,6 @@ namespace SmartHomeSimulator.Builder.RoomFiles
 {
     public class Room : NameBase
     {
-        public string Name { get; set; }
         public float? Temperature { get; set; }
         public float? Humidity { get; set; }
         public bool? IsLighted { get; set; }

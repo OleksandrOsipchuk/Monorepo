@@ -1,15 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
-using SmartHomeSimulator.AdditionalFiles;
-using SmartHomeSimulator.AdditionalFiles.Handlers;
-using SmartHomeSimulator.Builder.Directors;
+﻿using SmartHomeSimulator.AdditionalFiles.Handlers.IO;
 using SmartHomeSimulator.Builder.RoomFiles;
 using SmartHomeSimulator.HousesFiles;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SmartHomeSimulator.AdditionalFiles.Handlers.Color;
 
 namespace SmartHomeSimulator.Executer
 {
@@ -42,7 +34,7 @@ namespace SmartHomeSimulator.Executer
             while (true)
             {
                 _handler.Clear();
-                _handler.ChangeForegroundColor(ConsoleColor.Red);
+                _handler.ChangeForegroundColor(new HandlerColor(255, 0, 0));
                 _handler.WriteAsync("MANAGING.\nIf you want to remove house, write its number.");
                 _handler.ResetColor();
                 var option = await GetOption(_houses, _handler, "Add new house.");

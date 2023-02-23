@@ -1,10 +1,11 @@
-﻿using SmartHomeSimulator.AdditionalFiles.Handlers;
-using SmartHomeSimulator.AdditionalFiles;
+﻿using SmartHomeSimulator.AdditionalFiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SmartHomeSimulator.AdditionalFiles.Handlers.IO;
+using SmartHomeSimulator.AdditionalFiles.Handlers.Color;
 
 namespace SmartHomeSimulator.Executer
 {
@@ -14,14 +15,13 @@ namespace SmartHomeSimulator.Executer
         {
             await handler.WriteAsync("Select an option: ");
             int i = 1;
-            handler.ChangeForegroundColor(ConsoleColor.Green);
+            handler.ChangeForegroundColor(new HandlerColor(0, 255, 0));
             while (i <= values.Count)
             {
                 await handler.WriteAsync($"{i}. {values[i - 1].Name}.");
                 i++;
             }
-            handler.ChangeForegroundColor(ConsoleColor.DarkMagenta);
-
+            handler.ChangeForegroundColor(new HandlerColor(0, 255, 255));
             foreach (var arg in args)
                 await handler.WriteAsync($"{i++}. {arg}");
             handler.ResetColor();

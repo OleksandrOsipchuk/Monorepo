@@ -12,7 +12,6 @@ namespace SmartHomeSimulator.HousesFiles
 {
     public class House : NameBase
     {
-        public string Name { get; set; }
         public House(string name) { Name = name; }
         [JsonProperty]
         private List<Room> _rooms = new();
