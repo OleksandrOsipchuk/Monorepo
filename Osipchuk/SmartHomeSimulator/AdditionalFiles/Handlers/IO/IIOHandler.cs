@@ -12,7 +12,7 @@ namespace SmartHomeSimulator.AdditionalFiles.Handlers.IO
         Task WriteAsync(string message);
         Task<string> ReadAsync();
         void Clear();
-        void ChangeForegroundColor(IHandlerColor color);
+        void ChangeForegroundColor(IColorParameters color);
         void ResetColor();
     }
 }

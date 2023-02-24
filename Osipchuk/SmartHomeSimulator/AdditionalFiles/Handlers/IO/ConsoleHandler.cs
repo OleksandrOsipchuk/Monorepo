@@ -33,7 +33,7 @@ namespace SmartHomeSimulator.AdditionalFiles.Handlers.IO
         {
             Console.ResetColor();
         }
-        public void ChangeForegroundColor(IHandlerColor color)
+        public void ChangeForegroundColor(IColorParameters color)
         {
             int index = (color.R > 128 | color.G > 128 | color.B > 128) ? 8 : 0; // Bright bit
             index |= (color.R > 64) ? 4 : 0; // Red bit

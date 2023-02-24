@@ -15,10 +15,10 @@ namespace SmartHomeSimulator.Executer
             while (true)
             {
                 handler.Clear();
-                handler.ChangeForegroundColor(new HandlerColor(255, 0, 0));
+                handler.ChangeForegroundColor(new ConsoleColorParameters(255, 0, 0));
                 await handler.WriteAsync("MANAGING.\nIf you want to remove room, write its number.");
                 handler.ResetColor();
-                var option = await GetOption<Room>(rooms, handler, "Add new room.");
+                var option = await GetOptionAsync<Room>(rooms, handler, "Add new room.");
                 if (option < rooms.Count + 1) rooms.Remove(rooms[option - 1]);
                 else if (option == rooms.Count + 1)
                 {
@@ -46,7 +46,7 @@ namespace SmartHomeSimulator.Executer
             while (true)
             {
                 handler.Clear();
-                handler.ChangeForegroundColor(new HandlerColor(0,255,255));
+                handler.ChangeForegroundColor(new ConsoleColorParameters(0,255,255));
                 await handler.WriteAsync("1. Change room states.");
                 handler.ResetColor();
                 await handler.WriteAsync("2. Return.");

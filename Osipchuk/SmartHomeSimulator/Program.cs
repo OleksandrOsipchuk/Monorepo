@@ -11,7 +11,7 @@ namespace SmartHomeSimulator // rename (?)
         static async Task Main(string[] args)
         {
             var jsonpath = @".\houses.json";
-            var worker = new FileJsonWorker(jsonpath);
+            var worker = new JsonHomeDataStorage(jsonpath);
             var handler = new ConsoleHandler();
             var exec = new HouseMenuHandler(worker, handler);
             try

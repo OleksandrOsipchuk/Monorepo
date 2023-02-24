@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SmartHomeSimulator.AdditionalFiles.Handlers.Color
 {
-    public interface IHandlerColor
+    public interface IColorParameters
     {
         int R { get; }
         int G { get; }

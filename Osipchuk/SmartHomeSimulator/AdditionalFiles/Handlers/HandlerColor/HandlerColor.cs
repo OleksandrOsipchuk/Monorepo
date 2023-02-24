@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SmartHomeSimulator.AdditionalFiles.Handlers.Color
 {
-    public class HandlerColor : IHandlerColor
+    public class ConsoleColorParameters : IColorParameters
     {
-        public HandlerColor(int r, int g, int b)
+        public ConsoleColorParameters(int r, int g, int b)
         {
             R = r;
             G = g;

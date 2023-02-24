@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace SmartHomeSimulator.HousesFiles //Rename later
 {
-    public class FileJsonWorker : IJsonWorker
+    public class JsonHomeDataStorage : IHomeDataStorage
     {
         private readonly string _path;
-        public FileJsonWorker(string path) { _path = path; }
+        public JsonHomeDataStorage(string path) { _path = path; }
         public async Task WriteAsync<T>(T obj)
         {
             using (StreamWriter sw = new StreamWriter(_path))

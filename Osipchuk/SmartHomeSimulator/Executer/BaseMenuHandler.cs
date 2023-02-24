@@ -11,17 +11,17 @@ namespace SmartHomeSimulator.Executer
 {
     public class BaseMenuHandler
     {
-        public static async Task<int> GetOption<T>(IList<T> values, IIOHandler handler, params string[] args) where T : NameBase 
+        public static async Task<int> GetOptionAsync<T>(IList<T> values, IIOHandler handler, params string[] args) where T : NameBase 
         {
             await handler.WriteAsync("Select an option: ");
             int i = 1;
-            handler.ChangeForegroundColor(new HandlerColor(0, 255, 0));
+            handler.ChangeForegroundColor(new ConsoleColorParameters(0, 255, 0));
             while (i <= values.Count)
             {
                 await handler.WriteAsync($"{i}. {values[i - 1].Name}.");
                 i++;
             }
-            handler.ChangeForegroundColor(new HandlerColor(0, 255, 255));
+            handler.ChangeForegroundColor(new ConsoleColorParameters(0, 255, 255));
             foreach (var arg in args)
                 await handler.WriteAsync($"{i++}. {arg}");
             handler.ResetColor();
