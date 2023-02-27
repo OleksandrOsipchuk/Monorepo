@@ -30,23 +30,14 @@ namespace BugdetTracker
                 switch (option)
                 {
                     case 1:
-                        Console.WriteLine("Enter the income sum:");
-                        int income = -1;
-                        while (income == -1) income = CheckInt(Console.ReadLine());
-                        sum += income;
-                        transactions.Add(new Transaction(sum, income));
-                        WritedDB(transactions);
-                        
-                        break;
                     case 2:
-                        Console.WriteLine("Enter the expence sum:");
-                        int expence = -1;
-                        while (expence == -1) expence = CheckInt(Console.ReadLine());
-                        sum -= expence;
-                        transactions.Add(new Transaction(sum, expence));
+                        Console.WriteLine("Enter the transaction sum:");
+                        int TransSum = -1;
+                        while (TransSum == -1) TransSum = CheckInt(Console.ReadLine());
+                        if(option ==1 ) sum += TransSum;
+                        else sum -= TransSum;
+                        transactions.Add(new Transaction(sum, TransSum));
                         WritedDB(transactions);
-
-
                         break;
                     case 3:
                         if (sum < 0) Console.WriteLine("You are in debt");
