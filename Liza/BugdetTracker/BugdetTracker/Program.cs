@@ -10,12 +10,22 @@ namespace BugdetTracker
         }
         public static void StartTracking()
         {
-            int sum = 0;
-            bool isExit = true;
+            List<Transaction> transactions = ReadDB();
 
-            while (isExit)
+            int sum;
+            if (transactions.Count==0) sum = 0;
+
+            else sum = transactions[transactions.Count - 1].currentSum;
+
+            while (true)
             {
-                Console.WriteLine("\nChoose the option:\n\n1 Add income \n2 Add expenses \n3 Show current balance\n4 Exit\n");
+                Console.WriteLine("\nChoose the option:\n" +
+                    "\n1 Add income " +
+                    "\n2 Add expenses " +
+                    "\n3 Show current balance" +
+                    "\n4 Show 10 recent transactions" +
+                    "\n5 Exit\n");
+
                 int option = CheckInt(Console.ReadLine());
                 switch (option)
                 {
@@ -24,21 +34,29 @@ namespace BugdetTracker
                         int income = -1;
                         while (income == -1) income = CheckInt(Console.ReadLine());
                         sum += income;
+                        transactions.Add(new Transaction(sum, income));
+                        WritedDB(transactions);
+                        
                         break;
                     case 2:
                         Console.WriteLine("Enter the expence sum:");
                         int expence = -1;
                         while (expence == -1) expence = CheckInt(Console.ReadLine());
                         sum -= expence;
+                        transactions.Add(new Transaction(sum, expence));
+                        WritedDB(transactions);
+
+
                         break;
                     case 3:
                         if (sum < 0) Console.WriteLine("You are in debt");
                         Console.WriteLine("Current balance: " + sum);
-
                         break;
                     case 4:
-                        isExit = false;
+                        if (transactions.Count == 0) Console.WriteLine("No recent transactions");
                         break;
+                    case 5:
+                        return;
                     case -1:
                         break;
                     default:
@@ -60,12 +78,12 @@ namespace BugdetTracker
             File.WriteAllText(@"E:\test.json", json);
 
         }
-        public static void ReadDB(List<Transaction> transactions)
+        public static List<Transaction> ReadDB()
         {
 
             string text = File.ReadAllText(@"E:\test.json");
-            transactions = JsonConvert.DeserializeObject<List<Transaction>>(text);
-
+            return JsonConvert.DeserializeObject<List<Transaction>>(text);
+  
         }
 
     }
