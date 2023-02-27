@@ -45,7 +45,7 @@ namespace BugdetTracker
                         break;
                     case 3:
                         if (sum < 0) Console.WriteLine("You are in debt");
-                        Console.WriteLine("Current balance: " + sum);
+                        Console.WriteLine($"Current balance: {sum}$");
                         break;
                     case 4:
                         if (transactions.Count==0) Console.WriteLine("No recent transactions");
@@ -82,13 +82,13 @@ namespace BugdetTracker
         {
 
             string json = JsonConvert.SerializeObject(transactions, Newtonsoft.Json.Formatting.Indented);
-            File.WriteAllText(@"E:\test.json", json);
+            File.WriteAllText("DataBase.json", json);
 
         }
         public static List<Transaction> ReadDB()
         {
 
-            string text = File.ReadAllText(@"E:\test.json");
+            string text = File.ReadAllText("DataBase.json");
             return JsonConvert.DeserializeObject<List<Transaction>>(text);
   
         }

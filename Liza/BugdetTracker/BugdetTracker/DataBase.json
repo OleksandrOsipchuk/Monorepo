@@ -1,0 +1,10 @@
+[
+  {
+    "currentSum": 100,
+    "transactionSum": 100
+  },
+  {
+    "currentSum": 60,
+    "transactionSum": -40
+  }
+]
