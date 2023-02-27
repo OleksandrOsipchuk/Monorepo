@@ -13,7 +13,11 @@ namespace BugdetTracker
             List<Transaction> transactions = ReadDB();
 
             int sum;
-            if (transactions.Count==0) sum = 0;
+            if (transactions==null)
+            {
+                sum = 0;
+                transactions = new List<Transaction>();
+            }
 
             else sum = transactions[transactions.Count - 1].currentSum;
 
@@ -34,8 +38,8 @@ namespace BugdetTracker
                         Console.WriteLine("Enter the transaction sum:");
                         int TransSum = -1;
                         while (TransSum == -1) TransSum = CheckInt(Console.ReadLine());
-                        if(option ==1 ) sum += TransSum;
-                        else sum -= TransSum;
+                        if(option == 2 ) TransSum*=-1;                     
+                        sum += TransSum;
                         transactions.Add(new Transaction(sum, TransSum));
                         WritedDB(transactions);
                         break;
@@ -44,7 +48,19 @@ namespace BugdetTracker
                         Console.WriteLine("Current balance: " + sum);
                         break;
                     case 4:
-                        if (transactions.Count == 0) Console.WriteLine("No recent transactions");
+                        if (transactions.Count==0) Console.WriteLine("No recent transactions");
+                        else
+                        {
+                            int count = 10;
+                            if(transactions.Count<10) count = transactions.Count;
+                            for (int i = count - 1; i >= 0; i--)
+                            {
+
+                                if (transactions[i].transactionSum < 0) Console.Write($"Expense: {transactions[i].transactionSum}$");
+                                else Console.Write($"Income: +{transactions[i].transactionSum}$");
+                                Console.WriteLine($" Balance: {transactions[i].currentSum}$");
+                            }
+                        }
                         break;
                     case 5:
                         return;
