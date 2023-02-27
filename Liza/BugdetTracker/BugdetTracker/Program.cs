@@ -1,4 +1,6 @@
-﻿namespace BugdetTracker
+﻿using Newtonsoft.Json;
+
+namespace BugdetTracker
 {
     public class BudgetTracking
     {
@@ -51,5 +53,13 @@
             Console.WriteLine("Enter valid integer");
             return -1;
         }
+        public static void WritedDB(List<Transaction> transactions)
+        {
+
+            string json = JsonConvert.SerializeObject(transactions, Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(@"E:\test.json", json);
+
+        }
+
     }
 }
