@@ -60,6 +60,13 @@ namespace BugdetTracker
             File.WriteAllText(@"E:\test.json", json);
 
         }
+        public static void ReadDB(List<Transaction> transactions)
+        {
+
+            string text = File.ReadAllText(@"E:\test.json");
+            transactions = JsonConvert.DeserializeObject<List<Transaction>>(text);
+
+        }
 
     }
 }
