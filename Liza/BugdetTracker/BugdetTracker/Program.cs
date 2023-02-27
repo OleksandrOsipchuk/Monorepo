@@ -4,14 +4,14 @@
     {
         public static void Main(string[] args)
         {
-            Tracking();
+            StartTracking();
         }
-        public static void Tracking()
+        public static void StartTracking()
         {
             int sum = 0;
-            bool if_exit = true;
+            bool isExit = true;
 
-            while (if_exit)
+            while (isExit)
             {
                 Console.WriteLine("\nChoose the option:\n\n1 Add income \n2 Add expenses \n3 Show current balance\n4 Exit\n");
                 int option = CheckInt(Console.ReadLine());
@@ -35,7 +35,7 @@
 
                         break;
                     case 4:
-                        if_exit = false;
+                        isExit = false;
                         break;
                     case -1:
                         break;
