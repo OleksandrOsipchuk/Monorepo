@@ -58,7 +58,7 @@ namespace BugdetTracker
 
                                 if (transactions[i].Sum < 0) Console.Write($"Expense: {transactions[i].Sum}$");
                                 else Console.Write($"Income: +{transactions[i].Sum}$");
-                                Console.WriteLine($" Balance: {transactions[i].Balance}$");
+                                Console.WriteLine($" Balance: {transactions[i].Balance}$ Date: {transactions[i].Date}");
                             }
                         }
                         break;
