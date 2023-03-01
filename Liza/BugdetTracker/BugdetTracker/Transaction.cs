@@ -3,13 +3,13 @@ namespace BugdetTracker
 {
     public class Transaction
     {
-        public int currentSum { get; }
-        public int transactionSum { get; set; }
+        public int Balance { get; }
+        public int Sum { get; set; }
 
-        public Transaction(int currentSum, int transactionSum)
+        public Transaction(int balance, int sum)
         {
-            this.currentSum = currentSum;
-            this.transactionSum = transactionSum;
+            Balance = balance;
+            Sum = sum;
         }
     }
 }

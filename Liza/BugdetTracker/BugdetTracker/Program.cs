@@ -19,7 +19,7 @@ namespace BugdetTracker
                 transactions = new List<Transaction>();
             }
 
-            else sum = transactions[transactions.Count - 1].currentSum;
+            else sum = transactions[transactions.Count - 1].Balance;
 
             while (true)
             {
@@ -30,17 +30,17 @@ namespace BugdetTracker
                     "\n4 Show 10 recent transactions" +
                     "\n5 Exit\n");
 
-                int option = CheckInt(Console.ReadLine());
+                int option = ParseInt(Console.ReadLine());
                 switch (option)
                 {
                     case 1:
                     case 2:
                         Console.WriteLine("Enter the transaction sum:");
-                        int TransSum = -1;
-                        while (TransSum == -1) TransSum = CheckInt(Console.ReadLine());
-                        if(option == 2 ) TransSum*=-1;                     
-                        sum += TransSum;
-                        transactions.Add(new Transaction(sum, TransSum));
+                        int transactionSum = -1;
+                        while (transactionSum == -1) transactionSum = ParseInt(Console.ReadLine());
+                        if(option == 2 ) transactionSum*=-1;                     
+                        sum += transactionSum;
+                        transactions.Add(new Transaction(sum, transactionSum));
                         WritedDB(transactions);
                         break;
                     case 3:
@@ -56,9 +56,9 @@ namespace BugdetTracker
                             for (int i = count - 1; i >= 0; i--)
                             {
 
-                                if (transactions[i].transactionSum < 0) Console.Write($"Expense: {transactions[i].transactionSum}$");
-                                else Console.Write($"Income: +{transactions[i].transactionSum}$");
-                                Console.WriteLine($" Balance: {transactions[i].currentSum}$");
+                                if (transactions[i].Sum < 0) Console.Write($"Expense: {transactions[i].Sum}$");
+                                else Console.Write($"Income: +{transactions[i].Sum}$");
+                                Console.WriteLine($" Balance: {transactions[i].Balance}$");
                             }
                         }
                         break;
@@ -72,7 +72,7 @@ namespace BugdetTracker
                 }
             }
         }
-        public static int CheckInt(string? input)
+        public static int ParseInt(string? input)
         {
             if (Int32.TryParse(input, out int m)) return m;
             Console.WriteLine("Enter valid integer");
@@ -87,7 +87,6 @@ namespace BugdetTracker
         }
         public static List<Transaction> ReadDB()
         {
-
             string text = File.ReadAllText("DataBase.json");
             return JsonConvert.DeserializeObject<List<Transaction>>(text);
   
