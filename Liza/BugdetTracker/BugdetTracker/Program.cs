@@ -35,12 +35,7 @@ namespace BugdetTracker
                         while (transactionSum == -1) transactionSum = ParseInt(Console.ReadLine());
                         if(option == 2 ) transactionSum*=-1;                     
                         sum += transactionSum;
-
                         transactions = transactions.Append(new Transaction(sum, transactionSum)).ToArray();
-                        foreach (Transaction transaction in transactions)
-                        {
-                            Console.WriteLine(transaction.Balance+" "+transaction.Sum+" "+transaction.Date);
-                        }
                         WritedDB(transactions);
                         break;
                     case 3:
