@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Xml.Linq;
 
 namespace BugdetTracker
 {
@@ -10,16 +11,10 @@ namespace BugdetTracker
         }
         public static void StartTracking()
         {
-            List<Transaction> transactions = ReadDB();
+            Transaction[] transactions = ReadDB();
 
-            int sum;
-            if (transactions==null)
-            {
-                sum = 0;
-                transactions = new List<Transaction>();
-            }
-
-            else sum = transactions[transactions.Count - 1].Balance;
+            int sum = 0;
+            if (transactions.Length!=0) sum = transactions[transactions.Length - 1].Balance;
 
             while (true)
             {
@@ -40,7 +35,12 @@ namespace BugdetTracker
                         while (transactionSum == -1) transactionSum = ParseInt(Console.ReadLine());
                         if(option == 2 ) transactionSum*=-1;                     
                         sum += transactionSum;
-                        transactions.Add(new Transaction(sum, transactionSum));
+
+                        transactions = transactions.Append(new Transaction(sum, transactionSum)).ToArray();
+                        foreach (Transaction transaction in transactions)
+                        {
+                            Console.WriteLine(transaction.Balance+" "+transaction.Sum+" "+transaction.Date);
+                        }
                         WritedDB(transactions);
                         break;
                     case 3:
@@ -48,11 +48,11 @@ namespace BugdetTracker
                         Console.WriteLine($"Current balance: {sum}$");
                         break;
                     case 4:
-                        if (transactions.Count==0) Console.WriteLine("No recent transactions");
+                        if (transactions.Length == 0) Console.WriteLine("No recent transactions");
                         else
                         {
                             int count = 10;
-                            if(transactions.Count<10) count = transactions.Count;
+                            if (transactions.Length < 10) count = transactions.Length;
                             for (int i = count - 1; i >= 0; i--)
                             {
 
@@ -78,19 +78,21 @@ namespace BugdetTracker
             Console.WriteLine("Enter valid integer");
             return -1;
         }
-        public static void WritedDB(List<Transaction> transactions)
+        public static void WritedDB(IEnumerable<Transaction> transactions)
         {
 
-            string json = JsonConvert.SerializeObject(transactions, Newtonsoft.Json.Formatting.Indented);
+            string json = JsonConvert.SerializeObject(transactions, Formatting.Indented);
             File.WriteAllText("DataBase.json", json);
 
         }
-        public static List<Transaction> ReadDB()
+        public static Transaction[] ReadDB()
         {
             string text = File.ReadAllText("DataBase.json");
-            return JsonConvert.DeserializeObject<List<Transaction>>(text);
-  
+            Transaction[] ?transactions = JsonConvert.DeserializeObject<Transaction[]>(text);
+            if(transactions==null) return new Transaction[0];
+            return transactions;
         }
+
 
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 
 namespace BugdetTracker
 {
@@ -6,7 +6,7 @@ namespace BugdetTracker
     {
         public int Balance { get; }
         public int Sum { get; set; }
-        public DateTime Date { get; }
+        public DateTime Date { get; set; }
 
         public Transaction(int balance, int sum)
         {
