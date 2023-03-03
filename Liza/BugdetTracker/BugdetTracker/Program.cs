@@ -13,8 +13,8 @@ namespace BugdetTracker
         {
             Transaction[] transactions = ReadDB();
 
-            int sum = 0;
-            if (transactions.Length!=0) sum = transactions[transactions.Length - 1].Balance;
+            int balance = 0;
+            if (transactions.Length!=0) balance = transactions[transactions.Length - 1].Balance;
 
             while (true)
             {
@@ -34,13 +34,13 @@ namespace BugdetTracker
                         int transactionSum = -1;
                         while (transactionSum == -1) transactionSum = ParseInt(Console.ReadLine());
                         if(option == 2 ) transactionSum*=-1;                     
-                        sum += transactionSum;
-                        transactions = transactions.Append(new Transaction(sum, transactionSum)).ToArray();
+                        balance += transactionSum;
+                        transactions = transactions.Append(new Transaction(balance, transactionSum)).ToArray();
                         WritedDB(transactions);
                         break;
                     case 3:
-                        if (sum < 0) Console.WriteLine("You are in debt");
-                        Console.WriteLine($"Current balance: {sum}$");
+                        if (balance < 0) Console.WriteLine("You are in debt");
+                        Console.WriteLine($"Current balance: {balance}$");
                         break;
                     case 4:
                         if (transactions.Length == 0) Console.WriteLine("No recent transactions");
