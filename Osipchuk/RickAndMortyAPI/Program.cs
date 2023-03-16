@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Text;
 using RickAndMortyAPI.CharacterInfo;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHttpClient();
 var app = builder.Build();
 
 var services = new ServiceCollection();
-services.AddHttpClient();
 var serviceProvider = services.BuildServiceProvider();
 var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
 var httpClient = httpClientFactory?.CreateClient();
@@ -41,23 +42,24 @@ app.Map("/", async (context) =>
 app.Map("/api/character/{id}", async (HttpContext context, string id) =>
 {
     var response = context.Response;
-    var character = await httpClient.GetFromJsonAsync<Character>($"https://rickandmortyapi.com/api/character/{id}");
-    await response.WriteAsJsonAsync(character.Name + character.Status + character.Species + character.Gender);
+    var character = JsonConvert.SerializeObject(await GetCharacterAsync(id));
+    await response.WriteAsync(character);
 });
 
 app.Map("/api/characters", async (context) =>
 {
     var response = context.Response;
-    List<Character> characters = await GetAllCharactersAsync();
     StringBuilder data = new StringBuilder();
-    foreach (var character in characters)
+    await foreach (var character in GetAllCharactersAsync())
     {
-        data.Append(character.Id + character.Name + character.Status + character.Species + character.Gender);
+        string strCharacter = JsonConvert.SerializeObject(character);
+        data.Append(strCharacter);
     }
-    response.WriteAsJsonAsync(data.ToString());
+
+    await response.WriteAsync(data.ToString());
 });
 
-async Task<List<Character>> GetAllCharactersAsync()
+async IAsyncEnumerable<Character> GetAllCharactersAsync()
 {
     var characters = new List<Character>();
     var nextPageUrl = "https://rickandmortyapi.com/api/character";
@@ -70,7 +72,14 @@ async Task<List<Character>> GetAllCharactersAsync()
         characters.AddRange(result.Results);
         nextPageUrl = result.Info.Next;
     }
-    return characters;
+    foreach(var character in characters)
+    {
+        yield return character;
+    }
 }
-
+async Task<Character> GetCharacterAsync(string id)
+{
+    var character = await httpClient.GetFromJsonAsync<Character>($"https://rickandmortyapi.com/api/character/{id}");
+    return character;
+}
 app.Run();
