@@ -37,22 +37,22 @@ app.Map("/", async (context) =>
     context.Response.WriteAsync("Start Page");
 });
 
-app.Map("/api/character/{id}", async (HttpContext context,IHttpClientFactory httpClientFactory, string id) =>
+app.Map("/api/character/{id}", async (HttpContext context, IHttpClientFactory httpClientFactory, IServiceProvider serviceProvider, string id) =>
 {
     var httpClient = httpClientFactory?.CreateClient();
-    var characterService = app.Services.GetService<ICharacterService>();
+    var characterService = serviceProvider.GetService<ICharacterService>();
     var response = context.Response;
-    var character = JsonConvert.SerializeObject(await characterService.GetCharacterAsync(httpClient, id));
+    var character = JsonConvert.SerializeObject(await characterService.GetCharacterAsync(id));
     await response.WriteAsync(character);
 });
 
-app.Map("/api/characters", async (HttpContext context, IHttpClientFactory httpClientFactory) =>
+app.Map("/api/characters", async (HttpContext context, IHttpClientFactory httpClientFactory, IServiceProvider serviceProvider) =>
 {
     var httpClient = httpClientFactory?.CreateClient();
-    var characterService = app.Services.GetService<ICharacterService>();
+    var characterService = serviceProvider.GetService<ICharacterService>();
     var response = context.Response;
     List<Character> characters = new List<Character>();
-    await foreach (var character in characterService.GetAllCharactersAsync(httpClient))
+    await foreach (var character in characterService.GetAllCharactersAsync())
     {
         characters.Add(character);
     }
