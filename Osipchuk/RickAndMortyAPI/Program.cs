@@ -37,19 +37,17 @@ app.Map("/", async (context) =>
     context.Response.WriteAsync("Start Page");
 });
 
-app.Map("/api/character/{id}", async (HttpContext context, IHttpClientFactory httpClientFactory, IServiceProvider serviceProvider, string id) =>
+app.Map("/api/character/{id}", async (HttpContext context, IHttpClientFactory httpClientFactory, ICharacterService characterService, string id) =>
 {
     var httpClient = httpClientFactory?.CreateClient();
-    var characterService = serviceProvider.GetService<ICharacterService>();
     var response = context.Response;
     var character = JsonConvert.SerializeObject(await characterService.GetCharacterAsync(id));
     await response.WriteAsync(character);
 });
 
-app.Map("/api/characters", async (HttpContext context, IHttpClientFactory httpClientFactory, IServiceProvider serviceProvider) =>
+app.Map("/api/characters", async (HttpContext context, IHttpClientFactory httpClientFactory, ICharacterService characterService) =>
 {
     var httpClient = httpClientFactory?.CreateClient();
-    var characterService = serviceProvider.GetService<ICharacterService>();
     var response = context.Response;
     List<Character> characters = new List<Character>();
     await foreach (var character in characterService.GetAllCharactersAsync())
