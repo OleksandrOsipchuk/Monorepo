@@ -4,7 +4,7 @@ namespace RickAndMortyAPI
 {
     public interface ICharacterService
     {
-        Task<Character> GetCharacterAsync(string id);
+        Task<Character> GetCharacterAsync(int id);
         IAsyncEnumerable<Character> GetAllCharactersAsync();
     }
 }

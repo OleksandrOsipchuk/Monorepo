@@ -30,7 +30,7 @@ namespace RickAndMortyAPI.Services
             }
         }
 
-        public async Task<Character> GetCharacterAsync(string id)
+        public async Task<Character> GetCharacterAsync(int id)
         {
             var character = await _httpClient.GetFromJsonAsync<Character>($"https://rickandmortyapi.com/api/character/{id}");
             return character;
