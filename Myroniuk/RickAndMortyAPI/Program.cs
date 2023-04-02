@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder();
-builder.Services.AddSingleton<ILocationService, LocationService>();
+builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddHttpClient();
 var app = builder.Build();
 
