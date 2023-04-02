@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using RickAndMortyAPI;
 using RickAndMortyAPI.Entities;
 using RickAndMortyAPI.Middleware;
@@ -25,19 +26,24 @@ app.UseStatusCodePages(async statusCodeContext =>
         await response.WriteAsync($"Resource {path} - Not Found.");
     }
 });
-//setting header manually?
 app.Use(async (context, next) => { context.Request.Headers.Add("X-SecretKey", "PickleRick"); await next?.Invoke(); });
 app.UseMiddleware<HeaderAuthenticationMiddleware>();
 
 app.Map("/api/locations", async (HttpContext context, ILocationService locationService) =>
 {
     context.Response.ContentType = "text/html; charset=utf-8";
-    await context.Response.WriteAsync(await HTMLHelper.ToHTMLTable(locationService));
+    await foreach(var location in locationService.GetLocationsAsync())
+    {
+        await context.Response.WriteAsync(JsonConvert.SerializeObject(location));
+    }
 });
 
-app.Map("/api/location/{ids}", async (HttpContext context, ILocationService locationService, string ids) =>
+app.Map("/api/location/{id}", async (HttpContext context, ILocationService locationService, string id) =>
 {
     context.Response.ContentType = "text/html; charset=utf-8";
-    await context.Response.WriteAsync(await HTMLHelper.ToHTMLTable(locationService, ids));
+    await foreach (var location in locationService.GetLocationsAsync(id))
+    {
+        await context.Response.WriteAsync(JsonConvert.SerializeObject(location));
+    }
 });
 app.Run();

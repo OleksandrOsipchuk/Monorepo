@@ -44,10 +44,10 @@ namespace RickAndMortyAPI.Services
         /// <exception cref="JsonException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="TaskCanceledException"></exception>
-        public async IAsyncEnumerable<Location> GetLocationsAsync(string ids)
+        public async IAsyncEnumerable<Location> GetLocationsAsync(string id)
         { 
-            foreach (var id in ids.Split(',').Select(x => x.Trim()).ToArray()) 
-                yield return await _httpClient.GetFromJsonAsync<Location>($"{_urlAPI}/{id}");
+            foreach (var locationId in id.Split(',').Select(x => x.Trim()).ToArray()) 
+                yield return await _httpClient.GetFromJsonAsync<Location>($"{_urlAPI}/{locationId}");
         }
     }
 }

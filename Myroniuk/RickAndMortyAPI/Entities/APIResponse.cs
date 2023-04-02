@@ -2,7 +2,7 @@
 {
     public class APIResponse
     {
-            public Info Info { get; set; } 
-            public List<Location> Results { get; set; } 
+            public Info Info { get; set; }
+            public IReadOnlyCollection<Location> Results { get; set; }
     }
 }
