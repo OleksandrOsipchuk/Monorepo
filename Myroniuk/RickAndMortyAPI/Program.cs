@@ -31,19 +31,13 @@ app.UseMiddleware<HeaderAuthenticationMiddleware>();
 
 app.Map("/api/locations", async (HttpContext context, ILocationService locationService) =>
 {
-    context.Response.ContentType = "text/html; charset=utf-8";
     await foreach(var location in locationService.GetLocationsAsync())
-    {
         await context.Response.WriteAsync(JsonConvert.SerializeObject(location));
-    }
 });
 
 app.Map("/api/location/{id}", async (HttpContext context, ILocationService locationService, string id) =>
 {
-    context.Response.ContentType = "text/html; charset=utf-8";
     await foreach (var location in locationService.GetLocationsAsync(id))
-    {
         await context.Response.WriteAsync(JsonConvert.SerializeObject(location));
-    }
 });
 app.Run();
