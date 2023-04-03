@@ -18,7 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 string connection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddTransient<ICharacterService, CharacterServices>();
 builder.Services.AddHttpClient();
-builder.Services.AddDbContext<RamdbContext>(options => options.UseNpgsql(connection));
+builder.Services.AddDbContext<RickAndMortyContext>(options => options.UseNpgsql(connection));
 var app = builder.Build();
 
 app.ConfigureCustomExceptionMiddleware();
@@ -28,14 +28,14 @@ app.Map("/", async (context) =>
     context.Response.WriteAsync("Start Page");
 });
 
-app.Map("/db/character/{id}", async (HttpContext context, RamdbContext db, int id) =>
+app.Map("/db/character/{id}", async (HttpContext context, RickAndMortyContext db, int id) =>
 {
     string? character = JsonConvert.SerializeObject(await db.Characters.FirstOrDefaultAsync(c => c.Id == id));
     if (character != null) context.Response.WriteAsync(character);
     else context.Response.StatusCode = 401;
 });
 
-app.Map("/db/characters", async (HttpContext context, RamdbContext db) =>
+app.Map("/db/characters", async (HttpContext context, RickAndMortyContext db) =>
 {
     var characters = JsonConvert.SerializeObject(await db.Characters.ToListAsync());
     await context.Response.WriteAsync(characters);
