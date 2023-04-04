@@ -1,6 +1,5 @@
 ﻿using RickAndMortyAPI.Entities;
 using Newtonsoft.Json;
-using System.Text;
 
 namespace RickAndMortyAPI.Services
 {
