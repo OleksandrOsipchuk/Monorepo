@@ -8,17 +8,16 @@ namespace RickAndMortyAPI;
 public class RickAndMortyContext : DbContext
 {
     public virtual DbSet<Character> Characters { get; set; }
-    public RickAndMortyContext(DbContextOptions<RickAndMortyContext> options)
-        : base(options) { }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    => optionsBuilder.UseLowerCaseNamingConvention();
+    => optionsBuilder.UseLowerCaseNamingConvention()
+    .UseNpgsql("Host=localhost;Port=5432;Database=ramdb;Username=postgres;Password=2002");
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Character>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("characters_pkey");
 
-            entity.ToTable("characters");            
+            entity.ToTable("characters");
         });
     }
 }

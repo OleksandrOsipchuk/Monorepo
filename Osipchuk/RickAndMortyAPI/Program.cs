@@ -13,12 +13,11 @@ using RickAndMortyAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Diagnostics;
 using RickAndMortyAPI.Middlewares;
+using RickAndMortyAPI.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
-string connection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddTransient<ICharacterService, CharacterServices>();
 builder.Services.AddHttpClient();
-builder.Services.AddDbContext<RickAndMortyContext>(options => options.UseNpgsql(connection));
 var app = builder.Build();
 
 app.ConfigureCustomExceptionMiddleware();
@@ -28,17 +27,23 @@ app.Map("/", async (context) =>
     context.Response.WriteAsync("Start Page");
 });
 
-app.Map("/api/character/{id}", async (HttpContext context, RickAndMortyContext db, int id) =>
+app.Map("/api/character/{id}", async (HttpContext context, int id) =>
 {
-    string? character = JsonConvert.SerializeObject(await db.Characters.FirstOrDefaultAsync(c => c.Id == id));
-    if (character != null) context.Response.WriteAsync(character);
-    else context.Response.StatusCode = 401;
+    UnitOfWork unitOfWork = new UnitOfWork();
+    string? character = JsonConvert.SerializeObject(await unitOfWork.Characters.GetCharacterAsync(id));
+    context.Response.WriteAsync(character);
 });
 
-app.Map("/api/characters", async (HttpContext context, RickAndMortyContext db) =>
+app.Map("/api/characters", async (HttpContext context) =>
 {
-    var characters = JsonConvert.SerializeObject(await db.Characters.ToListAsync());
-    await context.Response.WriteAsync(characters);
+    UnitOfWork unitOfWork = new UnitOfWork();
+    var characters = new List<CharacterDTO>();
+    await foreach (var character in unitOfWork.Characters.GetCharactersAsync())
+    {
+        characters.Add(character);
+    }
+    string data = JsonConvert.SerializeObject(characters);
+    await context.Response.WriteAsync(data);
 });
 
 app.Run();
