@@ -4,7 +4,7 @@
     {
         private RickAndMortyContext db = new RickAndMortyContext();
         private RickAndMortyRepository repository;      
-        public RickAndMortyRepository Characters
+        public RickAndMortyRepository Repository
         {
             get 
             {
@@ -15,10 +15,7 @@
                 return repository;
             }
         }
-        public void Save()
-        {
-            db.SaveChanges();
-        }
+
         private bool disposed = false;
         public void Dispose()
         {

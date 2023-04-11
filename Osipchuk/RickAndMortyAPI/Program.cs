@@ -14,9 +14,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Diagnostics;
 using RickAndMortyAPI.Middlewares;
 using RickAndMortyAPI.Repository;
+using RickAndMortyAPI.IOHandler;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddTransient<UnitOfWork>();
 builder.Services.AddTransient<ICharacterService, CharacterServices>();
+builder.Services.AddTransient<IDTOService<Character, CharacterDTO>, CharacterDTOService>();
 builder.Services.AddHttpClient();
 var app = builder.Build();
 
@@ -27,22 +30,25 @@ app.Map("/", async (context) =>
     context.Response.WriteAsync("Start Page");
 });
 
-app.Map("/api/character/{id}", async (HttpContext context, int id) =>
+app.Map("/api/character/{id}", async (HttpContext context,
+    UnitOfWork unitOfWork, IDTOService<Character, CharacterDTO> dto, int id) =>
 {
-    UnitOfWork unitOfWork = new UnitOfWork();
-    string? character = JsonConvert.SerializeObject(await unitOfWork.Characters.GetCharacterAsync(id));
-    context.Response.WriteAsync(character);
+    var repository = unitOfWork.Repository;
+    var character = await repository.GetCharacterAsync(id);
+    string? data = JsonConvert.SerializeObject(dto.GetDTO(character));
+    context.Response.WriteAsync(data);
 });
 
-app.Map("/api/characters", async (HttpContext context) =>
+app.Map("/api/characters", async (HttpContext context,
+    UnitOfWork unitOfWork, IDTOService<Character, CharacterDTO> dto) =>
 {
-    UnitOfWork unitOfWork = new UnitOfWork();
-    var characters = new List<CharacterDTO>();
-    await foreach (var character in unitOfWork.Characters.GetCharactersAsync())
+    var repository = unitOfWork.Repository;
+    var characters = new List<Character>();
+    await foreach (var character in repository.GetCharactersAsync())
     {
         characters.Add(character);
     }
-    string data = JsonConvert.SerializeObject(characters);
+    string data = JsonConvert.SerializeObject(dto.GetDTOs(characters));
     await context.Response.WriteAsync(data);
 });
 

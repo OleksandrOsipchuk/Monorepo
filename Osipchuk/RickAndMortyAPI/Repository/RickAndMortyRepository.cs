@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace RickAndMortyAPI.Repository
 {
-    public class RickAndMortyRepository : IRepository<Character, CharacterDTO>
+    public class RickAndMortyRepository : IRepository<Character>
     {
         private RickAndMortyContext db;
         public RickAndMortyRepository(RickAndMortyContext db)
@@ -13,37 +13,19 @@ namespace RickAndMortyAPI.Repository
             this.db = db;
         }
 
-        public async Task<CharacterDTO> GetCharacterAsync(int id)
+        public async Task<Character> GetCharacterAsync(int id)
         {
             var character = await db.Characters.FindAsync(id);
-            var characterDTO = await db.Characters.Select(c =>
-            new CharacterDTO()
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Status = c.Status,
-                Species = c.Species,
-                Gender = c.Gender
-            }).SingleOrDefaultAsync(c => c.Id == id);
-            return characterDTO;
+            return character;
         }
 
-        public async IAsyncEnumerable<CharacterDTO> GetCharactersAsync()
+        public async IAsyncEnumerable<Character> GetCharactersAsync()
         {
-            var characters = await db.Characters.ToListAsync();
-            var charactersDTO = from c in characters
-                                select new CharacterDTO()
-                                {
-                                    Id = c.Id,
-                                    Name = c.Name,
-                                    Status = c.Status,
-                                    Species = c.Species,
-                                    Gender = c.Gender
-                                };
-            foreach (var characterDTO in charactersDTO)
+            var characters = await db.Characters.ToListAsync();            
+            foreach (var character in characters)
             {
 
-                yield return characterDTO;
+                yield return character;
             }
         }
         public void CreateAsync(Character item)
@@ -61,6 +43,10 @@ namespace RickAndMortyAPI.Repository
         public void Update(Character item)
         {
             db.Entry(item).State = EntityState.Modified;
+        }
+        public void Save()
+        {
+            db.SaveChanges();
         }
     }
 }
