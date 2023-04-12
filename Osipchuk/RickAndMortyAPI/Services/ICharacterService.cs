@@ -1,10 +1,8 @@
-﻿using RickMorty;
-
-namespace RickAndMortyAPI
+﻿namespace RickAndMortyAPI.Services
 {
-    public interface ICharacterService
+    public interface ICharacterService<T>
     {
-        Task<Character> GetCharacterAsync(int id);
-        IAsyncEnumerable<Character> GetAllCharactersAsync();
+        public Task<T> GetDTOAsync(int id);
+        public IAsyncEnumerable<T> GetDTOsAsync();
     }
 }

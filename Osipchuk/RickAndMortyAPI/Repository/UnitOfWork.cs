@@ -2,16 +2,18 @@
 {
     public class UnitOfWork : IDisposable
     {
-        private RickAndMortyContext db = new RickAndMortyContext();
-        private RickAndMortyRepository repository;      
+        private readonly RickAndMortyContext _db;
+        private RickAndMortyRepository? repository;
+        public UnitOfWork(RickAndMortyContext db)
+        {
+            _db = db;
+        }
+
         public RickAndMortyRepository Repository
         {
-            get 
+            get
             {
-                if(repository == null)
-                {
-                    repository = new RickAndMortyRepository(db);
-                }
+                repository ??= new RickAndMortyRepository(_db);
                 return repository;
             }
         }
@@ -28,7 +30,7 @@
             {
                 if (disposing)
                 {
-                    db.Dispose();
+                    _db.Dispose();
                 }
             }
             this.disposed = true;

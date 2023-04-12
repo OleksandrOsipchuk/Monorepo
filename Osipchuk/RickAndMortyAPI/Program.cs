@@ -14,12 +14,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Diagnostics;
 using RickAndMortyAPI.Middlewares;
 using RickAndMortyAPI.Repository;
-using RickAndMortyAPI.IOHandler;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var connection = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<RickAndMortyContext>(options =>
+options.UseNpgsql(connection));
 builder.Services.AddTransient<UnitOfWork>();
-builder.Services.AddTransient<ICharacterService, CharacterServices>();
-builder.Services.AddTransient<IDTOService<Character, CharacterDTO>, CharacterDTOService>();
+builder.Services.AddTransient<ICharacterService<CharacterDTO>, CharacterService>();
 builder.Services.AddHttpClient();
 var app = builder.Build();
 
@@ -27,28 +29,23 @@ app.ConfigureCustomExceptionMiddleware();
 
 app.Map("/", async (context) =>
 {
-    context.Response.WriteAsync("Start Page");
+    await context.Response.WriteAsync("Start Page");
 });
 
-app.Map("/api/character/{id}", async (HttpContext context,
-    UnitOfWork unitOfWork, IDTOService<Character, CharacterDTO> dto, int id) =>
+app.Map("/api/character/{id}", async (HttpContext context, ICharacterService<CharacterDTO> dto, int id) =>
 {
-    var repository = unitOfWork.Repository;
-    var character = await repository.GetCharacterAsync(id);
-    string? data = JsonConvert.SerializeObject(dto.GetDTO(character));
-    context.Response.WriteAsync(data);
+    string? data = JsonConvert.SerializeObject(await dto.GetDTOAsync(id));
+    await context.Response.WriteAsync(data);
 });
 
-app.Map("/api/characters", async (HttpContext context,
-    UnitOfWork unitOfWork, IDTOService<Character, CharacterDTO> dto) =>
+app.Map("/api/characters", async (HttpContext context, ICharacterService<CharacterDTO> dto) =>
 {
-    var repository = unitOfWork.Repository;
-    var characters = new List<Character>();
-    await foreach (var character in repository.GetCharactersAsync())
+    var characters = new List<CharacterDTO>();
+    await foreach (var character in dto.GetDTOsAsync())
     {
         characters.Add(character);
     }
-    string data = JsonConvert.SerializeObject(dto.GetDTOs(characters));
+    string data = JsonConvert.SerializeObject(characters);
     await context.Response.WriteAsync(data);
 });
 

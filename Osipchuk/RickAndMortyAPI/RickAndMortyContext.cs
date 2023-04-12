@@ -9,8 +9,8 @@ public class RickAndMortyContext : DbContext
 {
     public virtual DbSet<Character> Characters { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    => optionsBuilder.UseLowerCaseNamingConvention()
-    .UseNpgsql("Host=localhost;Port=5432;Database=ramdb;Username=postgres;Password=2002");
+    => optionsBuilder.UseLowerCaseNamingConvention();
+    public RickAndMortyContext(DbContextOptions<RickAndMortyContext> options) : base(options) { }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Character>(entity =>
