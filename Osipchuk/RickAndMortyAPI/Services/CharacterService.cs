@@ -4,14 +4,14 @@ using RickMorty;
 
 namespace RickAndMortyAPI.Services
 {
-    public class CharacterService : ICharacterService<CharacterDTO>
+    public class CharacterService : ICharacterService
     {
         public RickAndMortyRepository Repository { get; private set; }
         public CharacterService(UnitOfWork unitOfWork)
         {
             Repository = unitOfWork.Repository;
         }
-        public async Task<CharacterDTO> GetDTOAsync(int id)
+        public async Task<CharacterDTO> GetCharacterAsync(int id)
         {
             var character = await Repository.GetCharacterAsync(id);
             var characterDTO = new CharacterDTO()
@@ -25,7 +25,7 @@ namespace RickAndMortyAPI.Services
             return characterDTO;
         }
 
-        public async IAsyncEnumerable<CharacterDTO> GetDTOsAsync()
+        public async IAsyncEnumerable<CharacterDTO> GetCharactersAsync()
         {
             var characters = new List<Character>();
             await foreach (var character in Repository.GetCharactersAsync())

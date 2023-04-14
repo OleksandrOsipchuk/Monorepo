@@ -21,7 +21,7 @@ var connection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<RickAndMortyContext>(options =>
 options.UseNpgsql(connection));
 builder.Services.AddTransient<UnitOfWork>();
-builder.Services.AddTransient<ICharacterService<CharacterDTO>, CharacterService>();
+builder.Services.AddTransient<ICharacterService, CharacterService>();
 builder.Services.AddHttpClient();
 var app = builder.Build();
 
@@ -32,16 +32,16 @@ app.Map("/", async (context) =>
     await context.Response.WriteAsync("Start Page");
 });
 
-app.Map("/api/character/{id}", async (HttpContext context, ICharacterService<CharacterDTO> dto, int id) =>
+app.Map("/api/character/{id}", async (HttpContext context, ICharacterService characterService, int id) =>
 {
-    string? data = JsonConvert.SerializeObject(await dto.GetDTOAsync(id));
+    string? data = JsonConvert.SerializeObject(await characterService.GetCharacterAsync(id));
     await context.Response.WriteAsync(data);
 });
 
-app.Map("/api/characters", async (HttpContext context, ICharacterService<CharacterDTO> dto) =>
+app.Map("/api/characters", async (HttpContext context, ICharacterService characterService) =>
 {
     var characters = new List<CharacterDTO>();
-    await foreach (var character in dto.GetDTOsAsync())
+    await foreach (var character in characterService.GetCharactersAsync())
     {
         characters.Add(character);
     }

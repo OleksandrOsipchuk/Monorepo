@@ -36,7 +36,7 @@ namespace RickAndMortyAPI.Repository
             {
                 var page = await characters
                     .OrderBy(c => c.Id)
-                    .Where(c => c.Id >= currentPage * pageSize)
+                    .Where(c => c.Id > currentPage * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
                 foreach (var character in page)
