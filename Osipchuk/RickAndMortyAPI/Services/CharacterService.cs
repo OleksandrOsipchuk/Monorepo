@@ -25,14 +25,14 @@ namespace RickAndMortyAPI.Services
             return characterDTO;
         }
 
-        public async IAsyncEnumerable<CharacterDTO> GetCharactersAsync()
+        public async Task<IList<CharacterDTO>> GetCharactersAsync()
         {
             var characters = new List<Character>();
             await foreach (var character in Repository.GetCharactersAsync())
             {
                 characters.Add(character);
             }
-            var charactersDTO = from c in characters
+            var data = from c in characters
                                 select new CharacterDTO()
                                 {
                                     Id = c.Id,
@@ -41,11 +41,12 @@ namespace RickAndMortyAPI.Services
                                     Species = c.Species,
                                     Gender = c.Gender
                                 };
-            foreach (var characterDTO in charactersDTO)
+            var charactersDTO = new List<CharacterDTO>();
+            foreach (var characterDTO in data)
             {
-
-                yield return characterDTO;
+                charactersDTO.Add(characterDTO);
             }
+            return charactersDTO;
         }
     }
 }

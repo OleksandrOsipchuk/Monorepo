@@ -40,11 +40,7 @@ app.Map("/api/character/{id}", async (HttpContext context, ICharacterService cha
 
 app.Map("/api/characters", async (HttpContext context, ICharacterService characterService) =>
 {
-    var characters = new List<CharacterDTO>();
-    await foreach (var character in characterService.GetCharactersAsync())
-    {
-        characters.Add(character);
-    }
+    var characters = await characterService.GetCharactersAsync();
     string data = JsonConvert.SerializeObject(characters);
     await context.Response.WriteAsync(data);
 });
