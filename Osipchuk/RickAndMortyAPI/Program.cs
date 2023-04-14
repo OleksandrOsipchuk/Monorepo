@@ -13,32 +13,36 @@ using RickAndMortyAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Diagnostics;
 using RickAndMortyAPI.Middlewares;
+using RickAndMortyAPI.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
-string connection = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddTransient<ICharacterService, CharacterServices>();
+
+var connection = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<RickAndMortyContext>(options =>
+options.UseNpgsql(connection));
+builder.Services.AddTransient<UnitOfWork>();
+builder.Services.AddTransient<ICharacterService, CharacterService>();
 builder.Services.AddHttpClient();
-builder.Services.AddDbContext<RickAndMortyContext>(options => options.UseNpgsql(connection));
 var app = builder.Build();
 
 app.ConfigureCustomExceptionMiddleware();
 
 app.Map("/", async (context) =>
 {
-    context.Response.WriteAsync("Start Page");
+    await context.Response.WriteAsync("Start Page");
 });
 
-app.Map("/api/character/{id}", async (HttpContext context, RickAndMortyContext db, int id) =>
+app.Map("/api/character/{id}", async (HttpContext context, ICharacterService characterService, int id) =>
 {
-    string? character = JsonConvert.SerializeObject(await db.Characters.FirstOrDefaultAsync(c => c.Id == id));
-    if (character != null) context.Response.WriteAsync(character);
-    else context.Response.StatusCode = 401;
+    string? data = JsonConvert.SerializeObject(await characterService.GetCharacterAsync(id));
+    await context.Response.WriteAsync(data);
 });
 
-app.Map("/api/characters", async (HttpContext context, RickAndMortyContext db) =>
+app.Map("/api/characters", async (HttpContext context, ICharacterService characterService) =>
 {
-    var characters = JsonConvert.SerializeObject(await db.Characters.ToListAsync());
-    await context.Response.WriteAsync(characters);
+    var characters = await characterService.GetCharactersAsync();
+    string data = JsonConvert.SerializeObject(characters);
+    await context.Response.WriteAsync(data);
 });
 
 app.Run();

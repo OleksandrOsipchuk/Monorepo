@@ -22,7 +22,7 @@ namespace RickAndMortyAPI.Middlewares
            
             catch (Exception ex)
             {
-                HandleEceptionAsync(context, ex.Message, HttpStatusCode.InternalServerError);
+               await HandleEceptionAsync(context, ex.Message, HttpStatusCode.InternalServerError);
             }
         }
         private async Task HandleEceptionAsync(HttpContext context,
