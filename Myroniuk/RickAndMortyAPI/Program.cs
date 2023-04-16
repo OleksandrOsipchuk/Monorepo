@@ -4,15 +4,37 @@ using RickAndMortyAPI.Services;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RickAndMortyAPI.Repository;
 
 var builder = WebApplication.CreateBuilder();
 builder.Services.AddScoped<ILocationService, LocationService>();
+builder.Services.AddTransient<UnitOfWork>();
 builder.Services.AddHttpClient();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
     c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+    c.AddSecurityDefinition("header", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.ApiKey,
+        In = ParameterLocation.Header,
+        Name = "X-SecretKey"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "header"
+                }
+            },
+            new List<string>()
+        }
+    });
 });
 builder.Services.AddDbContext<RickAndMortyContext>
     (options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -26,24 +48,18 @@ app.UseSwaggerUI(c =>
 
 app.UseMiddleware<HeaderAuthenticationMiddleware>();
 
-app.MapGet("/api/locations", async (HttpContext context, RickAndMortyContext dbcontext,
-     [FromHeader(Name = "X-SecretKey")] string secretKey) =>
+app.MapGet("/api/locations", async (HttpContext context, ILocationService locationService) =>
 {
-    var locations = JsonConvert.SerializeObject(await dbcontext.Locations.ToListAsync());
-    await context.Response.WriteAsync(locations);
+    await foreach (var location in locationService.GetLocationsAsync())
+        await context.Response.WriteAsync(JsonConvert.SerializeObject(location));
 })
     .WithOpenApi(c => new(c) { Summary = "Get all locations" })
     .WithTags("Locations");
-
-app.MapGet("/api/location/{id}", async (HttpContext context, RickAndMortyContext dbcontext,
-    string locationid, [FromHeader(Name = "X-SecretKey")] string secretKey) =>
+app.MapGet("/api/location", async (HttpContext context, ILocationService locationService,
+    [FromQuery(Name = "locationsIDs")] int[] locationIDs ) =>
 {
-    var idList = locationid.Split(",").Select(int.Parse).ToList();
-    foreach (var id in idList) {
-        var location = await dbcontext.Locations.FirstOrDefaultAsync(x => x.Id == id);
-        if (location != null) await context.Response.WriteAsync(JsonConvert.SerializeObject(location));
-        else context.Response.StatusCode = 401; 
-    }
+    await foreach (var location in locationService.GetLocationsAsync(locationIDs))
+        await context.Response.WriteAsync(JsonConvert.SerializeObject(location));
 })
     .WithOpenApi(c => new(c) { Summary = "Get locations by id." })
     .WithTags("Locations");
