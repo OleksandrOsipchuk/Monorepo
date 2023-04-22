@@ -18,31 +18,20 @@ using RickAndMortyAPI.Repository;
 var builder = WebApplication.CreateBuilder(args);
 
 var connection = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddControllers();
 builder.Services.AddDbContext<RickAndMortyContext>(options =>
 options.UseNpgsql(connection));
 builder.Services.AddTransient<UnitOfWork>();
 builder.Services.AddTransient<ICharacterService, CharacterService>();
 builder.Services.AddHttpClient();
+
+
 var app = builder.Build();
 
 app.ConfigureCustomExceptionMiddleware();
 
-app.Map("/", async (context) =>
-{
-    await context.Response.WriteAsync("Start Page");
-});
-
-app.Map("/api/character/{id}", async (HttpContext context, ICharacterService characterService, int id) =>
-{
-    string? data = JsonConvert.SerializeObject(await characterService.GetCharacterAsync(id));
-    await context.Response.WriteAsync(data);
-});
-
-app.Map("/api/characters", async (HttpContext context, ICharacterService characterService) =>
-{
-    var characters = await characterService.GetCharactersAsync();
-    string data = JsonConvert.SerializeObject(characters);
-    await context.Response.WriteAsync(data);
-});
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Character}/{action=GetStartPage}/{id?}");
 
 app.Run();
