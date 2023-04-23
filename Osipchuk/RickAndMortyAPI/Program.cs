@@ -30,8 +30,6 @@ var app = builder.Build();
 
 app.ConfigureCustomExceptionMiddleware();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Character}/{action=GetStartPage}/{id?}");
+app.MapControllers();
 
 app.Run();
