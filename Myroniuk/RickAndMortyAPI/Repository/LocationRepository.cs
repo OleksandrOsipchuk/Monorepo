@@ -14,14 +14,14 @@ namespace RickAndMortyAPI.Repository
         }
         public async IAsyncEnumerable<Location> GetAllAsync()
         {
-            var locations = await _dbcontext.Locations.ToListAsync();
-            foreach (var location in locations)
+            var locations = _dbcontext.Locations;
+            await foreach (var location in locations.AsAsyncEnumerable())
                 yield return location;
         }
         public async IAsyncEnumerable<Location> GetByIdAsync(int[] entityIDs)
         {
-            var locations = await _dbcontext.Locations.Where(l => entityIDs.Contains(l.Id)).ToListAsync();
-            foreach (var location in locations)
+            var locations = _dbcontext.Locations.Where(l => entityIDs.Contains(l.Id));
+            await foreach (var location in locations.AsAsyncEnumerable())
                 yield return location;
         }
         public void Insert(Location entity)
@@ -42,9 +42,8 @@ namespace RickAndMortyAPI.Repository
             if (location != null)
             {
                 _dbcontext.Remove(location);
-                return location;
             }
-            else throw new NullReferenceException();
+            return location;
         }
     }
 }

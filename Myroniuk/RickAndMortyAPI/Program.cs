@@ -1,13 +1,12 @@
-using Newtonsoft.Json;
 using RickAndMortyAPI.Middleware;
 using RickAndMortyAPI.Services;
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using RickAndMortyAPI.Repository;
+using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder();
 builder.Services.AddScoped<ILocationService, LocationService>();
+builder.Services.AddControllers();
 builder.Services.AddTransient<UnitOfWork>();
 builder.Services.AddHttpClient();
 builder.Services.AddEndpointsApiExplorer();
@@ -47,21 +46,5 @@ app.UseSwaggerUI(c =>
 });
 
 app.UseMiddleware<HeaderAuthenticationMiddleware>();
-
-app.MapGet("/api/locations", async (HttpContext context, ILocationService locationService) =>
-{
-    await foreach (var location in locationService.GetLocationsAsync())
-        await context.Response.WriteAsync(JsonConvert.SerializeObject(location));
-})
-    .WithOpenApi(c => new(c) { Summary = "Get all locations" })
-    .WithTags("Locations");
-app.MapGet("/api/location", async (HttpContext context, ILocationService locationService,
-    [FromQuery(Name = "locationsIDs")] int[] locationIDs ) =>
-{
-    await foreach (var location in locationService.GetLocationsAsync(locationIDs))
-        await context.Response.WriteAsync(JsonConvert.SerializeObject(location));
-})
-    .WithOpenApi(c => new(c) { Summary = "Get locations by id." })
-    .WithTags("Locations");
-
+app.MapControllers();
 app.Run();
