@@ -21,15 +21,14 @@ var connection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddControllers();
 builder.Services.AddDbContext<RickAndMortyContext>(options =>
 options.UseNpgsql(connection));
-builder.Services.AddTransient<UnitOfWork>();
+builder.Services.AddScoped<UnitOfWork>();
 builder.Services.AddTransient<ICharacterService, CharacterService>();
+builder.Services.AddTransient<IUpdateDBService, UpdateDBService>();
+builder.Services.AddHostedService<UpdateDBHostedService>();
 builder.Services.AddHttpClient();
-
 
 var app = builder.Build();
 
 app.ConfigureCustomExceptionMiddleware();
-
 app.MapControllers();
-
 app.Run();

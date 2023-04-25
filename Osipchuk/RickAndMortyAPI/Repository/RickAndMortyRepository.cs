@@ -14,7 +14,6 @@ namespace RickAndMortyAPI.Repository
         {
             this.db = db;
         }
-
         public async Task<Character> GetCharacterAsync(int id)
         {
             var character = await db.Characters.FindAsync(id);
@@ -22,7 +21,7 @@ namespace RickAndMortyAPI.Repository
             {
                 return character;
             }
-            else throw new NullReferenceException();
+            else return null;
         }
 
         public async IAsyncEnumerable<Character> GetCharactersAsync()
@@ -46,28 +45,40 @@ namespace RickAndMortyAPI.Repository
                 currentPage++;
             }
         }
-        public void CreateAsync(Character item)
+        public async Task CreateAsync(Character item)
         {
             db.Characters.Add(item);
+            await Save();
         }
-
+        public async Task CreateManyAsync(IList<Character> items)
+        {
+            await db.Characters.AddRangeAsync(items);
+            await Save();
+        }
         public async Task<Character> DeleteAsync(int id)
         {
             Character? character = await db.Characters.FindAsync(id);
             if (character != null)
             {
                 db.Remove(character);
+                await Save();
                 return character;
             }
             else throw new NullReferenceException();
         }
-        public void Update(Character item)
-        {
-            db.Entry(item).State = EntityState.Modified;
+        public async Task UpdateAsync(Character item)
+        {            
+            db.Update(item);
+            await Save();
         }
-        public void Save()
+        public async Task UpdateManyAsync(IList<Character> items)
         {
-            db.SaveChanges();
+            db.UpdateRange(items);
+            await Save();
+        }
+        public async Task Save()
+        {
+           await db.SaveChangesAsync();
         }
     }
 }
