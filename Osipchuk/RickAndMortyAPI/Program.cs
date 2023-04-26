@@ -26,6 +26,7 @@ builder.Services.AddTransient<ICharacterService, CharacterService>();
 builder.Services.AddTransient<IUpdateDBService, UpdateDBService>();
 builder.Services.AddHostedService<UpdateDBHostedService>();
 builder.Services.AddHttpClient();
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 

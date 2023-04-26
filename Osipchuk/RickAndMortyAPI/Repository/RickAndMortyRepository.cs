@@ -9,14 +9,14 @@ namespace RickAndMortyAPI.Repository
 {
     public class RickAndMortyRepository : IRepository<Character>
     {
-        private readonly RickAndMortyContext db;
+        private readonly RickAndMortyContext _rickAndMortyContext;
         public RickAndMortyRepository(RickAndMortyContext db)
         {
-            this.db = db;
+            this._rickAndMortyContext = db;
         }
         public async Task<Character> GetCharacterAsync(int id)
         {
-            var character = await db.Characters.FindAsync(id);
+            var character = await _rickAndMortyContext.Characters.FindAsync(id);
             if (character != null)
             {
                 return character;
@@ -26,7 +26,7 @@ namespace RickAndMortyAPI.Repository
 
         public async IAsyncEnumerable<Character> GetCharactersAsync()
         {
-            IQueryable<Character> characters = db.Characters;
+            IQueryable<Character> characters = _rickAndMortyContext.Characters;
             var pageSize = 3;
             var count = await characters.CountAsync();
             var pageCount = Math.Ceiling(count / (double)pageSize);
@@ -47,38 +47,47 @@ namespace RickAndMortyAPI.Repository
         }
         public async Task CreateAsync(Character item)
         {
-            db.Characters.Add(item);
+            _rickAndMortyContext.Characters.Add(item);
             await Save();
         }
         public async Task CreateManyAsync(IList<Character> items)
         {
-            await db.Characters.AddRangeAsync(items);
+            await _rickAndMortyContext.Characters.AddRangeAsync(items);
             await Save();
         }
         public async Task<Character> DeleteAsync(int id)
         {
-            Character? character = await db.Characters.FindAsync(id);
+            Character? character = await _rickAndMortyContext.Characters.FindAsync(id);
             if (character != null)
             {
-                db.Remove(character);
+                _rickAndMortyContext.Remove(character);
                 await Save();
                 return character;
             }
             else throw new NullReferenceException();
         }
         public async Task UpdateAsync(Character item)
-        {            
-            db.Update(item);
+        {
+            _rickAndMortyContext.Update(item);
             await Save();
+        }
+        public async Task<bool> IfExist(int id)
+        {
+            return await _rickAndMortyContext.Characters.AnyAsync(ch => ch.Id == id);
         }
         public async Task UpdateManyAsync(IList<Character> items)
         {
-            db.UpdateRange(items);
+            _rickAndMortyContext.UpdateRange(items);
             await Save();
         }
         public async Task Save()
         {
-           await db.SaveChangesAsync();
+            await _rickAndMortyContext.SaveChangesAsync();
         }
+        public void ClearTracker()
+        {
+            _rickAndMortyContext.ChangeTracker.Clear();
+        }
+
     }
 }

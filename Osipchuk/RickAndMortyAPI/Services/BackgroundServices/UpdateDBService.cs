@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using RickAndMortyAPI.CharacterInfo;
 using RickAndMortyAPI.Repository;
@@ -10,33 +11,32 @@ namespace RickAndMortyAPI.Services
     {
         private readonly HttpClient _httpClient;
         private readonly RickAndMortyRepository _rickAndMortyRepository;
-        private readonly RickAndMortyContext _rickAndMortyContext;
-        public UpdateDBService(HttpClient httpClient, UnitOfWork unitOfWork,
-            RickAndMortyContext rickAndMortyContext)
+        private readonly IMemoryCache _memoryCache;
+        public UpdateDBService(HttpClient httpClient, UnitOfWork unitOfWork,IMemoryCache memoryCache)
         {
             _httpClient = httpClient;
             _rickAndMortyRepository = unitOfWork.Repository;
-            _rickAndMortyContext = rickAndMortyContext;  
+            _memoryCache = memoryCache;
         }
         public async Task UpdateDBAsync()
         {
             var characters = await GetCharactersAsync();
             foreach (var character in characters)
             {
-                if (!character.DateUpdated)
-                {
-                    character.DateUpdated = true;
-                    bool isInDatabase = await _rickAndMortyContext.Characters.AnyAsync(ch => ch.Id == character.Id);
-                    if (isInDatabase) await _rickAndMortyRepository.UpdateAsync(character);
-                    else await _rickAndMortyRepository.CreateAsync(character);
-                }
+                bool isInDatabase = await _rickAndMortyRepository.IfExist(character.Id);
+                if (isInDatabase) await _rickAndMortyRepository.UpdateAsync(character);
+                else await _rickAndMortyRepository.CreateAsync(character);
             }
+            _rickAndMortyRepository.ClearTracker();
         }
         public async Task<IList<Character>> GetCharactersAsync()
         {
             int countOfPage = 0;
             var characters = new List<Character>();
-            var nextPageUrl = "https://rickandmortyapi.com/api/character";
+            if (!_memoryCache.TryGetValue("nextPage", out string? nextPageUrl) || string.IsNullOrEmpty(nextPageUrl))
+            {
+                nextPageUrl = "https://rickandmortyapi.com/api/character";
+            }
             while (!string.IsNullOrEmpty(nextPageUrl) && countOfPage <= 4)
             {
                 var response = await _httpClient.GetAsync(nextPageUrl);
@@ -47,6 +47,11 @@ namespace RickAndMortyAPI.Services
                 nextPageUrl = result.Info.Next;
                 countOfPage++;
             }
+            var options = new MemoryCacheEntryOptions()
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(61)
+            };
+            _memoryCache.Set("nextPage", nextPageUrl, options);
             return characters;
         }
     }
