@@ -31,6 +31,7 @@ namespace RickAndMortyAPI.Services
             }
             _logger.LogInformation("Success Database is updated!");
             _rickAndMortyRepository.ClearTracker();
+            await Task.Delay(TimeSpan.FromHours(1));
         }
         public async IAsyncEnumerable<Character> GetCharactersAsync()
         {

@@ -24,7 +24,6 @@ namespace RickAndMortyAPI.Services
                 {
                     Console.WriteLine(ex.Message);
                 }
-                await Task.Delay(TimeSpan.FromHours(1));
             }
         }
     }
