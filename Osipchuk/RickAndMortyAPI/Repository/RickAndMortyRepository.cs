@@ -21,7 +21,7 @@ namespace RickAndMortyAPI.Repository
             {
                 return character;
             }
-            else return null;
+            else throw new NullReferenceException();
         }
 
         public async IAsyncEnumerable<Character> GetCharactersAsync()
@@ -50,7 +50,7 @@ namespace RickAndMortyAPI.Repository
             _rickAndMortyContext.Characters.Add(item);
             await Save();
         }
-        public async Task CreateManyAsync(IList<Character> items)
+        public async Task CreateAsync(IEnumerable<Character> items)
         {
             await _rickAndMortyContext.Characters.AddRangeAsync(items);
             await Save();
@@ -70,15 +70,15 @@ namespace RickAndMortyAPI.Repository
         {
             _rickAndMortyContext.Update(item);
             await Save();
-        }
-        public async Task<bool> IfExist(int id)
-        {
-            return await _rickAndMortyContext.Characters.AnyAsync(ch => ch.Id == id);
-        }
-        public async Task UpdateManyAsync(IList<Character> items)
+        }     
+        public async Task UpdateAsync(IEnumerable<Character> items)
         {
             _rickAndMortyContext.UpdateRange(items);
             await Save();
+        }
+        public async Task<bool> CheckIfExist(int id)
+        {
+            return await _rickAndMortyContext.Characters.AnyAsync(ch => ch.Id == id);
         }
         public async Task Save()
         {

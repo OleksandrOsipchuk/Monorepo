@@ -23,8 +23,8 @@ builder.Services.AddDbContext<RickAndMortyContext>(options =>
 options.UseNpgsql(connection));
 builder.Services.AddScoped<UnitOfWork>();
 builder.Services.AddTransient<ICharacterService, CharacterService>();
-builder.Services.AddTransient<IUpdateDBService, UpdateDBService>();
-builder.Services.AddHostedService<UpdateDBHostedService>();
+builder.Services.AddTransient<IPullCharactersJob, PullCharactersJob>();
+builder.Services.AddHostedService<PullCharactersHostedService>();
 builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
 

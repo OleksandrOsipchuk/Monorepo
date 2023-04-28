@@ -3,17 +3,14 @@ using System.Threading;
 
 namespace RickAndMortyAPI.Services
 {
-    public class UpdateDBHostedService : BackgroundService
+    public class PullCharactersHostedService : BackgroundService
     {
-        private readonly ILogger<UpdateDBHostedService> _logger;
-        private readonly IUpdateDBService _updateDBService;
+        private readonly IPullCharactersJob _updateDBService;
         private readonly IServiceScope scope;
-        public UpdateDBHostedService(ILogger<UpdateDBHostedService> logger, 
-            IServiceScopeFactory serviceScopeFactory)
+        public PullCharactersHostedService(IServiceScopeFactory serviceScopeFactory)
         {
-            _logger = logger;
              scope = serviceScopeFactory.CreateScope();
-            _updateDBService = scope.ServiceProvider.GetRequiredService<IUpdateDBService>();
+            _updateDBService = scope.ServiceProvider.GetRequiredService<IPullCharactersJob>();
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -21,8 +18,7 @@ namespace RickAndMortyAPI.Services
             {
                 try
                 {
-                    await _updateDBService.UpdateDBAsync();
-                    _logger.LogInformation("Success Database is updated!");
+                    await _updateDBService.RunAsync();
                 }
                 catch (Exception ex)
                 {
