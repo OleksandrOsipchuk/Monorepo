@@ -57,7 +57,7 @@ namespace RickAndMortyAPI.Repository
         }
         public async Task<Character> DeleteAsync(int id)
         {
-            Character? character = await _rickAndMortyContext.Characters.FindAsync(id);
+            var character = await _rickAndMortyContext.Characters.FindAsync(id);
             if (character != null)
             {
                 _rickAndMortyContext.Remove(character);
@@ -68,12 +68,26 @@ namespace RickAndMortyAPI.Repository
         }
         public async Task UpdateAsync(Character item)
         {
-            _rickAndMortyContext.Update(item);
-            await Save();
-        }     
+            Character? character = await _rickAndMortyContext.
+                Characters.FirstOrDefaultAsync(ch => ch.Id == item.Id);
+            if (character != null)
+            {
+                character.Id = item.Id;
+                character.Name = item.Name;
+                character.Status = item.Status;
+                character.Species = item.Species;
+                character.Gender = item.Gender;
+                character.Status = item.Image;
+                await Save();
+            }           
+            else throw new NullReferenceException();
+        }
         public async Task UpdateAsync(IEnumerable<Character> items)
         {
-            _rickAndMortyContext.UpdateRange(items);
+            foreach(var item in items)
+            {
+               await UpdateAsync(item);
+            }
             await Save();
         }
         public async Task<bool> CheckIfExist(int id)
@@ -84,10 +98,5 @@ namespace RickAndMortyAPI.Repository
         {
             await _rickAndMortyContext.SaveChangesAsync();
         }
-        public void ClearTracker()
-        {
-            _rickAndMortyContext.ChangeTracker.Clear();
-        }
-
     }
 }

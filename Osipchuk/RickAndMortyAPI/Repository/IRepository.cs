@@ -12,6 +12,5 @@ namespace RickAndMortyAPI.Repository
         Task UpdateAsync(T item);
         Task UpdateAsync(IEnumerable<Character> items);
         Task Save();
-        void ClearTracker();
     }
 }

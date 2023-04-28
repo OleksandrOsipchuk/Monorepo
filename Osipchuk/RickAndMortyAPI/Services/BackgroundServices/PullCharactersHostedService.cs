@@ -5,12 +5,12 @@ namespace RickAndMortyAPI.Services
 {
     public class PullCharactersHostedService : BackgroundService
     {
-        private readonly IPullCharactersJob _updateDBService;
+        private readonly IPullCharactersJob _pullCharactersJob;
         private readonly IServiceScope scope;
         public PullCharactersHostedService(IServiceScopeFactory serviceScopeFactory)
         {
              scope = serviceScopeFactory.CreateScope();
-            _updateDBService = scope.ServiceProvider.GetRequiredService<IPullCharactersJob>();
+            _pullCharactersJob = scope.ServiceProvider.GetRequiredService<IPullCharactersJob>();
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -18,7 +18,7 @@ namespace RickAndMortyAPI.Services
             {
                 try
                 {
-                    await _updateDBService.RunAsync();
+                    await _pullCharactersJob.RunAsync();
                 }
                 catch (Exception ex)
                 {

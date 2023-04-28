@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RickAndMortyAPI.CharacterInfo;
 using RickAndMortyAPI.Repository;
 using RickMorty;
+using System.Collections;
 
 namespace RickAndMortyAPI.Services
 {
@@ -23,17 +25,26 @@ namespace RickAndMortyAPI.Services
         }
         public async Task RunAsync()
         {
-            await foreach (var character in GetCharactersAsync())
+            await foreach (var page in GetCharactersAsync())
             {
-                bool isInDatabase = await _rickAndMortyRepository.CheckIfExist(character.Id);
-                if (isInDatabase) await _rickAndMortyRepository.UpdateAsync(character);
-                else await _rickAndMortyRepository.CreateAsync(character);
+                foreach (var character in page)
+                {
+                    try
+                    {
+                        await _rickAndMortyRepository.UpdateAsync(character);
+                    }
+                    catch(NullReferenceException)
+                    {
+                        _logger.LogInformation($"There is no character:" +
+                            $" {character.Name} in db. Create new character.");
+                        await _rickAndMortyRepository.CreateAsync(character);
+                    }
+                }
             }
             _logger.LogInformation("Success Database is updated!");
-            _rickAndMortyRepository.ClearTracker();
             await Task.Delay(TimeSpan.FromHours(1));
         }
-        public async IAsyncEnumerable<Character> GetCharactersAsync()
+        public async IAsyncEnumerable<IEnumerable<Character>> GetCharactersAsync()
         {
             int countOfPage = 0;
             var characters = new List<Character>();
@@ -47,12 +58,10 @@ namespace RickAndMortyAPI.Services
                 response.EnsureSuccessStatusCode();
                 var responseBody = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<ApiResponse>(responseBody);
-                characters.AddRange(result.Results);
+                foreach (var character in ConvertFromCharacterAPI(result.Results))
+                    characters.Add(character);
                 nextPageUrl = result.Info.Next;
-                foreach (var character in characters)
-                {
-                    yield return character;
-                }
+                yield return characters;
                 countOfPage++;
             }
             var options = new MemoryCacheEntryOptions()
@@ -60,6 +69,20 @@ namespace RickAndMortyAPI.Services
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(61)
             };
             _memoryCache.Set("nextPage", nextPageUrl, options);
+        }
+        public IEnumerable<Character> ConvertFromCharacterAPI(List<CharacterAPIResponse> apiCharacters)
+        {
+            foreach (var apiCharacter in apiCharacters)
+            {
+                Character character = new Character();
+                character.Id = apiCharacter.Id;
+                character.Name = apiCharacter.Name;
+                character.Status = apiCharacter.Status;
+                character.Species = apiCharacter.Species;
+                character.Gender = apiCharacter.Gender;
+                character.Status = apiCharacter.Image;
+                yield return character;
+            }
         }
     }
 }
