@@ -31,9 +31,15 @@ namespace RickAndMortyAPI.Services
                 {
                     try
                     {
-                        await _rickAndMortyRepository.UpdateAsync(character);
+                        var dbCharacter = await _rickAndMortyRepository.GetCharacterAsync(character.Id);
+                        dbCharacter.Name = character.Name;
+                        dbCharacter.Status = character.Status;
+                        dbCharacter.Species = character.Species;
+                        dbCharacter.Gender = character.Gender;
+                        dbCharacter.Status = character.Image;
+                        await _rickAndMortyRepository.SaveAsync();
                     }
-                    catch(NullReferenceException)
+                    catch (NullReferenceException)
                     {
                         _logger.LogInformation($"There is no character:" +
                             $" {character.Name} in db. Create new character.");

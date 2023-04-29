@@ -48,12 +48,12 @@ namespace RickAndMortyAPI.Repository
         public async Task CreateAsync(Character item)
         {
             _rickAndMortyContext.Characters.Add(item);
-            await Save();
+            await SaveAsync();
         }
         public async Task CreateAsync(IEnumerable<Character> items)
         {
             await _rickAndMortyContext.Characters.AddRangeAsync(items);
-            await Save();
+            await SaveAsync();
         }
         public async Task<Character> DeleteAsync(int id)
         {
@@ -61,40 +61,26 @@ namespace RickAndMortyAPI.Repository
             if (character != null)
             {
                 _rickAndMortyContext.Remove(character);
-                await Save();
+                await SaveAsync();
                 return character;
             }
             else throw new NullReferenceException();
         }
         public async Task UpdateAsync(Character item)
         {
-            Character? character = await _rickAndMortyContext.
-                Characters.FirstOrDefaultAsync(ch => ch.Id == item.Id);
-            if (character != null)
-            {
-                character.Id = item.Id;
-                character.Name = item.Name;
-                character.Status = item.Status;
-                character.Species = item.Species;
-                character.Gender = item.Gender;
-                character.Status = item.Image;
-                await Save();
-            }           
-            else throw new NullReferenceException();
+            _rickAndMortyContext.Update(item);
+            await SaveAsync();
         }
         public async Task UpdateAsync(IEnumerable<Character> items)
         {
-            foreach(var item in items)
-            {
-               await UpdateAsync(item);
-            }
-            await Save();
+            _rickAndMortyContext.UpdateRange(items);
+            await SaveAsync();
         }
         public async Task<bool> CheckIfExist(int id)
         {
             return await _rickAndMortyContext.Characters.AnyAsync(ch => ch.Id == id);
         }
-        public async Task Save()
+        public async Task SaveAsync()
         {
             await _rickAndMortyContext.SaveChangesAsync();
         }

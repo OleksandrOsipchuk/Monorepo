@@ -11,6 +11,6 @@ namespace RickAndMortyAPI.Repository
         Task<T> DeleteAsync(int id);
         Task UpdateAsync(T item);
         Task UpdateAsync(IEnumerable<Character> items);
-        Task Save();
+        Task SaveAsync();
     }
 }
