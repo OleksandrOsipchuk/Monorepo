@@ -50,7 +50,7 @@ namespace RickAndMortyAPI.Services
             _logger.LogInformation("Success Database is updated!");
             await Task.Delay(TimeSpan.FromHours(1));
         }
-        public async IAsyncEnumerable<IEnumerable<Character>> GetCharactersAsync()
+        private async IAsyncEnumerable<IEnumerable<Character>> GetCharactersAsync()
         {
             int countOfPage = 0;
             var characters = new List<Character>();
@@ -76,7 +76,7 @@ namespace RickAndMortyAPI.Services
             };
             _memoryCache.Set("nextPage", nextPageUrl, options);
         }
-        protected IEnumerable<Character> ConvertFromCharacterAPI(List<CharacterAPIResponse> apiCharacters)
+        private IEnumerable<Character> ConvertFromCharacterAPI(List<CharacterAPIResponse> apiCharacters)
         {
             foreach (var apiCharacter in apiCharacters)
             {
