@@ -76,7 +76,7 @@ namespace RickAndMortyAPI.Services
             };
             _memoryCache.Set("nextPage", nextPageUrl, options);
         }
-        public IEnumerable<Character> ConvertFromCharacterAPI(List<CharacterAPIResponse> apiCharacters)
+        protected IEnumerable<Character> ConvertFromCharacterAPI(List<CharacterAPIResponse> apiCharacters)
         {
             foreach (var apiCharacter in apiCharacters)
             {
