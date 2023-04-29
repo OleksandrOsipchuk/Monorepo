@@ -1,12 +1,16 @@
-﻿namespace RickAndMortyAPI.Repository
+﻿using RickMorty;
+
+namespace RickAndMortyAPI.Repository
 {
     public interface IRepository<T>
     {
-        IAsyncEnumerable<T>  GetCharactersAsync();
+        IAsyncEnumerable<T> GetCharactersAsync();
         Task<T> GetCharacterAsync(int id);
+        Task CreateAsync(T item);
+        Task CreateAsync(IEnumerable<T> items);
         Task<T> DeleteAsync(int id);
-        void Update(T item);
-        void CreateAsync(T item);
-        void Save();
+        Task UpdateAsync(T item);
+        Task UpdateAsync(IEnumerable<Character> items);
+        Task SaveAsync();
     }
 }
