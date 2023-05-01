@@ -12,29 +12,25 @@ namespace RickAndMortyAPI.Services
         public LocationService(UnitOfWork unitOfWork) { 
             _repository = unitOfWork.Repository;
         }
-        public async IAsyncEnumerable<LocationDTO> GetLocationsAsync() {
-           await foreach (var location in _repository.GetAllAsync()) {
-                yield return new LocationDTO
-                {
-                    Id = location.Id,
-                    Name = location.Name,
-                    Type = location.Type,
-                    Dimension = location.Dimension
-                };
-            }
-        }
-        public async IAsyncEnumerable<LocationDTO> GetLocationsAsync(int[] entityIDs) {
-            await foreach (var location in _repository.GetByIdAsync(entityIDs))
+        public async Task<IEnumerable<LocationDTO>> GetLocationsAsync() {
+            var locations = await _repository.GetAllAsync();
+            return locations.Select(location => new LocationDTO
             {
-                yield return new LocationDTO
-                {
-                    Id = location.Id,
-                    Name = location.Name,
-                    Type = location.Type,
-                    Dimension = location.Dimension
-                };
-            }
-
+                Id = location.Id,
+                Name = location.Name,
+                Type = location.Type,
+                Dimension = location.Dimension
+            });
+        }
+        public async Task<IEnumerable<LocationDTO>> GetLocationsAsync(int[] entityIDs) {
+            var locations = await _repository.GetByIdAsync(entityIDs);
+            return locations.Select(location => new LocationDTO
+            {
+                Id = location.Id,
+                Name = location.Name,
+                Type = location.Type,
+                Dimension = location.Dimension
+            });
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace RickAndMortyAPI.Entities
+﻿namespace RickAndMortyAPI.Domain
 {
     public class Info
     {

@@ -6,7 +6,6 @@ using System.Xml.Linq;
 namespace RickAndMortyAPI.Services
 {
     [ApiController]
-    [Route("api/locations")]
     public class LocationController : ControllerBase
     {
         private readonly ILocationService _locationService;
@@ -24,13 +23,12 @@ namespace RickAndMortyAPI.Services
         public async Task<IActionResult> GetLocationsAsync()
         {
             var locations = new List<LocationDTO>();
-            await foreach (var location in _locationService.GetLocationsAsync())
+            foreach (var location in await _locationService.GetLocationsAsync())
             {
                 locations.Add(location);
             }
             return Ok(locations);
         }
-
         [HttpGet]
         [EndpointSummary("Get locations by id.")]
         [Tags("Locations")]
@@ -41,11 +39,11 @@ namespace RickAndMortyAPI.Services
         public async Task<IActionResult> GetLocationsByIdAsync([FromQuery(Name = "locationIDs")] int[] locationIDs)
         {
             var locations = new List<LocationDTO>();
-            await foreach (var location in _locationService.GetLocationsAsync(locationIDs))
+            foreach (var location in await _locationService.GetLocationsAsync(locationIDs))
             {
                 locations.Add(location);
             }
-            if (locations == null)
+            if (locations == null || locations.Count == 0)
             {
                 return NotFound();
             }

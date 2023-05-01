@@ -12,17 +12,15 @@ namespace RickAndMortyAPI.Repository
         {
             _dbcontext = dbcontext;
         }
-        public async IAsyncEnumerable<Location> GetAllAsync()
+        public async Task<IEnumerable<Location>> GetAllAsync()
         {
             var locations = _dbcontext.Locations;
-            await foreach (var location in locations.AsAsyncEnumerable())
-                yield return location;
+            return await locations.ToListAsync();
         }
-        public async IAsyncEnumerable<Location> GetByIdAsync(int[] entityIDs)
+        public async Task<IEnumerable<Location>> GetByIdAsync(int[] entityIDs)
         {
             var locations = _dbcontext.Locations.Where(l => entityIDs.Contains(l.Id));
-            await foreach (var location in locations.AsAsyncEnumerable())
-                yield return location;
+            return await locations.ToListAsync();
         }
         public void Insert(Location entity)
         {
