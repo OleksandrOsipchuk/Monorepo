@@ -5,7 +5,8 @@ using RickAndMortyAPI.Services;
 
 namespace RickAndMortyAPI.Controllers
 {
-    [Route("api/characters")]
+    [Route("{controller=Character}/{action=GetStartPage}")]
+    [Route("api")]
     public class CharacterController : Controller
     {
         private readonly ICharacterService _characterService;
@@ -14,18 +15,22 @@ namespace RickAndMortyAPI.Controllers
             _characterService = characterService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("character/{id}")]
         public async Task<IActionResult> GetCharacter(int id)
         {
             var character = await _characterService.GetCharacterAsync(id);
             return Json(character);
         }
 
-        [HttpGet]
+        [HttpGet("characters")]
         public async Task<IActionResult> GetCharacters()
         {
             var characters = await _characterService.GetCharactersAsync();
             return Json(characters);
+        }
+        public IActionResult GetStartPage()
+        {
+            return Content("Start page");
         }
     }
 }
