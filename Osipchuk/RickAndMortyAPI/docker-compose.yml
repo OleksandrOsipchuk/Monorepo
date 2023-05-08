@@ -1,0 +1,36 @@
+﻿version: '3.9'
+
+services:
+  ramapi: 
+   container_name: ramapi_container
+   build: 
+    context: .
+    dockerfile: Dockerfile
+   ports:
+   - 80:80
+   networks: 
+   - rickandmortyapi
+   depends_on:
+   - postgres_db
+
+  postgres_db:
+    container_name: ramdb_container
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 2002
+      POSTGRES_USER: postgres
+      POSTGRES_DB: ramdb
+    ports:
+     - 5432:5432
+    networks: 
+    - rickandmortyapi
+    volumes:
+     - postgres_data:/var/lib/postgresql/data/
+  
+volumes: 
+  postgres_data:
+
+networks:
+  rickandmortyapi:
+    driver: bridge

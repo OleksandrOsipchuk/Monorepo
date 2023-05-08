@@ -10,7 +10,10 @@ public class RickAndMortyContext : DbContext
     public virtual DbSet<Character> Characters { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     => optionsBuilder.UseLowerCaseNamingConvention();
-    public RickAndMortyContext(DbContextOptions<RickAndMortyContext> options) : base(options) { }
+    public RickAndMortyContext(DbContextOptions<RickAndMortyContext> options) : base(options) 
+    {
+        Database.EnsureCreated();
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Character>(entity =>
