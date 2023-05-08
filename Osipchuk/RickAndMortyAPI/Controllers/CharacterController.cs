@@ -5,6 +5,7 @@ using RickAndMortyAPI.Services;
 
 namespace RickAndMortyAPI.Controllers
 {
+    [Route("{controller=Character}/{action=GetStartPage}")]
     [Route("api/characters")]
     public class CharacterController : Controller
     {
@@ -26,6 +27,10 @@ namespace RickAndMortyAPI.Controllers
         {
             var characters = await _characterService.GetCharactersAsync();
             return Json(characters);
+        }
+        public IActionResult GetStartPage()
+        {
+            return Content("Start page");
         }
     }
 }
