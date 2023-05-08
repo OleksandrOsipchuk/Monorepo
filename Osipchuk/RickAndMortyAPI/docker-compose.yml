@@ -17,10 +17,7 @@ services:
     container_name: ramdb_container
     image: postgres
     restart: always
-    environment:
-      POSTGRES_PASSWORD: 2002
-      POSTGRES_USER: postgres
-      POSTGRES_DB: ramdb
+
     ports:
      - 5432:5432
     networks: 
