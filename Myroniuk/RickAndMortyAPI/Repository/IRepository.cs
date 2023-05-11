@@ -6,10 +6,10 @@ namespace RickAndMortyAPI.Repository
     {
         //considering ActionResult class
         Task<IEnumerable<T>> GetAllAsync();
-        Task<IEnumerable<T>> GetByIdAsync (int[] entityIDs);
-        void Insert(T entity);
-        void Update(T entity);
-        void Save();
-        Task<T?> DeleteAsync(int id);
+        Task<T> GetByIDAsync (int entityID);
+        Task InsertAsync(T entity);
+        Task UpdateAsync(T entity);
+        Task SaveAsync();
+        Task DeleteAsync(int id);
     }
 }

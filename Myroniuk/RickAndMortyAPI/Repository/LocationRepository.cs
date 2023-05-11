@@ -15,33 +15,34 @@ namespace RickAndMortyAPI.Repository
         public async Task<IEnumerable<Location>> GetAllAsync()
         {
             var locations = _dbcontext.Locations;
-            return await locations.ToListAsync();
+            return locations;
         }
-        public async Task<IEnumerable<Location>> GetByIdAsync(int[] entityIDs)
+        public async Task<Location>? GetByIDAsync(int entityID)
         {
-            var locations = _dbcontext.Locations.Where(l => entityIDs.Contains(l.Id));
-            return await locations.ToListAsync();
+            var locations = await _dbcontext.Locations.FindAsync(entityID);
+            return locations;
         }
-        public void Insert(Location entity)
+        public async Task InsertAsync(Location entity)
         {
-            _dbcontext.Locations.Add(entity);
+            await _dbcontext.Locations.AddAsync(entity);
         }
-        public void Save()
+        public async Task SaveAsync()
         {
-            _dbcontext.SaveChanges();
+            await _dbcontext.SaveChangesAsync();
         }
-        public void Update(Location entity)
+        public async Task UpdateAsync(Location entity)
         {
-            _dbcontext.Entry(entity).State = EntityState.Modified;
+            await Task.Run(() => {
+                _dbcontext.Entry(entity).State = EntityState.Modified;
+            });
         }
-        public async Task<Location?> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var location = await _dbcontext.Locations.FindAsync(id);
             if (location != null)
             {
                 _dbcontext.Remove(location);
             }
-            return location;
         }
     }
 }
