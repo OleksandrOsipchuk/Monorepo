@@ -1,25 +1,36 @@
-﻿version: '3.9'
+﻿version: '3.7'
 
 services:
-  ramapi: 
-   container_name: ramapi_container
-   image: oleksandrosipchuk/rickandmortyapi:latest
-   build:
-    context: .
-    dockerfile: Dockerfile
-   ports:
-   - 80:80
-   networks: 
-   - rickandmortyapi
-   depends_on:
-   - postgres_db
 
+  reverseproxy:
+   image: oleksandrosipchuk/reverseproxy
+   container_name: reverseproxy
+   ports:
+    - 80:80
+   restart: always
+   networks: 
+   - app
+
+  rickandmortyapi: 
+   image: oleksandrosipchuk/rickandmortyapi
+   container_name: rickandmortyapi
+   networks: 
+   - app
+   depends_on:
+   - reverseproxy
+   - postgres_db
+   
   postgres_db:
     container_name: ramdb_container
     image: postgres
+    environment:
+     - POSTGRES_USER=postgres
+     - POSTGRES_PASSWORD=2002
+    ports:
+     - 5432:5432
     restart: always
     networks: 
-    - rickandmortyapi
+    - app
     volumes:
      - postgres_data:/var/lib/postgresql/data/
   
@@ -27,5 +38,5 @@ volumes:
   postgres_data:
 
 networks:
-  rickandmortyapi:
+  app:
     driver: bridge
