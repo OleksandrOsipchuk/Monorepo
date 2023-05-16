@@ -12,16 +12,14 @@ namespace RickAndMortyAPI.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "locations",
+                name: "Location",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    type = table.Column<string>(type: "text", nullable: false),
-                    dimension = table.Column<string>(type: "text", nullable: false),
-                    url = table.Column<string>(type: "text", nullable: false),
-                    created = table.Column<string>(type: "text", nullable: false)
+                    name = table.Column<string>(type: "text", nullable: true),
+                    type = table.Column<string>(type: "text", nullable: true),
+                    dimension = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -33,7 +31,7 @@ namespace RickAndMortyAPI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "locations");
+                name: "Location");
         }
     }
 }

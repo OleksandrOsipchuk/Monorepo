@@ -30,35 +30,22 @@ namespace RickAndMortyAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Created")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("created");
-
                     b.Property<string>("Dimension")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("dimension");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
 
                     b.Property<string>("Type")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("type");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("url");
 
                     b.HasKey("Id")
                         .HasName("Id");
 
-                    b.ToTable("locations", (string)null);
+                    b.ToTable("Location", (string)null);
                 });
 #pragma warning restore 612, 618
         }

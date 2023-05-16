@@ -36,14 +36,10 @@ namespace RickAndMortyAPI.Services
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Produces("application/json")]
         [Route("api/location")]
-        public async Task<IActionResult> GetLocationsByIdAsync([FromQuery(Name = "locationIDs")] int[] locationIDs)
+        public async Task<IActionResult> GetLocationsByIdAsync([FromQuery(Name = "locationID")] int locationID)
         {
-            var locations = new List<LocationDTO>();
-            foreach (var location in await _locationService.GetLocationsAsync(locationIDs))
-            {
-                locations.Add(location);
-            }
-            if (locations == null || locations.Count == 0)
+            var locations = await _locationService.GetLocationAsync(locationID);
+            if (locations == null)
             {
                 return NotFound();
             }

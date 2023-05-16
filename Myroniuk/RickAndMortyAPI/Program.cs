@@ -3,12 +3,16 @@ using RickAndMortyAPI.Services;
 using RickAndMortyAPI.Repository;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
+using RickAndMortyAPI.Services.Background;
 
 var builder = WebApplication.CreateBuilder();
 builder.Services.AddScoped<ILocationService, LocationService>();
-builder.Services.AddControllers();
+builder.Services.AddTransient<IPullLocationsJob, PullLocationsJob>();
+builder.Services.AddHostedService<PullLocationsHostedService>();
+builder.Services.AddMemoryCache();
 builder.Services.AddTransient<UnitOfWork>();
 builder.Services.AddHttpClient();
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
