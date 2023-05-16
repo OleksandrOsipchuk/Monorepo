@@ -62,6 +62,7 @@ namespace RickAndMortyAPI.Services.Background
             };
             _memoryCache.Set("nextPageUrl", nextPageUrl, options);
             await _repository.SaveAsync();
+            _logger.LogInformation("Data loaded to database.");
         }
     }
 }

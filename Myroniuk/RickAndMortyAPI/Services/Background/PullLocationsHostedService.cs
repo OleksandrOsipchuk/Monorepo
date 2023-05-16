@@ -27,7 +27,7 @@ namespace RickAndMortyAPI.Services.Background
                 {
                     _logger.LogError(ex.Message);
                 }
-                _logger.LogInformation("Data loaded to database.");
+                _logger.LogInformation("Pulling job ended.");
                 await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
             }
         }
