@@ -16,5 +16,8 @@ It is a project developed as a console application in the C# programming languag
 WriteReadFileProgram:
 This program is built as a console application and is used to serialize and deserialize files into formats such as JSON and XML. During the development of the application, he improved his serialization/deserialization skills, as well as OOP skills and SOLID principles.
 
+To Do List:
+It is a simple ToDoList that is written in Angular.
+
 Calculator:
 This is one of the first projects. a simple calculator made using the principles of OOP and the Factory pattern.
