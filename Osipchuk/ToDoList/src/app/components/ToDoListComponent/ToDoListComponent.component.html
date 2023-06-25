@@ -1,0 +1,27 @@
+<h1 style="text-align: center">To Do List for study</h1>
+<div class="container text-center">
+  <div class="row justify-content-md-center">
+    <div class="col col-lg-3">
+      <form (ngSubmit)="save(taskForm)"  #taskForm="ngForm">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="write your task"  aria-describedby="button-addon2"
+                 ngModel name="newTask" required>
+          <button class="btn btn-outline-secondary" type="submit" id="button-addon2" >Button</button>
+        </div>
+      </form>
+      <table class="table">
+        <tbody>
+        <tr *ngFor="let task of taskList; index as i">
+          <th scope="row">{{1 + i}}</th>
+          <td (click)="makeDone(task)"
+          [ngClass]="{done:task.isComplete}">{{task.info}}</td>
+          <td><button (click)="delete(i)" class="btn btn-danger">Delete</button></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div>
+</div>
+
