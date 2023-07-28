@@ -1,4 +1,9 @@
 Monorepo for Oleksandr's pet-projects
+SuperCompany project:
+•This is a website written using ASP.Net Core MVC. The project offers a platform for providing various services.
+•It has an admin area in which a user with the role of admin can manually fill in the content of the site.
+•For data storage uses the MS SQL Server and Entity Framework Core (Also uses Identity).
+•It has a fully functional frontend part. For front uses HTML5, JavaScript and SASS.
 
 RickAndMortyAPI project:
  A fully functional API that users to get all characters from the Rick and Morty universe. Implemented various RESTful endpoints to handle

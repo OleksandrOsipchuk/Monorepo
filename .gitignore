@@ -352,3 +352,6 @@ MigrationBackup/
 
 # MacOS stuff
 .DS_Store
+**/wwwroot/lib
+**/wwwroot/js/ckeditor
+**/wwwroot/lib
