@@ -1,4 +1,5 @@
 Monorepo for Oleksandr's pet-projects
+
 SuperCompany project:
 •This is a website written using ASP.Net Core MVC. The project offers a platform for providing various services.
 •It has an admin area in which a user with the role of admin can manually fill in the content of the site.
